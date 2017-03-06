@@ -36,7 +36,7 @@ public class Rectangle {
 					System.out.println("Jedan ili oba argumenta nisu valjane vrijednosti.");
 					System.exit(0);
 				}
-				System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f", sirina,
+				System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f.", sirina,
 						visina, sirina * visina, 2 * (sirina + visina));
 
 			} catch (NumberFormatException exc) {
@@ -48,7 +48,7 @@ public class Rectangle {
 			Scanner sc = new Scanner(System.in);
 			sirina = ucitaj(sc, "širinu");
 			visina = ucitaj(sc, "visinu");
-			System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f", sirina, visina,
+			System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f.", sirina, visina,
 					sirina * visina, 2 * (sirina + visina));
 			sc.close();
 		}
