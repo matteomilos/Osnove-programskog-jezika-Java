@@ -33,53 +33,14 @@ public class UniqueNumbers {
 	 */
 	public static void main(String[] args) {
 
-		TreeNode glava = null;
+		TreeNode head = null;
 		Scanner sc = new Scanner(System.in);
-		glava = ucitajBrojeve(glava, sc);
+		head = readInput(head, sc);
 		System.out.print("Ispis od najmanjeg: ");
-		ispisSilazno(glava);
+		printAscending(head);
 		System.out.printf("%nIspis od najveceg: ");
-		ispisUzlazno(glava);
+		printDescending(head);
 		sc.close();
-
-	}
-
-	/**
-	 * Metoda koju koristimo za uzlazni (od manjeg prema većem) ispis
-	 * vrijednosti čvorova binarnog stabla.
-	 * 
-	 * @param glava
-	 *            referenca na prvi čvor binarnog stabla
-	 */
-	private static void ispisUzlazno(TreeNode glava) {
-		if (glava.right != null) {
-			ispisUzlazno(glava.right);
-		}
-
-		System.out.print(glava.value + " ");
-
-		if (glava.left != null) {
-			ispisUzlazno(glava.left);
-		}
-	}
-
-	/**
-	 * Metoda koju koristimo za silazni (od većeg prema manjem) ispis
-	 * vrijednosti čvorova binarnog stabla.
-	 * 
-	 * @param glava
-	 *            referenca na prvi čvor binarnog stabla
-	 */
-	private static void ispisSilazno(TreeNode glava) {
-		if (glava.left != null) {
-			ispisSilazno(glava.left);
-		}
-
-		System.out.print(glava.value + " ");
-
-		if (glava.right != null) {
-			ispisSilazno(glava.right);
-		}
 
 	}
 
@@ -87,114 +48,129 @@ public class UniqueNumbers {
 	 * Metoda koja služi za učitavanje brojeva sa nekog ulaza te njihovo
 	 * dodavanje u binarno stablo.
 	 * 
-	 * @param glava
+	 * @param head
 	 *            referenca na prvi čvor binarnog stabla
 	 * @param sc
 	 *            primjerak razreda Scanner, koristi se za čitanje sa nekog
 	 *            izvora
 	 * @return referenca na prvi čvor binarnog stabla
 	 */
-	private static TreeNode ucitajBrojeve(TreeNode glava, Scanner sc) {
-
+	private static TreeNode readInput(TreeNode head, Scanner sc) { 			// pomoćna metoda za učitavanje brojeva sa standardnog (ili nekog drugog) ulaza, koristi se u mainu
 		while (true) {
 			System.out.print("Unesite broj > ");
-			String uneseniNizZnakova = sc.next();
-
-			try {
-				int uneseniBroj = Integer.parseInt(uneseniNizZnakova);
-
-				if (containsValue(glava, uneseniBroj)) {
-					System.out.printf("Broj već postoji. Preskačem.%n");
-				} else {
-					glava = addNode(glava, uneseniBroj);
-					System.out.printf("Dodano.%n");
-				}
-
-			} catch (NumberFormatException exc) {
-				if (uneseniNizZnakova.equals("kraj")) {
+			if (sc.hasNextInt()) {
+				head = addNode(head, sc.nextInt());
+			} else {
+				String inputLine = sc.next();
+				if (inputLine.equals("kraj")) {
 					System.out.println("Doviđenja.");
 					break;
 				}
-
-				System.out.printf("'%s' nije cijeli broj.%n", uneseniNizZnakova);
+				System.out.printf("'%s' nije cijeli broj.%n", inputLine);
 			}
 		}
-		return glava;
+		return head;
+	}
+
+	/**
+	 * Metoda koju koristimo za uzlazni (od manjeg prema većem) ispis
+	 * vrijednosti čvorova binarnog stabla.
+	 * 
+	 * @param head
+	 *            referenca na prvi čvor binarnog stabla
+	 */
+	private static void printDescending(TreeNode head) {
+		if (head == null) {
+			return;
+		}
+		printDescending(head.right);
+		System.out.print(head.value + " ");
+		printDescending(head.left);
+	}
+
+	/**
+	 * Metoda koju koristimo za silazni (od većeg prema manjem) ispis
+	 * vrijednosti čvorova binarnog stabla.
+	 * 
+	 * @param head
+	 *            referenca na prvi čvor binarnog stabla
+	 */
+	private static void printAscending(TreeNode head) {
+		if (head == null) {
+			return;
+		}
+		printAscending(head.left);
+		System.out.print(head.value + " ");
+		printAscending(head.right);
+
 	}
 
 	/**
 	 * Metoda koja rekurzivno provjerava sadrži li binarno stablo neki element.
 	 * 
-	 * @param glava
+	 * @param head
 	 *            referenca na prvi čvor binarnog stabla
-	 * @param provjeravaniBroj
+	 * @param possibleDuplicate
 	 *            broj koji provjeravamo postoji li u binarnom stablu
 	 * @return <code>true</code> ako stablo sadrži provjeravanu vrijednost,
 	 *         odnosno <code>false</code> ako ne sadržava
 	 * 
 	 */
-	public static boolean containsValue(TreeNode glava, int provjeravaniBroj) {
-		if (glava == null) {
+	public static boolean containsValue(TreeNode head, int possibleDuplicate) {
+		if (head == null) {
 			return false;
 		}
-		while (true) {
-			if (provjeravaniBroj < glava.value) {
-				return containsValue(glava.left, provjeravaniBroj);
-			} else if (provjeravaniBroj > glava.value) {
-				return containsValue(glava.right, provjeravaniBroj);
-			} else {
-				return true;
-			}
+		if (possibleDuplicate < head.value) {						//provjera je li manji ili veći kako bi se smanjila složenost funkcije (izbjegavanje obilaska cijelog stabla)
+			return containsValue(head.left, possibleDuplicate);
+		} else if (possibleDuplicate > head.value) {				
+			return containsValue(head.right, possibleDuplicate);
+		} else {													//ako nije ni manji ni veći onda je jednak, što znači da već postoji u stablu
+			return true;
 		}
 	}
 
 	/**
 	 * Metoda koja rekurzivno računa veličinu (broj čvorova) binarnog stabla.
 	 * 
-	 * @param glava
+	 * @param head
 	 *            referenca na prvi čvor binarnog stabla
 	 * @return broj elemenata binarnog stabla
 	 */
-	public static int treeSize(TreeNode glava) {
-		if (glava == null) {
+	public static int treeSize(TreeNode head) {
+		if (head == null) {
 			return 0;
 		}
 
-		return 1 + treeSize(glava.right) + treeSize(glava.left);
+		return 1 + treeSize(head.right) + treeSize(head.left);
 	}
 
 	/**
 	 * Metoda koja rekurzivno dodaje nove čvorove u binarno stablo.
 	 * 
-	 * @param glava
+	 * @param head
 	 *            referenca na prvi čvor binarnog stabla
-	 * @param i
+	 * @param newElement
 	 *            vrijednost čvora kojeg dodajemo u binarno stablo
 	 * @return referenca na prvi čvor binarnog stabla
 	 */
-	public static TreeNode addNode(TreeNode glava, int i) {
+	public static TreeNode addNode(TreeNode head, int newElement) {
 
-		if (glava == null) {
-			TreeNode novi = new TreeNode();
-			novi.value = i;
-			return novi;
+		if (head == null) {
+			head = new TreeNode();
+			head.value = newElement;
+			System.out.printf("Dodano.%n");
+			return head;
 		}
 
-		TreeNode zapamti = glava; // pamtim referencu na prvi element stabla
-
-		while (true) {
-			if (i < glava.value) {
-				glava.left = addNode(glava.left, i);
-				break;
-			} else if (i > glava.value) {
-				glava.right = addNode(glava.right, i);
-				break;
-			} else {
-				break;
-			}
+		if (newElement < head.value) {
+			head.left = addNode(head.left, newElement);
+		} else if (newElement > head.value) {
+			head.right = addNode(head.right, newElement);
+		} else {
+			System.out.printf("Broj već postoji. Preskačem.%n");
 		}
 
-		return zapamti;
+		return head;
 	}
 
 }

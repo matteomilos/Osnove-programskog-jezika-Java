@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.hw01;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -20,38 +21,36 @@ public class Rectangle {
 	 *            argumenti komandne linije, širina i visina pravokutnika
 	 */
 	public static void main(String[] args) {
-		double sirina, visina;
+		double width, height;
 
 		if (args.length > 0) {
 			if (args.length != 2) {
 				System.out.println("Upisali ste pogrešan broj argumenata.");
 				System.exit(0);
 			}
-
 			try {
-				sirina = Double.parseDouble(args[0]);
-				visina = Double.parseDouble(args[1]);
-
-				if (sirina <= 0 || visina <= 0) {
-					System.out.println("Jedan ili oba argumenta nisu valjane vrijednosti.");
+				Scanner sc = new Scanner(args[0] + " " + args[1]);
+				width = sc.nextDouble();
+				height = sc.nextDouble();
+				if (width <= 0 || height <= 0) {
+					System.out.println("Jedan ili oba argumenta nisu pozitivne vrijednosti.");
 					System.exit(0);
 				}
-				System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f.", sirina,
-						visina, sirina * visina, 2 * (sirina + visina));
-
-			} catch (NumberFormatException exc) {
+				System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f.", width,
+						height, width * height, 2 * (width + height));
+				sc.close();
+			} catch (InputMismatchException exc) {
 				System.out.println("Argumenti zadani preko naredbenog retka nisu brojevi.");
 				System.exit(0);
 			}
-
 		} else {
 			Scanner sc = new Scanner(System.in);
-			sirina = ucitaj(sc, "širinu");
-			visina = ucitaj(sc, "visinu");
-			System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f.", sirina, visina,
-					sirina * visina, 2 * (sirina + visina));
-			sc.close();
+			width = readInput(sc, "širinu");
+			height = readInput(sc, "visinu");
+			System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f.", width, height,
+					width * height, 2 * (width + height));
 		}
+
 	}
 
 	/**
@@ -61,28 +60,28 @@ public class Rectangle {
 	 * @param sc
 	 *            primjerak razreda Scanner, koristi se za čitanje sa nekog
 	 *            izvora
-	 * @param dimenzija
+	 * @param dimension
 	 *            dimenzija kvadrata koju trenutno učitavamo (visina ili širina)
 	 * @return učitana (pozitivna) vrijednost dimenzije pravokutnika
 	 * 
 	 */
-	private static double ucitaj(Scanner sc, String dimenzija) {
+	private static double readInput(Scanner sc, String dimension) {
 
 		while (true) {
-			System.out.printf("Unesite %s > ", dimenzija);
-			String uneseniNizZnakova = sc.next();
-			try {
-				double uneseniBroj = Double.parseDouble(uneseniNizZnakova);
-				if (uneseniBroj < 0) {
+			System.out.printf("Unesite %s > ", dimension);
+			if (sc.hasNextDouble()) {
+				double inputNumber = sc.nextDouble();
+				if (inputNumber < 0) {
 					System.out.printf("Unijeli ste negativnu vrijednost.%n");
-				} else if (uneseniBroj == 0) {
+				} else if (inputNumber == 0) {
 					System.out.printf("Unijeli ste nulu.%n");
 				} else {
-					return uneseniBroj;
+					return inputNumber;
 				}
-			} catch (NumberFormatException exc) {
-				System.out.printf("'%s' se ne može protumačiti kao broj.%n", uneseniNizZnakova);
+			} else {
+				System.out.printf("'%s' se ne može protumačiti kao broj.%n", sc.next());
 			}
+
 		}
 	}
 }

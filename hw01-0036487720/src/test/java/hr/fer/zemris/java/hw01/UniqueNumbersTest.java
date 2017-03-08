@@ -12,82 +12,82 @@ import hr.fer.zemris.java.hw01.UniqueNumbers.TreeNode;;
 public class UniqueNumbersTest {
 
 	@Test
-	public void brojElemenataPraznogStabla() {
-		TreeNode glava = null;
-		int brojElemenata = treeSize(glava);
-		assertEquals(0, brojElemenata);
+	public void treeSizeOfEmptyTree() {
+		TreeNode head = null;
+		int numOfElements = treeSize(head);
+		assertEquals(0, numOfElements);
 	}
 
 	@Test
-	public void brojElemenataStabla() {
-		TreeNode glava = null;
-		glava = addNode(glava, 42);
-		glava = addNode(glava, 76);
-		glava = addNode(glava, 21);
-		glava = addNode(glava, 76);
-		glava = addNode(glava, 35);
-		glava = addNode(glava, 28);
-		glava = addNode(glava, 39);
-		glava = addNode(glava, 72);
-		glava = addNode(glava, 13);
-		glava = addNode(glava, 39);
-		int brojElemenata = treeSize(glava);
-		assertEquals(8, brojElemenata); // ocekujemo 8 jer smo dva puta pokusali
+	public void treeSizeOfPopulatedTree() {
+		TreeNode head = null;
+		head = addNode(head, 42);
+		head = addNode(head, 76);
+		head = addNode(head, 21);
+		head = addNode(head, 76);
+		head = addNode(head, 35);
+		head = addNode(head, 28);
+		head = addNode(head, 39);
+		head = addNode(head, 72);
+		head = addNode(head, 13);
+		head = addNode(head, 39);
+		int numOfElements = treeSize(head);
+		assertEquals(8, numOfElements); // ocekujemo 8 jer smo dva puta pokusali
 										// dodati element koji vec postoji
 	}
 
 	@Test
-	public void sadrziPostojeciElement() {
-		TreeNode glava = null;
-		glava = addNode(glava, 42);
-		glava = addNode(glava, 76);
-		glava = addNode(glava, 21);
-		glava = addNode(glava, 76);
-		glava = addNode(glava, 35);
-		glava = addNode(glava, 28);
-		boolean sadrzi = containsValue(glava, 21);
-		assertEquals(true, sadrzi);
+	public void containsExistingElement() {
+		TreeNode head = null;
+		head = addNode(head, 42);
+		head = addNode(head, 76);
+		head = addNode(head, 21);
+		head = addNode(head, 76);
+		head = addNode(head, 35);
+		head = addNode(head, 28);
+		boolean contains = containsValue(head, 21);
+		assertEquals(true, contains);
 	}
 
 	@Test
-	public void sadrziNepostojeciElement() {
-		TreeNode glava = null;
-		glava = addNode(glava, 42);
-		glava = addNode(glava, 76);
-		glava = addNode(glava, 21);
-		glava = addNode(glava, 76);
-		glava = addNode(glava, 35);
-		glava = addNode(glava, 28);
-		boolean sadrzi = containsValue(glava, 41);
-		assertEquals(false, sadrzi);
+	public void containsNonExistingElement() {
+		TreeNode head = null;
+		head = addNode(head, 42);
+		head = addNode(head, 76);
+		head = addNode(head, 21);
+		head = addNode(head, 76);
+		head = addNode(head, 35);
+		head = addNode(head, 28);
+		boolean contains = containsValue(head, 41);
+		assertEquals(false, contains);
 	}
 
 	@Test
-	public void sadrziElementUPraznomStablu() {
-		TreeNode glava = null;
-		boolean sadrzi = containsValue(glava, 41);
-		assertEquals(false, sadrzi);
+	public void containsElementInEmptyTree() {
+		TreeNode head = null;
+		boolean contains = containsValue(head, 41);
+		assertEquals(false, contains);
 	}
 
 	@Test
-	public void provjeraIspravnogDodavanjaElemenata() {
-		TreeNode glava = null;
-		glava = addNode(glava, 42);
-		glava = addNode(glava, 76);
-		glava = addNode(glava, 21);
-		glava = addNode(glava, 76);
-		glava = addNode(glava, 35);
-		glava = addNode(glava, 28);
-		glava = addNode(glava, 39);
-		glava = addNode(glava, 72);
-		glava = addNode(glava, 13);
-		glava = addNode(glava, 39);
-		int ocekivani = glava.left.right.left.value;
-		assertEquals(28, ocekivani);
-		int ocekivani2 = glava.right.left.value;
-		assertEquals(72, ocekivani2);
-		int ocekivani3 = glava.value;
-		assertEquals(42, ocekivani3);
+	public void correctlyAddingNodesTest() {
+		TreeNode head = null;
+		head = addNode(head, 42);
+		head = addNode(head, 76);
+		head = addNode(head, 21);
+		head = addNode(head, 76);
+		head = addNode(head, 35);
+		head = addNode(head, 28);
+		head = addNode(head, 39);
+		head = addNode(head, 72);
+		head = addNode(head, 13);
+		head = addNode(head, 39);
+		int expected = head.left.right.left.value;
+		assertEquals(28, expected);
+		int expected2 = head.right.left.value;
+		assertEquals(72, expected2);
+		int expected3 = head.value;
+		assertEquals(42, expected3);
 
 	}
 

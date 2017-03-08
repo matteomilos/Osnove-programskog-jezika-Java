@@ -10,6 +10,9 @@ import java.util.Scanner;
  */
 public class Factorial {
 
+	public static final int MAX = 20;
+	public static final int MIN = 1;
+
 	/**
 	 * Metoda od koje kreće izvođenje programa.
 	 * 
@@ -21,22 +24,20 @@ public class Factorial {
 		Scanner sc = new Scanner(System.in);
 		while (true) {
 			System.out.print("Unesite broj > ");
-			String uneseniNizZnakova = sc.next();
-			try {
-				int uneseniBroj = Integer.parseInt(uneseniNizZnakova);
-
-				if (uneseniBroj < 1 || uneseniBroj > 20) {
-					System.out.printf("'%d' nije broj u dozvoljenom rasponu.%n", uneseniBroj);
+			if (sc.hasNextInt()) {
+				int inputNumber = sc.nextInt();
+				if (inputNumber < MIN || inputNumber > MAX) {
+					System.out.printf("'%d' nije broj u dozvoljenom rasponu.%n", inputNumber);
 				} else {
-					System.out.printf("%d! = %d%n", uneseniBroj, faktorijela(uneseniBroj));
+					System.out.printf("%d! = %d%n", inputNumber, factorialFunction(inputNumber));
 				}
-
-			} catch (NumberFormatException exc) {
-				if (uneseniNizZnakova.equals("kraj")) {
+			} else {
+				String inputLine = sc.next();
+				if (inputLine.equals("kraj")) {
 					System.out.println("Doviđenja.");
 					break;
 				}
-				System.out.printf("'%s' nije cijeli broj.%n", uneseniNizZnakova);
+				System.out.printf("'%s' nije cijeli broj.%n", inputLine);
 			}
 		}
 		sc.close();
@@ -44,17 +45,20 @@ public class Factorial {
 	}
 
 	/**
-	 * Metoda koja računa faktorijelu cijelog broja.
+	 * Metoda koja računa faktorijelu cijelog broja u granicama od 1 do 20.
 	 * 
-	 * @param broj
+	 * @param number
 	 *            broj čiju faktorijelu želimo izračunati
 	 * @return izračunata faktorijela željenog broja
 	 */
-	public static long faktorijela(int broj) {
-		if (broj == 1) {
-			return (long) broj;
+	public static long factorialFunction(int number) {
+		if(number < MIN || number > MAX){   			//izbjegavanje overflowa odnosno beskonačne petlje
+			return -1;
 		}
-		return broj * faktorijela(broj - 1);
+		if (number == 1) {
+			return number; 
+		}
+		return number * factorialFunction(number - 1);
 	}
 
 }
