@@ -115,7 +115,7 @@ public class ArrayIndexedCollection extends Collection {
 	
 	public int indexOf(Object value){
 		for(int i=0; i<size; i++){
-			if(elements[i]==value) return i;
+			if(elements[i].equals(value)) return i;
 		}
 		return -1;
 	}
