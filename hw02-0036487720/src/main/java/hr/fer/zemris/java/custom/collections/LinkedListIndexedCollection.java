@@ -1,6 +1,6 @@
 package hr.fer.zemris.java.custom.collections;
 
-import java.util.LinkedList;
+import java.util.Arrays;
 
 public class LinkedListIndexedCollection extends Collection {
 
@@ -15,28 +15,89 @@ public class LinkedListIndexedCollection extends Collection {
 	private ListNode last;
 
 	public static void main(String[] args) {
-		LinkedListIndexedCollection kolekcija = new LinkedListIndexedCollection();
-		kolekcija.add("kita");
-		kolekcija.add("kurcina");
-		kolekcija.add("picka");
-		kolekcija.add("vagina");
-		kolekcija.add("govno");
-		// System.out.println(kolekcija.first.value+ " " +
-		// kolekcija.first.next.value +" " +kolekcija.first.next.next.value+ "
-		// "+ kolekcija.first.next.next.next.value+ " "+
-		// kolekcija.first.next.next.next.next.value);
-		for (int i = 0; i < kolekcija.size; i++) {
-			System.out.println(kolekcija.get(i) + " ");
+
+		// LinkedListIndexedCollection kolekcija = new
+		// LinkedListIndexedCollection();
+		// kolekcija.add(5);
+		// kolekcija.add(6);
+		// kolekcija.add(7);
+		// kolekcija.add(8);
+		// kolekcija.add(4);
+		// kolekcija.add(2);
+		// kolekcija.add(1);
+		// ListNode first = kolekcija.first;
+		// for (int i = 0; i < kolekcija.size; i++) {
+		// System.out.printf(first.value + " ");
+		// first = first.next;
+		// }
+		// kolekcija.remove((Object) 8);
+		// System.out.println();
+		// first = kolekcija.first;
+		// for (int i = 0; i < kolekcija.size; i++) {
+		// System.out.printf(first.value + " ");
+		// first = first.next;
+		// }
+		ArrayIndexedCollection col = new ArrayIndexedCollection(2);
+		col.add(new Integer(20));
+		col.add("New York");
+		col.add("San Francisco"); // here the internal array is reallocated to 4
+		System.out.println(col.contains("New York")); // writes: true
+		col.remove(1); // removes "New York"; shifts "San Francisco" to position
+						// 1
+		System.out.println(col.get(1)); // writes: "San Francisco"
+		System.out.println(col.size()); // writes: 2
+		col.add("Los Angeles");
+		LinkedListIndexedCollection col2 = new LinkedListIndexedCollection(col);
+		class P extends Processor {
+			public void process(Object o) {
+				System.out.println(o);
+			}
 		}
-		kolekcija.remove(4);
-		for (int i = 0; i < kolekcija.size; i++) {
-			System.out.println(kolekcija.get(i) + " ");
+		;
+		System.out.println("col1 elements:");
+		col.forEach(new P());
+		System.out.println("col1 elements again:");
+		System.out.println(Arrays.toString(col.toArray()));
+		System.out.println("col2 elements:");
+		col2.forEach(new P());
+		System.out.println("col2 elements again:");
+		System.out.println(Arrays.toString(col2.toArray()));
+		System.out.println(col.contains(col2.get(1))); // true
+		System.out.println(col2.contains(col.get(1))); // true
+		col.remove(new Integer(20)); // removes 20 from collection (at position
+										// 0)
+	}
+
+	protected LinkedListIndexedCollection() {
+		first = last = null;
+	}
+
+	protected LinkedListIndexedCollection(Collection collection) {
+		this();
+		this.addAll(collection);
+	}
+
+	@Override
+	public Object[] toArray() {
+		Object[] array = new Object[this.size];
+		ListNode current = this.first;
+		for (int i = 0; i < this.size; i++) {
+			array[i] = current.value;
+			current = current.next;
 		}
-		kolekcija.remove("kita");
-		for (int i = 0; i < kolekcija.size; i++) {
-			System.out.println(kolekcija.get(i) + " ");
+		return array;
+	}
+
+	@Override
+	public void forEach(Processor processor) {
+		for (ListNode current = this.first; current != null; current = current.next) {
+			processor.process(current.value);
 		}
-//		System.out.println(kolekcija.indexOf(3));
+	}
+
+	@Override
+	public int size() {
+		return size;
 	}
 
 	private Object get(int index) {
@@ -58,36 +119,30 @@ public class LinkedListIndexedCollection extends Collection {
 		}
 	}
 
-	protected LinkedListIndexedCollection() {
-		this.first = null;
-		this.last = null;
+	@Override
+	public void clear() {
+		first = last = null;
+		size = 0;
 	}
 
-	protected LinkedListIndexedCollection(Collection collection) {
-		this();
-		this.addAll(collection);
-	}
-
-	public int size() {
-		return size;
-	}
-
+	@Override
 	public void add(Object value) {
 		if (value == null) {
 			throw new IllegalArgumentException();
 		}
-		ListNode node = new ListNode();
-		node.value = value;
+		ListNode newNode = new ListNode();
+		newNode.value = value;
 		if (size == 0) {
-			first = last = node;
+			first = last = newNode;
 		} else {
-			last.next = node;
-			node.previous = last;
-			last = node;
+			last.next = newNode;
+			newNode.previous = last;
+			last = newNode;
 		}
 		size++;
 	}
 
+	@Override
 	public boolean contains(Object value) {
 		if (indexOf(value) < 0)
 			return false;
@@ -96,7 +151,7 @@ public class LinkedListIndexedCollection extends Collection {
 
 	public int indexOf(Object value) {
 		ListNode current = this.first;
-		for (int index = 1; current != null; index++) {
+		for (int index = 0; current != null; index++) {
 			if (current.value.equals(value)) {
 				return index;
 			}
@@ -105,29 +160,75 @@ public class LinkedListIndexedCollection extends Collection {
 		}
 		return -1;
 	}
-	
-	public void remove (int index){
-		if(index<0 || index > size){
+
+	private void insert(Object value, int position) {
+		if (value == null) {
+			throw new IllegalArgumentException();
+		}
+
+		if (position < 0 || position > size) {
 			throw new IndexOutOfBoundsException();
 		}
-		ListNode current = this.first;
-		for (int i = 0; i < index; i++) {
-			current = current.next;
+
+		if (position == size || size == 0) {
+			this.add(value);
+			return;
 		}
-		current.previous.next = current.next;
-		current.next.previous = current.previous;
+
+		ListNode newNode = new ListNode();
+		newNode.value = value;
+
+		if (position == 0) {
+			first.previous = newNode;
+			newNode.next = first;
+			first = newNode;
+		} else {
+			ListNode current = this.first;
+			for (int i = 0; i < position; i++) {
+				current = current.next;
+			}
+			current.previous.next = newNode;
+			newNode.previous = current.previous;
+			current.previous = newNode;
+			newNode.next = current;
+		}
+
+	}
+
+	public void remove(int index) {
+		if (index < 0 || index > size) {
+			throw new IndexOutOfBoundsException();
+		}
+		if (index == 0) {
+			first.next.previous = null;
+			first = first.next;
+		} else if (index == this.size - 1) {
+			last.previous.next = null;
+			last = last.previous;
+		} else {
+			ListNode current = this.first;
+			for (int i = 0; i < index; i++) {
+				current = current.next;
+			}
+			if (current.previous == null) {
+
+			}
+			current.previous.next = current.next;
+			current.next.previous = current.previous;
+		}
+
 		size--;
 	}
 
+	@Override
 	public boolean remove(Object value) {
 		if (value == null) {
 			throw new IllegalArgumentException();
 		}
 		int location = indexOf(value);
-		if(location<0){
+		if (location < 0) {
 			return false;
-		}
-		else{
+		} else {
 			remove(location);
 			return true;
 		}
