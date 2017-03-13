@@ -3,7 +3,7 @@ package hr.fer.zemris.java.hw01;
 import static hr.fer.zemris.java.hw01.UniqueNumbers.addNode;
 import static hr.fer.zemris.java.hw01.UniqueNumbers.containsValue;
 import static hr.fer.zemris.java.hw01.UniqueNumbers.treeSize;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -11,6 +11,7 @@ import hr.fer.zemris.java.hw01.UniqueNumbers.TreeNode;;
 
 public class UniqueNumbersTest {
 
+	
 	@Test
 	public void treeSizeOfEmptyTree() {
 		TreeNode head = null;
@@ -32,8 +33,7 @@ public class UniqueNumbersTest {
 		head = addNode(head, 13);
 		head = addNode(head, 39);
 		int numOfElements = treeSize(head);
-		assertEquals(8, numOfElements); // ocekujemo 8 jer smo dva puta pokusali
-										// dodati element koji vec postoji
+		assertEquals(8, numOfElements); 
 	}
 
 	@Test
@@ -58,15 +58,14 @@ public class UniqueNumbersTest {
 		head = addNode(head, 76);
 		head = addNode(head, 35);
 		head = addNode(head, 28);
-		boolean contains = containsValue(head, 41);
-		assertEquals(false, contains);
+		assertFalse(containsValue(head, 42));
 	}
 
 	@Test
 	public void containsElementInEmptyTree() {
 		TreeNode head = null;
-		boolean contains = containsValue(head, 41);
-		assertEquals(false, contains);
+		assertFalse(containsValue(head, 42));
+
 	}
 
 	@Test

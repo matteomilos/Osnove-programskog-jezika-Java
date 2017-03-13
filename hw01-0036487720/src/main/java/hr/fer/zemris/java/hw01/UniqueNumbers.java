@@ -3,7 +3,10 @@ package hr.fer.zemris.java.hw01;
 import java.util.Scanner;
 
 /**
- * Program koji služi za izradu binarnog stabla i dodavanje čvorova u njega.
+ * Program that is used for production of binary tree and adding nodes in it.
+ * Nodes (integers) are loaded from standard input, if user enters value that is
+ * not integer, program refuses to add that node and asks for another one.
+ * Running of program is stopped once user enters "kraj".
  * 
  * @author Matteo Miloš
  *
@@ -11,25 +14,34 @@ import java.util.Scanner;
 public class UniqueNumbers {
 
 	/**
-	 * Ugniježđena statička klasa koja predstavlja jedan čvor binarnog stabla,
-	 * definirana je s tri varijable, referencom na lijevi i desni čvor koji su
-	 * tipa TreeNode te podatkom tipa int koji predstavlja vrijednost.
+	 * Nested static class which represents one node of binary tree, it's
+	 * defined with three variable, reference to left and right node and integer
+	 * which represents value of the node.
 	 * 
 	 * @author Matteo Miloš
 	 *
 	 */
 	static class TreeNode {
 
+		/**
+		 * Reference to the left node.
+		 */
 		TreeNode left;
+		/**
+		 * Reference to the right node.
+		 */
 		TreeNode right;
+		/**
+		 * Node value
+		 */
 		int value;
 	}
 
 	/**
-	 * Metoda od koje kreće izvođenje programa.
+	 * Method where program starts running.
 	 * 
 	 * @param args
-	 *            ne koristimo argumente komandne linije
+	 *            command line arguments, not used in this program
 	 */
 	public static void main(String[] args) {
 
@@ -45,17 +57,20 @@ public class UniqueNumbers {
 	}
 
 	/**
-	 * Metoda koja služi za učitavanje brojeva sa nekog ulaza te njihovo
-	 * dodavanje u binarno stablo.
+	 * 
+	 * Method used for loading integers from some type of input and their adding
+	 * to the binary tree. If user enters non-integer value, method asks for
+	 * another input. Method ends once user enters "kraj".
 	 * 
 	 * @param head
-	 *            referenca na prvi čvor binarnog stabla
+	 *            reference to first (head) node of binary tree
 	 * @param sc
-	 *            primjerak razreda Scanner, koristi se za čitanje sa nekog
-	 *            izvora
-	 * @return referenca na prvi čvor binarnog stabla
+	 *            instance of Scanner class, used for reading from some type of
+	 *            input
+	 * @return reference to first (head) node of binary tree
 	 */
-	private static TreeNode readInput(TreeNode head, Scanner sc) { 			// pomoćna metoda za učitavanje brojeva sa standardnog (ili nekog drugog) ulaza, koristi se u mainu
+	private static TreeNode readInput(TreeNode head, Scanner sc) {
+
 		while (true) {
 			System.out.print("Unesite broj > ");
 			if (sc.hasNextInt()) {
@@ -63,7 +78,6 @@ public class UniqueNumbers {
 			} else {
 				String inputLine = sc.next();
 				if (inputLine.equals("kraj")) {
-					System.out.println("Doviđenja.");
 					break;
 				}
 				System.out.printf("'%s' nije cijeli broj.%n", inputLine);
@@ -73,11 +87,10 @@ public class UniqueNumbers {
 	}
 
 	/**
-	 * Metoda koju koristimo za uzlazni (od manjeg prema većem) ispis
-	 * vrijednosti čvorova binarnog stabla.
+	 * Method we use for descending print of values of binary tree nodes.
 	 * 
 	 * @param head
-	 *            referenca na prvi čvor binarnog stabla
+	 *            reference to first (head) node of binary tree
 	 */
 	private static void printDescending(TreeNode head) {
 		if (head == null) {
@@ -89,11 +102,10 @@ public class UniqueNumbers {
 	}
 
 	/**
-	 * Metoda koju koristimo za silazni (od većeg prema manjem) ispis
-	 * vrijednosti čvorova binarnog stabla.
+	 * Method we use for ascending print of values of binary tree nodes.
 	 * 
 	 * @param head
-	 *            referenca na prvi čvor binarnog stabla
+	 *            reference to first (head) node of binary tree
 	 */
 	private static void printAscending(TreeNode head) {
 		if (head == null) {
@@ -106,35 +118,35 @@ public class UniqueNumbers {
 	}
 
 	/**
-	 * Metoda koja rekurzivno provjerava sadrži li binarno stablo neki element.
+	 * Method that recursively checks if binary tree contains specified element.
 	 * 
 	 * @param head
-	 *            referenca na prvi čvor binarnog stabla
+	 *            reference to first (head) node of binary tree
 	 * @param possibleDuplicate
-	 *            broj koji provjeravamo postoji li u binarnom stablu
-	 * @return <code>true</code> ako stablo sadrži provjeravanu vrijednost,
-	 *         odnosno <code>false</code> ako ne sadržava
+	 *            number that we are trying to find in binary tree
+	 * @return <code>true</code> if tree contains specified element
+	 *         <code>false</code> if it doesn't contain
 	 * 
 	 */
 	public static boolean containsValue(TreeNode head, int possibleDuplicate) {
 		if (head == null) {
 			return false;
 		}
-		if (possibleDuplicate < head.value) {						//provjera je li manji ili veći kako bi se smanjila složenost funkcije (izbjegavanje obilaska cijelog stabla)
+		if (possibleDuplicate < head.value) {
 			return containsValue(head.left, possibleDuplicate);
-		} else if (possibleDuplicate > head.value) {				
+		} else if (possibleDuplicate > head.value) {
 			return containsValue(head.right, possibleDuplicate);
-		} else {													//ako nije ni manji ni veći onda je jednak, što znači da već postoji u stablu
+		} else {
 			return true;
 		}
 	}
 
 	/**
-	 * Metoda koja rekurzivno računa veličinu (broj čvorova) binarnog stabla.
+	 * Method that recursively calculates size (number of node) of binary tree.
 	 * 
 	 * @param head
-	 *            referenca na prvi čvor binarnog stabla
-	 * @return broj elemenata binarnog stabla
+	 *            reference to first (head) node of binary tree
+	 * @return number of nodes in binary tree¸
 	 */
 	public static int treeSize(TreeNode head) {
 		if (head == null) {
@@ -145,13 +157,13 @@ public class UniqueNumbers {
 	}
 
 	/**
-	 * Metoda koja rekurzivno dodaje nove čvorove u binarno stablo.
+	 * Method that is recursively adding new nodes in binary tree.
 	 * 
 	 * @param head
-	 *            referenca na prvi čvor binarnog stabla
+	 *            reference to first (head) node of binary tree
 	 * @param newElement
-	 *            vrijednost čvora kojeg dodajemo u binarno stablo
-	 * @return referenca na prvi čvor binarnog stabla
+	 *            value of node which we are adding to binary tree
+	 * @return reference to first (head) node of binary tree
 	 */
 	public static TreeNode addNode(TreeNode head, int newElement) {
 

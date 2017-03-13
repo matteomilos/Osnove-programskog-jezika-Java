@@ -8,28 +8,32 @@ import org.junit.Test;
 public class FactorialTest {
 
 	@Test
-	public void correctCalculating1() {
+	public void factorialOf0() {
 		long factorial = factorialFunction(1);
 		assertEquals(1, factorial);
 
 	}
 
-	public void correctCalculating2() {
+	@Test
+	public void factorialOf21() {
 		long factorial = factorialFunction(12);
 		assertEquals(479001600, factorial);
 	}
 
-	public void correctCalculating3() {
+	@Test
+	public void factorialOfMinus5() {
 		long factorial4 = factorialFunction(-5);
 		assertEquals(-1, factorial4);
 	}
 
-	public void correctCalculating4() {
+	@Test
+	public void factorialOf20() {
 		long factorial = factorialFunction(20);
 		assertEquals((long) 2.43290200817664e18, factorial);
 	}
 
-	public void correctCalculating5() {
+	@Test
+	public void factorialOf30() {
 		long factorial = factorialFunction(30);
 		assertEquals(-1, factorial);
 	}

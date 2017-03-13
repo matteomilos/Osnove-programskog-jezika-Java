@@ -3,21 +3,30 @@ package hr.fer.zemris.java.hw01;
 import java.util.Scanner;
 
 /**
- * Program koji računa faktorijelu cijelog broja između 1 i 20.
+ * Program that takes an integer value (between 1 and 20), and calculates its
+ * factorial value. Program will stop running once user types "kraj".
  * 
  * @author Matteo Miloš
  *
  */
 public class Factorial {
 
+	/**
+	 * Variable which represents maximal acceptable value of number whose
+	 * factorial we want to calculate
+	 */
 	public static final int MAX = 20;
+	/**
+	 * Variable which represents minimal acceptable value of number whose
+	 * factorial we want to calculate
+	 */
 	public static final int MIN = 1;
 
 	/**
-	 * Metoda od koje kreće izvođenje programa.
+	 * Method where program starts running.
 	 * 
 	 * @param args
-	 *            ne koristimo argumente komandne linije
+	 *            command line arguments, not used in this program
 	 */
 	public static void main(String[] args) {
 
@@ -45,18 +54,19 @@ public class Factorial {
 	}
 
 	/**
-	 * Metoda koja računa faktorijelu cijelog broja u granicama od 1 do 20.
+	 * Method that calculates factorial of an integer between 1 and 20, returns
+	 * -1 if argument is out of boundary.
 	 * 
 	 * @param number
-	 *            broj čiju faktorijelu želimo izračunati
-	 * @return izračunata faktorijela željenog broja
+	 *            number whose factorial we want to calculate
+	 * @return calculated factorial of an integer
 	 */
 	public static long factorialFunction(int number) {
-		if(number < MIN || number > MAX){   			//izbjegavanje overflowa odnosno beskonačne petlje
+		if (number < MIN || number > MAX) { 
 			return -1;
 		}
 		if (number == 1) {
-			return number; 
+			return number;
 		}
 		return number * factorialFunction(number - 1);
 	}

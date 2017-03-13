@@ -4,8 +4,11 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
- * Program koji računa površinu i opseg pravokutnika, sadrži dvije varijable
- * tipa double koje predstavljaju širinu i visinu pravokutnika.
+ * Program that calculates area and perimeter of rectangle. It takes two
+ * arguments which represent width and height, either from command line
+ * arguments or from standard input if they are not given through command line.
+ * If user enters value that is not positive number, program will ask for new
+ * input.
  * 
  * @author Matteo Miloš
  *
@@ -13,15 +16,13 @@ import java.util.Scanner;
 public class Rectangle {
 
 	/**
-	 * Metoda od koje kreće izvođenje programa. Argumenti se mogu zadati preko
-	 * komandne linije, a ako nisu zadani na taj način, traži se upis korisnika
-	 * preko standardnog ulaza
+	 * Method where program starts running.
 	 * 
 	 * @param args
-	 *            argumenti komandne linije, širina i visina pravokutnika
+	 *            command line arguments, representing width and height
 	 */
 	public static void main(String[] args) {
-		double width, height;
+		double width = 0, height = 0;
 
 		if (args.length > 0) {
 			if (args.length != 2) {
@@ -36,8 +37,6 @@ public class Rectangle {
 					System.out.println("Jedan ili oba argumenta nisu pozitivne vrijednosti.");
 					System.exit(0);
 				}
-				System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f.", width,
-						height, width * height, 2 * (width + height));
 				sc.close();
 			} catch (InputMismatchException exc) {
 				System.out.println("Argumenti zadani preko naredbenog retka nisu brojevi.");
@@ -47,22 +46,51 @@ public class Rectangle {
 			Scanner sc = new Scanner(System.in);
 			width = readInput(sc, "širinu");
 			height = readInput(sc, "visinu");
-			System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f.", width, height,
-					width * height, 2 * (width + height));
+
 		}
+		System.out.printf("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f.", width, height,
+				calculateArea(width, height), calculatePerimeter(width, height));
 
 	}
 
 	/**
-	 * Pomoćna metoda koja služi za "automatizaciju" učitavanje dimenzija
-	 * pravokutnika.
+	 * Method that calculates area of rectangle
+	 * 
+	 * @param width
+	 *            variable representing width of an rectangle
+	 * @param height
+	 *            variable representing height of an rectangle
+	 * @return area of rectangle
+	 */
+	private static double calculateArea(double width, double height) {
+		return width * height;
+	}
+
+	/**
+	 * Method that calculates perimeter of rectangle
+	 * 
+	 * @param width
+	 *            variable representing width of an rectangle
+	 * @param height
+	 *            variable representing height of an rectangle
+	 * @return perimeter of rectangle
+	 */
+	private static double calculatePerimeter(double width, double height) {
+		return 2 * (width + height);
+	}
+
+	/**
+	 * 
+	 * Method that we are using to avoid duplication of same code, it takes
+	 * width and height from given scanner
 	 * 
 	 * @param sc
-	 *            primjerak razreda Scanner, koristi se za čitanje sa nekog
-	 *            izvora
+	 *            instance of Scanner class, used for reading from some type of
+	 *            input
 	 * @param dimension
-	 *            dimenzija kvadrata koju trenutno učitavamo (visina ili širina)
-	 * @return učitana (pozitivna) vrijednost dimenzije pravokutnika
+	 *            dimension of rectangle we are currently trying to load
+	 *            ("širina" or "visina")
+	 * @return positive value that was read from scanner
 	 * 
 	 */
 	private static double readInput(Scanner sc, String dimension) {
