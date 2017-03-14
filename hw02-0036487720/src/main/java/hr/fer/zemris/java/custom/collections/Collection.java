@@ -42,6 +42,7 @@ public class Collection {
 				Collection.this.add(value);
 			}
 		};
+
 		other.forEach(localProcessor);
 	}
 
