@@ -50,7 +50,7 @@ public class ComplexNumber {
 
 		imaginary = imaginary.substring(0, imaginary.length() - 1);
 
-		if (imaginary.matches("[+| -| ^$]") || imaginary.isEmpty()) {
+		if (imaginary.matches("[+| -]") || imaginary.isEmpty()) {
 			imaginary += 1;
 		}
 
@@ -71,7 +71,7 @@ public class ComplexNumber {
 
 	public double getAngle() {
 		double angle = Math.atan2(imaginary, real);
-		angle = angle > 0 ? angle : 2 * Math.PI + angle;
+		angle = angle >= 0 ? angle : 2 * Math.PI + angle;
 		return angle;
 	}
 
@@ -90,7 +90,7 @@ public class ComplexNumber {
 			throw new NullPointerException("Value given can not be null, it has to be complex number");
 		}
 
-		return new ComplexNumber(c.real - this.real, c.imaginary - this.imaginary);
+		return new ComplexNumber(this.real - c.real, this.imaginary - c.imaginary);
 	}
 
 	public ComplexNumber mul(ComplexNumber c) {

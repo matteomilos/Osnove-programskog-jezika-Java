@@ -4,6 +4,11 @@ public class ArrayIndexedCollection extends Collection {
 
 	private int size;
 	private int capacity;
+
+	public int getCapacity() {
+		return capacity;
+	}
+
 	private Object[] elements;
 
 	private static final int DEFAULT_CAPACITY = 16;
