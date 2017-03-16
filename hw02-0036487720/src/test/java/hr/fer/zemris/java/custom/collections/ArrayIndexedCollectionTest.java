@@ -1,9 +1,13 @@
 package hr.fer.zemris.java.custom.collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class ArrayIndexedCollectionTest {
 	ArrayIndexedCollection emptyArray;
@@ -29,6 +33,9 @@ public class ArrayIndexedCollectionTest {
 		nonFullyFilledArray.add("Sesvete");
 	}
 
+	@Rule
+	public ExpectedException thrownExc = ExpectedException.none();
+
 	@Test
 	public void testAddToEmptyArray() {
 		emptyArray.add("Zagreb");
@@ -46,13 +53,8 @@ public class ArrayIndexedCollectionTest {
 
 	@Test
 	public void testAddNullValue() {
-		boolean prepoznat = false;
-		try {
-			nonFullyFilledArray.add(null);
-		} catch (IllegalArgumentException exc) {
-			prepoznat = true;
-		}
-		assertTrue(prepoznat);
+		thrownExc.expect(IllegalArgumentException.class);
+		nonFullyFilledArray.add(null);
 	}
 
 	@Test
@@ -72,13 +74,8 @@ public class ArrayIndexedCollectionTest {
 
 	@Test
 	public void testGetIfIndexIsOutOfBounds() {
-		boolean prepoznat = false;
-		try {
-			nonFullyFilledArray.get(nonFullyFilledArray.size()+2);
-		} catch (IndexOutOfBoundsException exc) {
-			prepoznat = true;
-		}
-		assertTrue(prepoznat);
+		thrownExc.expect(IndexOutOfBoundsException.class);
+		nonFullyFilledArray.get(nonFullyFilledArray.size() + 2);
 	}
 
 	@Test
@@ -97,24 +94,14 @@ public class ArrayIndexedCollectionTest {
 
 	@Test
 	public void testInsertNullValue() {
-		boolean prepoznat = false;
-		try {
-			nonFullyFilledArray.insert(null, 3);
-		} catch (IllegalArgumentException exc) {
-			prepoznat = true;
-		}
-		assertTrue(prepoznat);
+		thrownExc.expect(IllegalArgumentException.class);
+		nonFullyFilledArray.insert(null, 3);
 	}
 
 	@Test
 	public void testInsertAtIndexOutOfBounds() {
-		boolean prepoznat = false;
-		try {
-			nonFullyFilledArray.insert("Z", nonFullyFilledArray.size()+2);
-		} catch (IndexOutOfBoundsException exc) {
-			prepoznat = true;
-		}
-		assertTrue(prepoznat);
+		thrownExc.expect(IndexOutOfBoundsException.class);
+		nonFullyFilledArray.insert("Z", nonFullyFilledArray.size() + 2);
 	}
 
 	@Test
@@ -150,25 +137,18 @@ public class ArrayIndexedCollectionTest {
 		assertEquals(4, fullyFilledArray.size());
 		assertFalse(fullyFilledArray.contains("Zagreb"));
 	}
-	
+
 	@Test
 	public void testRemoveIfIndexIsSizeIsMinusOne() {
-		fullyFilledArray.remove(fullyFilledArray.size()-1);
+		fullyFilledArray.remove(fullyFilledArray.size() - 1);
 		assertEquals(4, fullyFilledArray.size());
 		assertFalse(fullyFilledArray.contains("Sesvete"));
 	}
-	
+
 	@Test
 	public void testRemoveIfIndexIsOutOfBounds() {
-		boolean prepoznat = false;
-		try{
-			fullyFilledArray.remove(fullyFilledArray.size()+2);
-		}
-		catch(IndexOutOfBoundsException exc){
-			prepoznat = true;
-
-		}
-		assertTrue(prepoznat);
+		thrownExc.expect(IndexOutOfBoundsException.class);
+		fullyFilledArray.remove(fullyFilledArray.size() + 2);
 	}
 
 }
