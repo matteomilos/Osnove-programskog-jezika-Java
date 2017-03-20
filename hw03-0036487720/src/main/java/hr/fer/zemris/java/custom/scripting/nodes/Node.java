@@ -24,6 +24,5 @@ public class Node {
 												// provjerava u getu od
 												// collectiona
 	}
-	
-	
+
 }
