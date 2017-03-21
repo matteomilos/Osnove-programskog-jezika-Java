@@ -10,4 +10,36 @@ public class ForLoopNode extends Node {
 	private Element endExpression;
 	private Element stepExpression;
 
+	public ForLoopNode(ElementVariable variable, Element startExpression, Element endExpression,
+			Element stepExpression) {
+		this.variable = variable;
+		this.startExpression = startExpression;
+		this.endExpression = endExpression;
+		this.stepExpression = stepExpression;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		// @formatter:off   isključen formatter radi ljepše preglednosti
+		sb.	append("{$ FOR ").
+			append(variable.toString()).
+			append(" ").
+			append(startExpression.toString()).
+			append(" ").
+			append(endExpression.toString()).
+			append(" ");
+		
+		if (stepExpression != null) {
+			sb.	append(stepExpression.toString()).
+				append(" ");
+		}
+		sb.	append("$}\n  ").
+			append(getChildrenToString(this)).
+			append("\n{$END$}\n");
+		// @formatter:on
+
+		return sb.toString();
+	}
+
 }

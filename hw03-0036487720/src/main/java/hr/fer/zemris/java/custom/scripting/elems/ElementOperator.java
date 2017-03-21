@@ -15,4 +15,9 @@ public class ElementOperator extends Element {
 	public String asText() {
 		return symbol;
 	}
+	
+	@Override
+	public String toString() {
+		return asText();
+	}
 }

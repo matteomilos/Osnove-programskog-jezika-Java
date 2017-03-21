@@ -3,7 +3,7 @@ package hr.fer.zemris.java.custom.scripting.nodes;
 import hr.fer.zemris.java.custom.collections.ArrayIndexedCollection;
 
 public class Node {
-	ArrayIndexedCollection collection;
+	private ArrayIndexedCollection collection;
 
 	public void addChildNode(Node child) {
 		if (child == null) {
@@ -23,6 +23,16 @@ public class Node {
 		return (Node) collection.get(index); // nisam provjeravao index jer se
 												// provjerava u getu od
 												// collectiona
+	}
+
+
+	protected static String getChildrenToString(Node parent) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, numOfChildren = parent.numberOfChildren(); i < numOfChildren; i++) {
+			Node child = parent.getChild(i);
+			sb.append(child);
+		}
+		return sb.toString();
 	}
 
 }

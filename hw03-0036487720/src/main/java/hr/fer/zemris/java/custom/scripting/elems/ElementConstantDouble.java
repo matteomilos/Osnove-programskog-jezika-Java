@@ -15,4 +15,9 @@ public class ElementConstantDouble extends Element {
 	public String asText() {
 		return Double.toString(value);
 	}
+	
+	@Override
+	public String toString() {
+		return asText();
+	}
 }

@@ -6,41 +6,29 @@ public class Lexer {
 	private int currentIndex;
 	private LexerState state;
 
-	public static void main(String[] args) {
-		Lexer lexer = new Lexer("   \1sst safsafsa");
-		// for(char znak : lexer.data){
-		// System.out.println(znak);
-		// }
-		System.out.println(lexer.nextToken().value.toString());
-		System.out.println(lexer.nextToken().value.toString());
-
-		// String text = "\4";
-		// char[] znak = text.toCharArray();
-		// System.out.println(znak[0]);
-
-	}
-
 	public Lexer(String text) {
 		if (text == null) {
 			throw new IllegalArgumentException();
 		}
 		this.data = text.trim().toCharArray();
 		setState(LexerState.BASIC);
-		// TODO: konstruktor koji prima ulazni tekst koji se tokenizira
 	}
 
 	public Token nextToken() {
 		if (data == null) {
-			throw new LexerException();
+			throw new LexerException("Data is null.");
 		}
+
 		if (this.data.length == 0) {
 			this.token = new Token(TokenType.EOF, null);
 			data = null;
 			return token;
 		}
+
 		while (data[currentIndex] == ' ') {
 			currentIndex++;
 		}
+
 		switch (state) {
 		case BASIC:
 			return basicProcess();
@@ -53,80 +41,97 @@ public class Lexer {
 	}
 
 	private Token extendedProcess() {
-		String word = "";
+		StringBuilder sb = new StringBuilder();
+		Token token;
 		if (data[currentIndex] == '#') {
 			token = new Token(TokenType.SYMBOL, '#');
 			currentIndex++;
+
 		} else {
+
 			for (int duljina = data.length; currentIndex < duljina && data[currentIndex] != ' '; currentIndex++) {
 				if (data[currentIndex] == '#') {
 					break;
 				}
-				word += data[currentIndex];
+				sb.append(data[currentIndex]);
 			}
-			token = new Token(TokenType.WORD, word);
+
+			token = new Token(TokenType.WORD, sb.toString());
 		}
+
 		data = new String(data).substring(currentIndex).trim().toCharArray();
 		currentIndex = 0;
 		return token;
 	}
 
 	private Token basicProcess() {
+		Token token;
 		if (Character.isLetter(data[currentIndex]) || data[currentIndex] == '\\') {
 			token = new Token(TokenType.WORD, createWord());
 
 		} else if (Character.isDigit(data[currentIndex])) {
 			token = new Token(TokenType.NUMBER, createNumber());
+
 		} else if (data[currentIndex] == '#') {
 			setState(LexerState.EXTENDED);
 			currentIndex++;
 			token = new Token(TokenType.SYMBOL, '#');
+
 		} else {
-			char simbol = data[currentIndex++];
-			token = new Token(TokenType.SYMBOL, simbol);
+			char symbol = data[currentIndex++];
+			token = new Token(TokenType.SYMBOL, symbol);
 		}
+
 		data = new String(data).substring(currentIndex).trim().toCharArray();
 		currentIndex = 0;
 		return token;
 	}
 
 	private long createNumber() {
-		long broj = 0;
+		long number = 0;
+
 		for (int duljina = data.length; currentIndex < duljina; currentIndex++) {
+
 			if (Character.isDigit(data[currentIndex])) {
-				broj = broj * 10 + Character.getNumericValue(data[currentIndex]);
-				if (broj < 0) {
-					throw new LexerException();
+				number = number * 10 + Character.getNumericValue(data[currentIndex]);
+
+				if (number < 0) {
+					throw new LexerException("Number given is too big. Overflow happened.");
 				}
+
 			} else {
 				break;
 			}
 		}
 
-		return broj;
+		return number;
 	}
 
 	private String createWord() {
-		String word = "";
-		for (int duljina = data.length; currentIndex < duljina; currentIndex++) {
+		StringBuilder sb = new StringBuilder();
+
+		for (int length = data.length; currentIndex < length; currentIndex++) {
+
 			if (data[currentIndex] == '\\') {
-				if (++currentIndex < duljina && (Character.isDigit(data[currentIndex]) || data[currentIndex] == '\\')) {
-					word += data[currentIndex];
+
+				if (++currentIndex < length && (Character.isDigit(data[currentIndex]) || data[currentIndex] == '\\')) {
+					sb.append(data[currentIndex]);
 				} else {
-					throw new LexerException();
+					throw new LexerException("Wrong or no character after escape sign.");
 				}
+
 			} else if (Character.isLetter(data[currentIndex])) {
-				word += data[currentIndex];
+				sb.append(data[currentIndex]);
+
 			} else {
 				break;
 			}
 		}
 
-		return word;
+		return sb.toString();
 	}
 
 	public Token getToken() {
-
 		return token;
 	}
 

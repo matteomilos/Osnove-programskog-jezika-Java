@@ -2,8 +2,8 @@ package hr.fer.zemris.java.hw03.prob1;
 
 public class Token {
 
-	public TokenType type;
-	public Object value;
+	private TokenType type;
+	private Object value;
 
 	public Token(TokenType type, Object value) {
 		this.type = type;

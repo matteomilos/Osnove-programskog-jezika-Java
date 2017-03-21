@@ -15,4 +15,9 @@ public class ElementConstantInteger extends Element {
 	public String asText() {
 		return Integer.toString(value);
 	}
+	
+	@Override
+	public String toString() {
+		return asText();
+	}
 }
