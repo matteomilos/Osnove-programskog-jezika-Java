@@ -18,6 +18,6 @@ public class ElementString extends Element {
 
 	@Override
 	public String toString() {
-		return asText();
+		return asText().replace("\\", "\\\\").replace("\"", "\\\"");
 	}
 }

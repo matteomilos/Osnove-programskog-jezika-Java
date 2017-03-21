@@ -34,9 +34,9 @@ public class ForLoopNode extends Node {
 			sb.	append(stepExpression.toString()).
 				append(" ");
 		}
-		sb.	append("$}\n  ").
+		sb.	append("$}").
 			append(getChildrenToString(this)).
-			append("\n{$END$}\n");
+			append("{$END$}");
 		// @formatter:on
 
 		return sb.toString();

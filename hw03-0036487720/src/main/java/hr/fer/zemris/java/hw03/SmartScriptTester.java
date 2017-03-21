@@ -20,7 +20,7 @@ public class SmartScriptTester {
 //			System.exit(0);
 //		}
 //		String filepath = args[0];
-		String filepath = "D:\\Java workspace\\zadace\\hw03-0036487720\\example\\primjer3.txt";
+		String filepath = "D:\\Java workspace\\zadace\\hw03-0036487720\\example\\primjer 4.txt";
 		String docBody = null;
 		try {
 			docBody = new String(Files.readAllBytes(Paths.get(filepath)), StandardCharsets.UTF_8);
@@ -32,6 +32,7 @@ public class SmartScriptTester {
 		SmartScriptParser parser = new SmartScriptParser(docBody);
 		DocumentNode document = parser.getDocumentNode();
 		String originalDocumentBody = createOriginalDocumentBody(document);
+
 		SmartScriptParser parser2 = new SmartScriptParser(originalDocumentBody);
 		DocumentNode document2 = parser2.getDocumentNode();
 		String originalDocumentBody2 = createOriginalDocumentBody(document2);

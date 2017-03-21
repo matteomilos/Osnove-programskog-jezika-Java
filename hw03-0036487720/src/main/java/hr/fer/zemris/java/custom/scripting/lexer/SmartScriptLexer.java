@@ -40,14 +40,13 @@ public class SmartScriptLexer {
 			return token;
 		}
 
-		while (data[currentIndex] == ' ') {
-			currentIndex++;
-		}
-
 		switch (state) {
 		case TEXT:
 			return textProcess();
 		case TAG:
+			while (data[currentIndex] == ' ') {
+				currentIndex++;
+			}
 			return tagProcess();
 		default:
 			return null;
@@ -64,6 +63,10 @@ public class SmartScriptLexer {
 				foundTag = new SmartScriptToken(SmartScriptTokenType.TAG, new ElementString("TAG"));
 				setState(SmartScriptLexerState.TEXT);
 				currentIndex += 2; // preskoci tag
+				data = new String(data).substring(currentIndex).toCharArray();
+				currentIndex = 0;
+
+				return foundTag;
 
 			} else {
 				throw new SmartScriptLexerException("Tag wasn't properly closed");
@@ -156,7 +159,7 @@ public class SmartScriptLexer {
 	private SmartScriptToken getVariable() {
 		StringBuilder sb = new StringBuilder();
 		char currentChar = data[currentIndex];
-		
+
 		while ((Character.isLetter(currentChar) || Character.isDigit(currentChar) || currentChar == '_')
 				&& currentIndex < data.length) { /*- provjera valjanih znakova za varijablu */
 
@@ -173,10 +176,22 @@ public class SmartScriptLexer {
 		while (++currentIndex < data.length && data[currentIndex] != '"') {
 
 			if (data[currentIndex] == '\\') {
-				checkAfterEscape(); /*- provjera dolazi li valjani znak nakon escape-a, baca se exception u metodi ukoliko ne dolazi */
+				if (currentIndex + 1 < data.length) {
+					char next = data[currentIndex + 1];
+					if (next == 'r' || next == 't' || next == 'n') {
+						sb.append(data[currentIndex++]);
+						sb.append(data[currentIndex]);
+					} else {
+						checkAfterEscape(); /*- provjera dolazi li valjani znak nakon escape-a, baca se exception u metodi ukoliko ne dolazi */
+						sb.append(data[++currentIndex]);
+					}
+				}
+				else{
+					throw new SmartScriptLexerException("Escape can't be the last character.");
+				}
+			} else {
+				sb.append(data[currentIndex]);
 			}
-
-			sb.append(data[currentIndex]);
 		}
 		currentIndex++;
 		return new SmartScriptToken(SmartScriptTokenType.STRING, new ElementString(sb.toString()));
@@ -186,7 +201,7 @@ public class SmartScriptLexer {
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
 		char currentChar = data[++currentIndex];
-		
+
 		while (currentIndex < data.length
 				&& (Character.isLetter(currentChar) || Character.isDigit(currentChar) || currentChar == '_')) {
 
@@ -233,7 +248,8 @@ public class SmartScriptLexer {
 
 			if (data[currentIndex] == '\\') {
 				checkAfterEscape();
-				sb.append(data[currentIndex++]);
+				sb.append(data[++currentIndex]);
+				currentIndex++;
 
 			} else {
 				sb.append(data[currentIndex++]);
@@ -252,11 +268,11 @@ public class SmartScriptLexer {
 
 		switch (state) {
 		case TEXT:
-			if (next == '\\' || next == '{' || next == 'r' || next == 'n' || next == 't') {
+			if (next == '\\' || next == '{') {
 				return;
 			}
 		case TAG:
-			if (next == '\\' || next == '"' || next == 'r' || next == 'n' || next == 't') {
+			if (next == '\\' || next == '"') {
 				return;
 			}
 		}
