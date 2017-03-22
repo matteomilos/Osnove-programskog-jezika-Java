@@ -20,7 +20,7 @@ public class SmartScriptTester {
 //			System.exit(0);
 //		}
 //		String filepath = args[0];
-		String filepath = "D:\\Java workspace\\zadace\\hw03-0036487720\\example\\primjer 4.txt";
+		String filepath = "D:\\Java workspace\\zadace\\hw03-0036487720\\example\\primjer4.txt";
 		String docBody = null;
 		try {
 			docBody = new String(Files.readAllBytes(Paths.get(filepath)), StandardCharsets.UTF_8);

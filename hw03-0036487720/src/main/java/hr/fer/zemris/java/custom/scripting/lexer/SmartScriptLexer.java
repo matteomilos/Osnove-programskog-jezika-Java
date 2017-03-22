@@ -6,16 +6,51 @@ import hr.fer.zemris.java.custom.scripting.elems.ElementFunction;
 import hr.fer.zemris.java.custom.scripting.elems.ElementOperator;
 import hr.fer.zemris.java.custom.scripting.elems.ElementString;
 import hr.fer.zemris.java.custom.scripting.elems.ElementVariable;
+import hr.fer.zemris.java.custom.scripting.parser.SmartScriptParser;
 
+/**
+ * Class represents object that lexically analyzes given document. It is being
+ * analyzed in a way that its content is consumed character by character.
+ * Consumed text is split into smaller lexical parts to generate tokens for
+ * {@linkplain SmartScriptParser}. This lexer can work in two possible states:
+ * TEXT and TAG state. While in the TEXT state, everything is treated as text
+ * and is generated as one <code>String</code> token. TEXT state is default one,
+ * and lexer is in that state all the way until it encounters "{$" tag which
+ * means it enters TAG state. While in TAG state, lexer can generate these
+ * tokens: FUNCTION, VARIABLE, STRING, INT_NUMBER, DOUBLE_NUMBER, OPERATOR, EOF,
+ * TAG. More informations about all the token types are here
+ * {@linkplain SmartScriptTokenType}.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class SmartScriptLexer {
+	/**
+	 * Array of characters that contains processed text.
+	 */
 	private char[] data;
+	/**
+	 * Last generated token by lexer.
+	 */
 	private SmartScriptToken token;
+	/**
+	 * Current position in processed text.
+	 */
 	private int currentIndex;
+	/**
+	 * Current working state of lexer.
+	 */
 	private SmartScriptLexerState state;
 
-	public static void main(String[] args) {
-	}
-
+	/**
+	 * Public constructor of this lexer, as argument it accepts text that will
+	 * be analyzed.
+	 * 
+	 * @param documentBody
+	 *            text that will be lexically analyzed
+	 * @throws IllegalArgumentException
+	 *             in case that given value is <code>null</code> value
+	 */
 	public SmartScriptLexer(String documentBody) {
 		if (documentBody == null) {
 			throw new IllegalArgumentException();
@@ -25,10 +60,27 @@ public class SmartScriptLexer {
 		setState(SmartScriptLexerState.TEXT);
 	}
 
+	/**
+	 * Public setter method that sets current working state of lexer.
+	 * 
+	 * @param state
+	 *            state to be set
+	 * @throws IllegalArgumentException
+	 *             if given argument is <code>null</code> value
+	 */
 	public void setState(SmartScriptLexerState state) {
+		if (state == null) {
+			throw new IllegalArgumentException("Value given can not be null");
+		}
 		this.state = state;
 	}
 
+	/**
+	 * Public factory method that gets next token depending on the current
+	 * working state of this lexer.
+	 * 
+	 * @return next token from given text
+	 */
 	public SmartScriptToken nextToken() {
 		if (data == null) {
 			throw new SmartScriptLexerException("Data is null");
@@ -53,6 +105,16 @@ public class SmartScriptLexer {
 		}
 	}
 
+	/**
+	 * Private factory method that generates next token in TAG state. Most of
+	 * its work is delegated to other methods based on the first read character.
+	 * Possible types of tokens are these: FUNCTION, VARIABLE, STRING,
+	 * INT_NUMBER, DOUBLE_NUMBER, OPERATOR, EOF, TAG.
+	 * 
+	 * @return next token from given text
+	 * @throws SmartScriptLexerException
+	 *             if text contains invalid closing of the tag
+	 */
 	private SmartScriptToken tagProcess() {
 		SmartScriptToken foundTag;
 		char currentChar = data[currentIndex];
@@ -69,7 +131,7 @@ public class SmartScriptLexer {
 				return foundTag;
 
 			} else {
-				throw new SmartScriptLexerException("Tag wasn't properly closed");
+				throw new SmartScriptLexerException("Tag wasn't properly closed.");
 			}
 
 		} else if (currentChar == '=') {
@@ -98,6 +160,17 @@ public class SmartScriptLexer {
 		return foundTag;
 	}
 
+	/**
+	 * Private factory method that is called from method
+	 * {@linkplain SmartScriptLexer#tagProcess()}. It consumes document
+	 * characters and treats them like symbols. Allowed symbols are these: '+',
+	 * '-', '*', '/' and '^'. If symbol is not one of those, proper exception
+	 * will be thrown.
+	 * 
+	 * @return next token of type SYMBOL
+	 * @throws SmartScriptLexerException
+	 *             if symbol is invalid
+	 */
 	private SmartScriptToken getSymbol() {
 		char symbol = data[currentIndex++];
 
@@ -118,6 +191,17 @@ public class SmartScriptLexer {
 		// @formatter:on
 	}
 
+	/**
+	 * Private factory method that is called from method
+	 * {@linkplain SmartScriptLexer#tagProcess()}. It consumes document
+	 * characters and treats them like numbers. Number can be either of type
+	 * double or integer. If number is invalid (not double nor integer), proper
+	 * exclamation will be thrown.
+	 * 
+	 * @return next token of type int or double
+	 * @throws SmartScriptLexerException
+	 *             if number is invalids
+	 */
 	private SmartScriptToken getNumber() {
 		StringBuilder sb = new StringBuilder();
 
@@ -156,6 +240,14 @@ public class SmartScriptLexer {
 		return token;
 	}
 
+	/**
+	 * Private factory method that is called from method
+	 * {@linkplain SmartScriptLexer#tagProcess()}. It consumes document
+	 * characters and treats them like variables. Variable must start with
+	 * letter, and other characters can be letters, numbers and underscores.
+	 * 
+	 * @return next token representing variable
+	 */
 	private SmartScriptToken getVariable() {
 		StringBuilder sb = new StringBuilder();
 		char currentChar = data[currentIndex];
@@ -171,6 +263,18 @@ public class SmartScriptLexer {
 
 	}
 
+	/**
+	 * Private factory method that is called from method
+	 * {@linkplain SmartScriptLexer#tagProcess()}. It consumes document
+	 * characters and treats them like Strings. String is anything written
+	 * inside quotation marks. After closing of the quotation marks, method
+	 * finishes. It is also possible to have escape sequences, but in case of
+	 * invalid escape sequence, appropriate exception will be thrown
+	 * 
+	 * @return next token representing string
+	 * @throws SmartScriptLexerException
+	 *             in case of invalid escaping
+	 */
 	private SmartScriptToken getString() {
 		StringBuilder sb = new StringBuilder();
 		while (++currentIndex < data.length && data[currentIndex] != '"') {
@@ -185,8 +289,7 @@ public class SmartScriptLexer {
 						checkAfterEscape(); /*- provjera dolazi li valjani znak nakon escape-a, baca se exception u metodi ukoliko ne dolazi */
 						sb.append(data[++currentIndex]);
 					}
-				}
-				else{
+				} else {
 					throw new SmartScriptLexerException("Escape can't be the last character.");
 				}
 			} else {
@@ -197,6 +300,17 @@ public class SmartScriptLexer {
 		return new SmartScriptToken(SmartScriptTokenType.STRING, new ElementString(sb.toString()));
 	}
 
+	/**
+	 * Private factory method that is called from method
+	 * {@linkplain SmartScriptLexer#tagProcess()}. It consumes document
+	 * characters and treats them like functions. Name of the function must
+	 * start with letter, and other characters can be letters, numbers and
+	 * underscores.
+	 * 
+	 * @return next token representing function
+	 * @throws SmartScriptLexerException
+	 *             if first character is not letter
+	 */
 	private SmartScriptToken getFunction() {
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
@@ -219,7 +333,16 @@ public class SmartScriptLexer {
 		return new SmartScriptToken(SmartScriptTokenType.FUNCTION, new ElementFunction(sb.toString()));
 	}
 
-	public SmartScriptToken textProcess() {
+	/**
+	 * Private factory method that generates next token in TEXT working state of
+	 * lexer. If next token is not of type TAG, method delegates its work to
+	 * method {@link SmartScriptLexer#getText()}.
+	 * 
+	 * @return next generated token
+	 * @throws SmartScriptLexerException
+	 *             if tags weren't closed properly
+	 */
+	private SmartScriptToken textProcess() {
 		SmartScriptToken token = null;
 
 		if (data[currentIndex] == '{' && currentIndex + 1 < data.length) {
@@ -241,7 +364,19 @@ public class SmartScriptLexer {
 		return token;
 	}
 
-	public SmartScriptToken getText() {
+	/**
+	 * Private factory method that is called from method
+	 * {@linkplain SmartScriptLexer#textProcess()}. It consumes document
+	 * characters and groups them all in one object of type <code>String</code>.
+	 * Method continues consuming characters until it reaches this '{'
+	 * character, or reaches end of document. It also allows escape sequences,
+	 * but throws exception in case of invalid escape sequence.
+	 * 
+	 * @return next token representing text
+	 * @throws SmartScriptLexerException
+	 *             in case of invalid escaping
+	 */
+	private SmartScriptToken getText() {
 		StringBuilder sb = new StringBuilder();
 
 		while (currentIndex < data.length && data[currentIndex] != '{') {
@@ -258,6 +393,15 @@ public class SmartScriptLexer {
 		return new SmartScriptToken(SmartScriptTokenType.TEXT, new ElementString(sb.toString()));
 	}
 
+	/**
+	 * Private helper method that checks if the escape sequence in text is
+	 * correct and throw appropriate exception if it is not.
+	 * 
+	 * @throws SmartScriptLexerException
+	 *             if escape character is the last character of document
+	 * @throws SmartScriptLexerException
+	 *             if there is invalid escape sequence
+	 */
 	private void checkAfterEscape() {
 
 		if (currentIndex + 1 >= data.length) {
@@ -279,8 +423,12 @@ public class SmartScriptLexer {
 		throw new SmartScriptLexerException("Wrong character after escape sign.");
 	}
 
+	/**
+	 * Public getter method that returns reference to the last generated token
+	 * 
+	 * @return last generated token
+	 */
 	public SmartScriptToken getToken() {
-
-		return null;
+		return token;
 	}
 }
