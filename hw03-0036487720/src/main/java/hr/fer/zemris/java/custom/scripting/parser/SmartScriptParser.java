@@ -13,21 +13,57 @@ import hr.fer.zemris.java.custom.scripting.nodes.EchoNode;
 import hr.fer.zemris.java.custom.scripting.nodes.ForLoopNode;
 import hr.fer.zemris.java.custom.scripting.nodes.Node;
 import hr.fer.zemris.java.custom.scripting.nodes.TextNode;
-import hr.fer.zemris.java.hw03.prob1.Token;
 
+/**
+ * Class <code>SmartScriptParser</code> represents object that performs sintax
+ * analysis of the given text document. Text is being processed in a way that
+ * its elements can belong to one of three logical units, and base on their
+ * belonging, they are being encapsulated in nodes that continue to build sintax
+ * tree of document. All nodes of document are children of the first, uppermost
+ * node, document node. First logical unit is text that is places outside the
+ * tags (Tags are defined with boundaries "{$"-beginning of the tag and "$}"-end
+ * of the tag. Second logical unit is text inside the FOR tag. This tag is
+ * defined with first word after beginning of the tag which is "for". Third and
+ * the last logical unit is "empty" tag that can have any given name.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class SmartScriptParser {
+	/**
+	 * Lexer that performs lexical analysis and provides parser with tokens.
+	 */
 	private SmartScriptLexer lexer;
+	/**
+	 * First, uppermost node, all other nodes are children of this node.
+	 */
 	private DocumentNode documentNode;
+	/**
+	 * Stack for pushing nodes that are children of the main node.
+	 */
 	private ObjectStack stack;
 
+	/**
+	 * Public constructor that accepts text of document as an argument. Text
+	 * given will be lexically analyzed and parsed.
+	 * 
+	 * @param documentBody
+	 *            document text
+	 */
 	public SmartScriptParser(String documentBody) {
 		this.lexer = new SmartScriptLexer(documentBody);
-		stack = new ObjectStack();
+		ObjectStack stack = new ObjectStack();
 		documentNode = new DocumentNode();
 		stack.push(documentNode);
 		parse();
 	}
 
+	/**
+	 * Private method used for parsing, it performs syntax analysis of the text.
+	 * It creates a hierarchy of nodes and stores it in the documentNode
+	 * collection of children nodes. Most of its work is delegated to other
+	 * methods.
+	 */
 	private void parse() {
 		SmartScriptToken token = lexer.nextToken();
 
@@ -69,6 +105,15 @@ public class SmartScriptParser {
 		}
 	}
 
+	/**
+	 * Private method that is called if lexer has generated token that signals
+	 * beginning of the empty tag. This method parses content of an empty tag.
+	 * 
+	 * @throws SmartScriptParserException
+	 *             if empty tag is not properly closed
+	 * @throws SmartScriptParserException
+	 *             if there is invalid argument in empty tag
+	 */
 	private void addEcho() {
 
 		ObjectStack emptyStack = new ObjectStack();
@@ -107,6 +152,18 @@ public class SmartScriptParser {
 		parent.addChildNode(echoNode);
 	}
 
+	/**
+	 * 
+	 * Private method that is called if lexer has generated token that is END
+	 * (closing) tag. That tag gave us the information that current node on the
+	 * stack has no more children, and document can be continued parsed outside
+	 * of the current node.
+	 * 
+	 * @throws SmartScriptParserException
+	 *             if document has more END tags than opened tags
+	 * @throws SmartScriptParserException
+	 *             if END tag wasn't properly closed
+	 */
 	private void addEnd() {
 		try {
 			stack.pop();
@@ -123,6 +180,21 @@ public class SmartScriptParser {
 		}
 	}
 
+	/**
+	 * Private method that is called if lexer has generated an opening FOR tag
+	 * token. Method goes through the FOR tag and checks if syntax inside the
+	 * tag is correct. Rules are: first arugment in tag has to be variable,
+	 * which is followed by either 2 or 3 elements of any type.
+	 * 
+	 * @throws SmartScriptParserException
+	 *             if first argument in loop is invalid
+	 * @throws SmartScriptParserException
+	 *             if for loop was not closed properly
+	 * @throws SmartScriptParserException
+	 *             if there are invalid arguments in for loop
+	 * @throws SmartScriptParserException
+	 *             if there is too many or too few arguments in for loop
+	 */
 	private void addFor() {
 		ObjectStack forStack = new ObjectStack();
 		int i = 0;
@@ -139,15 +211,15 @@ public class SmartScriptParser {
 			case DOUBLE_NUMBER:
 			case STRING:
 				if (i == 0 && type != SmartScriptTokenType.VARIABLE) {
-					throw new SmartScriptParserException("Wrong first argument in for loop");
+					throw new SmartScriptParserException("Wrong first argument in for loop.");
 				}
 
 				forStack.push(currentToken.getValue());
 				break;
 			case EOF:
-				throw new SmartScriptParserException("For loop was not closed before \"END\" tag");
+				throw new SmartScriptParserException("For loop was not properly closed.");
 			default:
-				throw new SmartScriptParserException("Invalid arguments in for loop");
+				throw new SmartScriptParserException("Invalid arguments in for loop.");
 			}
 		}
 
@@ -180,6 +252,12 @@ public class SmartScriptParser {
 
 	}
 
+	/**
+	 * Public getter method that gives us the base node of the document that is
+	 * being parsed.
+	 * 
+	 * @return base node of the document
+	 */
 	public DocumentNode getDocumentNode() {
 		return documentNode;
 	}

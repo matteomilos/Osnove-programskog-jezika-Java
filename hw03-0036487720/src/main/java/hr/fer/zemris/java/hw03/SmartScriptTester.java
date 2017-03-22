@@ -7,19 +7,36 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptLexer;
 import hr.fer.zemris.java.custom.scripting.nodes.DocumentNode;
 import hr.fer.zemris.java.custom.scripting.nodes.Node;
 import hr.fer.zemris.java.custom.scripting.parser.SmartScriptParser;
 
+/**
+ * Class that is used for checking functionalities of classes
+ * {@linkplain SmartScriptParser} and {@linkplain SmartScriptLexer}. Class also
+ * implements static method that gives us possibility to retain original text of
+ * document based on the syntax tree made from document.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class SmartScriptTester {
 
+	/**
+	 * Method that is called when program starts running.
+	 * 
+	 * @param args
+	 *            path to file with test examples for checking functionalities
+	 *            of our parser
+	 */
 	public static void main(String[] args) {
 
-//		if(args.length!=1){
-//			System.out.println("Command line accepts only one argument.");
-//			System.exit(0);
-//		}
-//		String filepath = args[0];
+		// if(args.length!=1){
+		// System.out.println("Command line accepts only one argument.");
+		// System.exit(0);
+		// }
+		// String filepath = args[0];
 		String filepath = "D:\\Java workspace\\zadace\\hw03-0036487720\\example\\primjer4.txt";
 		String docBody = null;
 		try {
@@ -40,16 +57,22 @@ public class SmartScriptTester {
 		System.out.println(originalDocumentBody);
 		System.out.println();
 		System.out.println(originalDocumentBody2);
-		if(originalDocumentBody.equals(originalDocumentBody2)){
+		if (originalDocumentBody.equals(originalDocumentBody2)) {
 			System.out.println("Bravo, uspješno riješeno");
-		}else{
+		} else {
 			System.out.println("Padaš");
 		}
-		
-
 
 	}
 
+	/**
+	 * Method that creates original document body based on node given as an
+	 * argument.
+	 * 
+	 * @param document
+	 *            node given, probably base node
+	 * @return string representation of the nodes
+	 */
 	public static String createOriginalDocumentBody(Node document) {
 		if (document == null) {
 			throw new IllegalArgumentException("Document given can not be null.");
@@ -57,6 +80,16 @@ public class SmartScriptTester {
 		return document.toString();
 	}
 
+	/**
+	 * Private method that gets file with the name that is given as an argument
+	 * of the method located in the folder /resources, and converts that
+	 * document to string
+	 * 
+	 * @param filename
+	 *            name of the file to be converted
+	 * @return string version of file
+	 */
+	@SuppressWarnings("unused")
 	private String loader(String filename) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream(filename)) {
