@@ -1,0 +1,5 @@
+Ovo æe biti dokument koji ima nevaljano ime taga. 
+{$WHILE i 2 3 $}
+Ovaj tag nije valjan jer su dopuštena imena tagova samo '=', FOR i END.
+ Za svaki sluèaj zatvoriti æemo tag ali to neæe ništa promijeniti.
+{$END$}

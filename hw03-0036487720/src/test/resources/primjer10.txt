@@ -1,0 +1,3 @@
+Ovaj dokument ce provjeriti sto ce se dogoditi u slucaju da imamo previse
+argumenata u For tagu. {$FOR i 2 3 4 9 11$} For tag moramo i prikladno zatvoriti.
+{$END$}. Ocekujemo SmartScriptParserException.

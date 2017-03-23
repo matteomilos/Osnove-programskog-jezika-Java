@@ -1,0 +1,5 @@
+Ovaj dokument ce provjeriti sto ce se dogoditi u slucaju da unutar for taga
+imamo broj sa dvije tocke, npr. 2..34 umjesto 2.34
+{$For i 3 4 5..6 $}
+Ocekujemo SmartScriptLexerException.
+{$END$}

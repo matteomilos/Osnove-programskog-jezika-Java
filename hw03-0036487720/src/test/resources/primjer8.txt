@@ -1,0 +1,3 @@
+Ovaj dokument æe imati nedopuštenu escape sekvencu izvan tagova.
+Reda radi æemo dodati jedan ispravan tag {$= 1 2 i "string"$} 
+ali æemo u tekst ubaciti neispravnu \escape sekvencu.

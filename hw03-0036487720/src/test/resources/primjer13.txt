@@ -1,0 +1,5 @@
+Ovaj dokument ce provjeriti sto ce se dogoditi u slucaju da imamo previs
+End tagova, odnosno vise zatvorenih nego otvorenih tagova
+{$FOR 2 4 5 2 $} Ovdje ide neki tekst.
+{$END$}. Ocekujemo SmartScriptParserException.
+{$END$}

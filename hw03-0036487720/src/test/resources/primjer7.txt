@@ -1,0 +1,5 @@
+Ovaj dokument æe imati nedopuštenu escape sekvencu izvan tagova.
+Reda radi æemo dodati jedan ispravan tag {$= 1 2 i "string"$} 
+ali æemo tekst dovršiti s jednim znakom za escapeanje što je nedopušteno.
+Ova greška se ustanovljava u lexeru pa stoga i 
+bacamo SmartScriptLexerException.\

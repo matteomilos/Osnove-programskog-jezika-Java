@@ -1,0 +1,4 @@
+Ovaj test ce provjeravati neispravnu escape sekvencu unutar tagova. Za primjer,
+napisati cemo jedan echo tag sa neispravnom escape sekvencom.
+{$= 1 i "string" "stri\2ng"$}
+Ovo bi trebao baciti SmartScriptLexerException.

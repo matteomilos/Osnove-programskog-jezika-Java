@@ -1,0 +1,3 @@
+Ovaj dokument ce provjeriti sto ce se dogoditi u slucaju da imamo premalo
+argumenata u For tagu. {$FOR i 2 $} For tag moramo i prikladno zatvoriti.
+{$END$}. Ocekujemo SmartScriptParserException.

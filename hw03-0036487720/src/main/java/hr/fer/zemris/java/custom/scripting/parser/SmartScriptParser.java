@@ -5,7 +5,6 @@ import hr.fer.zemris.java.custom.collections.ObjectStack;
 import hr.fer.zemris.java.custom.scripting.elems.Element;
 import hr.fer.zemris.java.custom.scripting.elems.ElementVariable;
 import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptLexer;
-import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptLexerException;
 import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptToken;
 import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptTokenType;
 import hr.fer.zemris.java.custom.scripting.nodes.DocumentNode;
@@ -52,7 +51,7 @@ public class SmartScriptParser {
 	 */
 	public SmartScriptParser(String documentBody) {
 		this.lexer = new SmartScriptLexer(documentBody);
-		ObjectStack stack = new ObjectStack();
+		 stack = new ObjectStack();
 		documentNode = new DocumentNode();
 		stack.push(documentNode);
 		parse();
@@ -93,7 +92,7 @@ public class SmartScriptParser {
 					addEcho();
 					break;
 				default:
-					throw new SmartScriptLexerException("Wrong tag name");
+					throw new SmartScriptParserException("Wrong tag name");
 				}
 			}
 

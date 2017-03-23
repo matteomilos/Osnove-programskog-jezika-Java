@@ -1,0 +1,3 @@
+Ovaj dokument ce provjeriti sto ce se dogoditi u slucaju da imamo pogresan prvi 
+argument u For tagu. {$FOR 2 4 5 2 $} For tag moramo i prikladno zatvoriti.
+{$END$}. Ocekujemo SmartScriptParserException.

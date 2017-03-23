@@ -1,0 +1,4 @@
+Ovaj dokument ce provjeriti sto ce se dogoditi u slucaju da unutar praznog taga
+imamo funkciju s krivim imenom (prvi znak mora biti slovo)
+{$= i 3 4 5 @3funkcija $}
+Ocekujemo SmartScriptLexerException.

@@ -320,7 +320,7 @@ public class SmartScriptLexer {
 				&& (Character.isLetter(currentChar) || Character.isDigit(currentChar) || currentChar == '_')) {
 
 			if (first && !Character.isLetter(data[currentIndex])) { /*- funkcija mora započinjati slovom */
-				throw new SmartScriptLexerException("Name is invalid.");
+				throw new SmartScriptLexerException("Function name is invalid.");
 
 			} else {
 

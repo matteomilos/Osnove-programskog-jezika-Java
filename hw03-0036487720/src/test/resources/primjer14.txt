@@ -1,0 +1,4 @@
+Ovaj dokument ce provjeriti sto ce se dogoditi u slucaju da imamo pogresan
+simbol odnosno operator unutar praznog taga.
+{$= "string" 2 ' 3$}
+Ocekujemo SmartScriptLexerException.

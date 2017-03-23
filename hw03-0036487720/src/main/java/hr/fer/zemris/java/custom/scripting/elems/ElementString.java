@@ -41,5 +41,6 @@ public class ElementString extends Element {
 						.replace("\"", "\\\"")
 						.replace("\\\\r", "\\r")
 						.replaceAll("\\\\n", "\\n");
+		//@formatter:on
 	}
 }
