@@ -82,5 +82,6 @@ public class Demo {
 			iter.remove();
 		}
 		System.out.printf("Veličina: %d%n", examMarks.size());
+		System.out.println("bio");
 	}
 }
