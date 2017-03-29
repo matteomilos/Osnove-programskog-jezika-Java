@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntry<K, V>> {
 
 	public static final int DEFAULT_TABLE_SIZE = 16;
+	public static final double ALLOWED_PERCENTAGE_OF_POPUNJENOSTI = 0.75; /*-ISPRAVITI OVO POPUNJENOSTI*/
 	private int size;
 	TableEntry<K, V>[] table;
 	private int modCount;
@@ -86,7 +87,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 			table[position] = new TableEntry<K, V>(key, value, null);
 			size++;
 			modCount++;
-			if (size >= 0.75 * table.length) {
+			if (size >= ALLOWED_PERCENTAGE_OF_POPUNJENOSTI * table.length) {
 				resizeTable();
 			}
 			return;
@@ -102,7 +103,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 			helper.next = new TableEntry<K, V>(key, value, null);
 			size++;
 			modCount++;
-			if (size >= 0.75 * table.length) {
+			if (size >= ALLOWED_PERCENTAGE_OF_POPUNJENOSTI * table.length) {
 				resizeTable();
 			}
 		}
@@ -131,15 +132,15 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		int position = Math.abs(key.hashCode() % table.length);
 		TableEntry<K, V> helper = table[position];
 
-		while (helper.next != null && !helper.getKey().equals(key)) {
+		while (helper != null && !helper.getKey().equals(key)) {
 			helper = helper.next;
 		}
 
-		if (helper.getKey().equals(key)) {
-			return helper.getValue();
+		if (helper == null) {
+			return null;
 		}
 
-		return null;
+		return helper.getValue();
 	}
 
 	public int size() {
@@ -154,27 +155,27 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		int position = Math.abs(key.hashCode() % table.length);
 		TableEntry<K, V> helper = table[position];
 
-		while (helper.next != null && !helper.getKey().equals(key)) {
+		while (helper != null && !helper.getKey().equals(key)) {
 			helper = helper.next;
 		}
 
-		if (helper.getKey().equals(key)) {
-			return true;
+		if (helper == null) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	public boolean containsValue(Object value) {
 		for (int i = 0; i < table.length; i++) {
 			TableEntry<K, V> helper = table[i];
-
-			while (helper.next != null) {
-				helper = helper.next;
+			while (helper != null) {
 				/*-provjeravam i sa "==" i sa equals zbog moguće null vrijednosti*/
-				if (helper.getValue() == value || helper.getValue().equals(value)) {
+				if (helper.getValue() == value || (helper.value != null && helper.getValue().equals(value))) {
 					return true;
 				}
+				helper = helper.next;
+
 			}
 		}
 		return false;
@@ -231,16 +232,22 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < table.length; i++) {
+			boolean prazan = true;
 			sb.append("[");
 			TableEntry<K, V> helper = table[i];
 
 			while (helper != null) {
 				sb.append(helper.toString()).append(", ");
 				helper = helper.next;
+				prazan = false;
 			}
-
-			sb.delete(sb.length() - 2, sb.length()); /*-brišemo nepotreban zarez i razmak s kraja*/
-			sb.append("]\n");
+			if (!prazan) {
+				sb.delete(sb.length() - 2, sb.length());/*-brišemo nepotreban zarez i razmak s kraja*/
+				sb.append("]\n");
+			}
+			else{
+				sb.delete(sb.length()-1, sb.length());
+			}
 		}
 		return sb.toString();
 	}
@@ -270,6 +277,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 
 		@Override
 		public boolean hasNext() {
+			
 			if (iteratorModCount != modCount) {
 				throw new ConcurrentModificationException(
 						"Collection mustn't be modified during the iteration process.");
@@ -280,6 +288,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 
 		@Override
 		public TableEntry<K, V> next() {
+			
 			if (iteratorModCount != modCount) {
 				throw new ConcurrentModificationException(
 						"Collection mustn't be modified during the iteration process.");
@@ -302,9 +311,11 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 				throw new ConcurrentModificationException(
 						"Collection mustn't be modified during the iteration process.");
 			}
+			
 			if (currentEntry == null) {
 				throw new IllegalStateException("You can't remove last object twice.");
 			}
+			
 			SimpleHashtable.this.remove(currentEntry.key);
 			currentEntry = null;
 			iteratorModCount = modCount;
