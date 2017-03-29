@@ -3,8 +3,21 @@ package hr.fer.zemris.java.hw04.collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
-public class Primjer {
-	
+/**
+ * Demonstration class, used for testing and demonstration purposes of the
+ * {@linkplain SimpleHashtable}
+ * 
+ * @author Matteo Miloš
+ *
+ */
+public class Demo {
+
+	/**
+	 * Method being called when program is executed.
+	 * 
+	 * @param args
+	 *            command line arguments, not used here
+	 */
 	public static void main(String[] args) {
 		// create collection:
 		SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(2);
