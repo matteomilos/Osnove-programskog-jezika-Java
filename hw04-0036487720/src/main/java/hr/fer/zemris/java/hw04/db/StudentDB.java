@@ -48,9 +48,13 @@ public class StudentDB {
 				sc.close();
 				System.exit(0);
 			}
-			List<StudentRecord> list = new ArrayList<>();
 			try {
-				QueryParser parser = new QueryParser(query);
+				List<StudentRecord> list = new ArrayList<>();
+
+				if (!query.trim().startsWith("query")) {
+					throw new IllegalArgumentException("Your query has to start with the word query!");
+				}
+				QueryParser parser = new QueryParser(query.trim().substring(5));
 
 				if (parser.isDirectQuery()) {
 					String jmbag = parser.getQueriedJMBAG();
@@ -62,7 +66,7 @@ public class StudentDB {
 					}
 				}
 				print(list);
-			} catch (QueryParserException exc) {
+			} catch (QueryParserException | IllegalArgumentException exc) {
 				System.out.println(exc.toString());
 			}
 
@@ -92,7 +96,7 @@ public class StudentDB {
 			gradeLen = Math.max(gradeLen, (int) (Math.log10(student.getFinalGrade()) + 1));
 		}
 
-		printFirstOrLastLine(jmbagLen, firstNameLen, lastNameLen, gradeLen);
+		printFirstOrLastLine(jmbagLen, lastNameLen, firstNameLen, gradeLen);
 		for (StudentRecord student : list) {
 			StringBuilder forPrint = new StringBuilder();
 			forPrint.append("|");
@@ -102,7 +106,7 @@ public class StudentDB {
 			forPrint.append(String.format(" %-" + gradeLen + "s |", student.getFinalGrade()));
 			System.out.println(forPrint);
 		}
-		printFirstOrLastLine(jmbagLen, firstNameLen, lastNameLen, gradeLen);
+		printFirstOrLastLine(jmbagLen, lastNameLen, firstNameLen, gradeLen);
 		printNumberOfRecords(list);
 	}
 

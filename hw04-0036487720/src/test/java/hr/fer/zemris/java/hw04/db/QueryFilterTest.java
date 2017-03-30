@@ -53,7 +53,7 @@ public class QueryFilterTest {
 	
 	@Test
 	public void testMoreComplexDirectQuery() {
-		parser = new QueryParser("query     jmbag    =  \"0000000024\"		");
+		parser = new QueryParser("     jmbag    =  \"0000000024\"		");
 		assertEquals(getRecords(database, parser).get(0).getJmbag(), "0000000024");
 	}
 	

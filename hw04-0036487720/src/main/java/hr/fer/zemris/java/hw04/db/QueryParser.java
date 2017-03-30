@@ -35,11 +35,7 @@ public class QueryParser {
 			throw new IllegalArgumentException("Query given to parser can't be null");
 		}
 
-		if (query.trim().startsWith("query")) {
-			this.query = query.trim().substring(5).trim();
-		} else {
-			this.query = query.trim();
-		}
+		this.query = query.trim();
 		conditionalExpressionList = parse();
 	}
 
@@ -93,8 +89,7 @@ public class QueryParser {
 			if (query.charAt(0) == '=') {
 				query = query.substring(1).trim();
 				operator = ComparisonOperators.LESS_OR_EQUALS;
-			}
-			else{
+			} else {
 				operator = ComparisonOperators.LESS;
 			}
 
@@ -104,10 +99,10 @@ public class QueryParser {
 			if (query.charAt(0) == '=') {
 				query = query.substring(1).trim();
 				operator = ComparisonOperators.GREATER_OR_EQUALS;
-			}else{
+			} else {
 				operator = ComparisonOperators.GREATER;
 			}
-			
+
 		} else if (query.charAt(0) == '=') {
 			query = query.substring(1).trim();
 			operator = ComparisonOperators.EQUALS;

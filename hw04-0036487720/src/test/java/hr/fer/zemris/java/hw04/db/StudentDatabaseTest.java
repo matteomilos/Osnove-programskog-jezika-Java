@@ -54,24 +54,24 @@ public class StudentDatabaseTest {
 	@Test(expected=QueryParserException.class)
 	public void testWrongQuery() {
 		@SuppressWarnings("unused")
-		QueryParser parser = new QueryParser("query nesto =\"Marin\"");
+		QueryParser parser = new QueryParser(" nesto =\"Marin\"");
 	}
 	
 	@Test(expected=QueryParserException.class)
 	public void testWrongQuery2() {
 		@SuppressWarnings("unused")
-		QueryParser parser = new QueryParser("query firstname =\"Marin\"");
+		QueryParser parser = new QueryParser(" firstname =\"Marin\"");
 	}
 	@Test(expected=QueryParserException.class)
 	public void testWrongQuery3() {
 		@SuppressWarnings("unused")
-		QueryParser parser = new QueryParser("query firstName liKe \"M* \"");
+		QueryParser parser = new QueryParser(" firstName liKe \"M* \"");
 	}
 	
 	@Test(expected=QueryParserException.class)
 	public void testWrongQuery4() {
 		@SuppressWarnings("unused")
-		QueryParser parser = new QueryParser("query jmbag =lastName");
+		QueryParser parser = new QueryParser(" jmbag =lastName");
 	}
 	
 }
