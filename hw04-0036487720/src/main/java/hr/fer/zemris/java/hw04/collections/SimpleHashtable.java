@@ -40,7 +40,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 	 * Reference to the array of parameterized objects of type
 	 * {@linkplain TableEntry}.
 	 */
-	TableEntry<K, V>[] table;
+	private TableEntry<K, V>[] table;
 	/**
 	 * Numerator of changes of the content of the hash table. This numerator is
 	 * updated by methods {@linkplain #put(Object, Object)},

@@ -26,7 +26,7 @@ public class StudentDatabase {
 	 * List of objects of type {@linkplain StudentRecord}, contains all data
 	 * about students.
 	 */
-	// protected for purposes of testing, normally should be private
+	// protected for purposes of testing(StudentDatabaseTest), normally should be private
 	protected List<StudentRecord> studentRecords;
 
 	/**

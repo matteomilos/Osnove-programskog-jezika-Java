@@ -7,7 +7,7 @@ import java.util.List;
  * student record using one or more conditions that are given through 'query'
  * command.
  * 
- * @author My Name
+ * @author Matteo Miloš
  *
  */
 public class QueryFilter implements IFilter {

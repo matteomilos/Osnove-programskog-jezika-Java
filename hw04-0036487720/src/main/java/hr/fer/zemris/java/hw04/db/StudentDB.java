@@ -15,13 +15,10 @@ import java.util.Scanner;
  * 
  * Some of the examples of valid queries are:
  * 
- *  query jmbag = "0000000003" 
- *  query jmbag = "0000000003" AND lastName LIKE "L*"
- *  query lastName LIKE "B*" 
- *  query jmbag="0000000003" 
- *  query lastName = "Blažić" 
- *  query firstName>"A" and lastName LIKE "B*ć" 
- *  query firstName>"A" and firstName<"C" and lastName LIKE "B*ć" and jmbag>"0000000002"
+ * query jmbag = "0000000003" query jmbag = "0000000003" AND lastName LIKE "L*"
+ * query lastName LIKE "B*" query jmbag="0000000003" query lastName = "Blažić"
+ * query firstName>"A" and lastName LIKE "B*ć" query firstName>"A" and
+ * firstName<"C" and lastName LIKE "B*ć" and jmbag>"0000000002"
  * 
  * @author Matteo Miloš
  *
@@ -37,7 +34,7 @@ public class StudentDB {
 	 *             in case of wrong file
 	 */
 	public static void main(String[] args) throws IOException {
-		List<String> lines = Files.readAllLines(Paths.get("./database.txt"), StandardCharsets.UTF_8);
+		List<String> lines = Files.readAllLines(Paths.get("./prva.txt"), StandardCharsets.UTF_8);
 		StudentDatabase db = new StudentDatabase(lines);
 
 		Scanner sc = new Scanner(System.in);
@@ -52,8 +49,9 @@ public class StudentDB {
 				System.exit(0);
 			}
 			List<StudentRecord> list = new ArrayList<>();
-			QueryParser parser = new QueryParser(query);
 			try {
+				QueryParser parser = new QueryParser(query);
+
 				if (parser.isDirectQuery()) {
 					String jmbag = parser.getQueriedJMBAG();
 					StudentRecord r = db.forJMBAG(jmbag);
