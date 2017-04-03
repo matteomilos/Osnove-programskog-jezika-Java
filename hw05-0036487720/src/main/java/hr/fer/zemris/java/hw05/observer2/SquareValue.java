@@ -1,7 +1,21 @@
 package hr.fer.zemris.java.hw05.observer2;
 
+/**
+ * Class <code>DoubleValue</code> implements {@linkplain IntegerStorageObserver}
+ * and represents implementation of an observer from observer pattern. This
+ * observer displays squared value of subject's current storage on standard
+ * output. Observers performs this action for unlimited number of times.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class SquareValue implements IntegerStorageObserver {
 
+	/**
+	 * {@inheritDoc} This implementation of the method prints the double value
+	 * of subject's current storage on the standard output for unlimited number
+	 * of times.
+	 */
 	@Override
 	public void valueChanged(IntegerStorageChange integerStorageChange) {
 
