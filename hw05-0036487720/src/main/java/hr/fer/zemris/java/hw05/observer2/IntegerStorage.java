@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class IntegerStorage {
+
 	private int value;
 	private List<IntegerStorageObserver> observers; // use ArrayList here!!!
 	private IntegerStorageChange integerStorageChange;
@@ -37,11 +38,15 @@ public class IntegerStorage {
 	public void setValue(int value) {
 		// Only if new value is different than the current value:
 		if (this.value != value) {
+
 			IntegerStorageChange intStorage = new IntegerStorageChange(this, this.value, value);
 			// Update current value
 			this.value = value;
-			// Notify all registered observers
+
+			// helpList used for avoiding ConcurrentModificationException
 			List<IntegerStorageObserver> helpList = new ArrayList<>(observers);
+
+			// Notify all registered observers
 			if (observers != null) {
 				for (IntegerStorageObserver observer : helpList) {
 					observer.valueChanged(intStorage);

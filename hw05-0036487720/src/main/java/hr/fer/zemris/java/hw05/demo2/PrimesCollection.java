@@ -23,9 +23,8 @@ public class PrimesCollection implements Iterable<Integer> {
 
 	private class IteratorImpl implements Iterator<Integer> {
 
-		private int currentPrime = 2;
-		private int newPrime = currentPrime;
-		private int iteratorNumOfPrimes = numOfConsecutivePrimes;
+		private int nextPrime = 2;
+		private int numOfPrimesToProduce = numOfConsecutivePrimes;
 
 		/*
 		 * (non-Javadoc)
@@ -34,9 +33,10 @@ public class PrimesCollection implements Iterable<Integer> {
 		 */
 		@Override
 		public boolean hasNext() {
-			if (iteratorNumOfPrimes - 1 >= 0) {
+			if (numOfPrimesToProduce - 1 >= 0) {
 				return true;
 			}
+
 			return false;
 		}
 
@@ -47,30 +47,31 @@ public class PrimesCollection implements Iterable<Integer> {
 		 */
 		@Override
 		public Integer next() {
+
 			if (!hasNext()) {
 				throw new NoSuchElementException("No more elements");
 			}
-			currentPrime = newPrime;
-			for (int i = currentPrime + 1; i < 2 * currentPrime; i++) {
-				if (isPrime(i)) {
-					newPrime = i;
-					break;
-				}
-			}
-			iteratorNumOfPrimes--;
 
+			int currentPrime = nextPrime;
+
+			while (!isPrime(++nextPrime))
+				; // samo vrtimo while petlju i povećavamo kandidat za prostog
+					// sve dok broj ne bude prosti broj, kada isPrime() konačno
+					// vrati true, iskačemo iz petlje
+
+			numOfPrimesToProduce--;
 			return currentPrime;
 		}
 
 		private boolean isPrime(int primeCandidate) {
-			if (primeCandidate % 2 == 0)
-				return false;
 
-			for (int i = 3; i * i <= primeCandidate; i += 2) {
+			for (int i = 2; i * i <= primeCandidate; i += 2) {
+
 				if (primeCandidate % i == 0) {
 					return false;
 				}
 			}
+
 			return true;
 		}
 	}

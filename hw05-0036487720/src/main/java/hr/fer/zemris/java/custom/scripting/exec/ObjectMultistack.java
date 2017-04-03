@@ -13,6 +13,7 @@ public class ObjectMultistack {
 			map.put(name, new MultistackEntry(valueWrapper, null));
 			return;
 		}
+		
 		MultistackEntry entry = new MultistackEntry(valueWrapper, map.get(name));
 		map.put(name, entry);
 	}
@@ -21,6 +22,7 @@ public class ObjectMultistack {
 		if (map.get(name) == null) {
 			throw new NoSuchElementException("Stack is empty.");
 		}
+		
 		MultistackEntry entry = map.get(name);
 		map.put(name, entry.next);
 		return entry.value;
@@ -30,6 +32,7 @@ public class ObjectMultistack {
 		if (map.get(name) == null) {
 			throw new NoSuchElementException("Stack is empty.");
 		}
+		
 		return map.get(name).value;
 	}
 

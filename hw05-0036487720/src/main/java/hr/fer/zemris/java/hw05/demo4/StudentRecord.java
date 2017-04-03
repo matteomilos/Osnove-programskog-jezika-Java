@@ -52,9 +52,15 @@ public class StudentRecord {
 		return numOfPointsLabAssignments + numOfPointsMI + numOfPointsZI;
 	}
 
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return String.format("%s %s %s %f %d", jmbag, firstName, lastName, getSumOfAllPoints(), finalGrade);
+		return String.format("%-10s %8s %-15s %-10.2f %d", jmbag, firstName, lastName, getSumOfAllPoints(),
+				finalGrade);
 	}
 
 }

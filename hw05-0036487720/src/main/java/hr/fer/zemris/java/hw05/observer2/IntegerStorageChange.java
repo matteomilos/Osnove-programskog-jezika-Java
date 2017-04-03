@@ -6,9 +6,11 @@ public class IntegerStorageChange {
 	private int newValue;
 
 	public IntegerStorageChange(IntegerStorage integerStorage, int oldValue, int newValue) {
+
 		if (integerStorage == null) {
 			throw new IllegalArgumentException("Integer storage given can not be null");
 		}
+
 		this.integerStorage = integerStorage;
 		this.oldValue = oldValue;
 		this.newValue = newValue;

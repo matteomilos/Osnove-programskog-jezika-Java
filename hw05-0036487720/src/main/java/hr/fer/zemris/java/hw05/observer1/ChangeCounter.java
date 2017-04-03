@@ -1,6 +1,7 @@
 package hr.fer.zemris.java.hw05.observer1;
 
 public class ChangeCounter implements IntegerStorageObserver {
+
 	private static int numOfChanges = 0;
 
 	@Override
