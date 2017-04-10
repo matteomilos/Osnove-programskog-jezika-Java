@@ -44,6 +44,7 @@ public class IntegerStorage {
 	 */
 	public void addObserver(IntegerStorageObserver observer) {
 		if (observer != null && !observers.contains(observer)) {
+			observers = new ArrayList<>(observers); // čupićev hint
 			observers.add(observer);
 		}
 	}
@@ -58,6 +59,7 @@ public class IntegerStorage {
 	 */
 	public void removeObserver(IntegerStorageObserver observer) {
 		if (observer != null && observers.contains(observer)) {
+			observers = new ArrayList<>(observers); // čupićev hint
 			observers.remove(observer);
 		}
 	}
@@ -90,10 +92,9 @@ public class IntegerStorage {
 	public void setValue(int value) {
 		if (this.value != value) {
 			this.value = value;
-			List<IntegerStorageObserver> helpList = new ArrayList<>(observers);
 
 			if (observers != null) {
-				for (IntegerStorageObserver observer : helpList) {
+				for (IntegerStorageObserver observer : observers) {
 					observer.valueChanged(this);
 				}
 			}

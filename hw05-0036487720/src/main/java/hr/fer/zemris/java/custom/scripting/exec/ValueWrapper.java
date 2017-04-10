@@ -32,11 +32,10 @@ public class ValueWrapper {
 	 * 
 	 * @param value
 	 *            value to be stored
-	 * @throws RuntimeException
-	 *             if value given is of unsupported type
+
 	 */
 	public ValueWrapper(Object value) {
-		setValue(value);
+		this.value = value;
 	}
 
 	/**
@@ -203,14 +202,9 @@ public class ValueWrapper {
 	 * 
 	 * @param value
 	 *            value to be stored
-	 * @throws RuntimeException
-	 *             if value given is of unsupported type
+
 	 */
 	public void setValue(Object value) {
-		if (!(value instanceof Double || value instanceof String || value instanceof Integer || value == null)) {
-			throw new RuntimeException("Value is invalid.");
-		}
-
-		this.value = determineValue(value);
+		this.value = value;
 	}
 }

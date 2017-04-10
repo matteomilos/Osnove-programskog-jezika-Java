@@ -32,6 +32,44 @@ public class ObjectMultistack {
 	}
 
 	/**
+	 * <tt>MultistackEntry</tt> is inner static class which acts as a node of
+	 * single-linked list, list of values, associated with key in internal map
+	 * of <tt>ObjectMultistack</tt>.
+	 * 
+	 * @author Matteo Miloš
+	 *
+	 */
+	private static class MultistackEntry {
+
+		/**
+		 * Value of type <tt>ValueWrapper</tt> stored in node.
+		 */
+		private ValueWrapper value;
+
+		/**
+		 * Reference to the next node.
+		 */
+		private MultistackEntry next;
+
+		/**
+		 * Public constructor which receives object of type
+		 * <tt>ValueWrapper</tt> to be stored inside the node and reference to
+		 * the next node.
+		 * 
+		 * @param value
+		 *            value to be stored
+		 * @param next
+		 *            reference to the next node
+		 * 
+		 */
+		public MultistackEntry(ValueWrapper value, MultistackEntry next) {
+			this.value = value;
+			this.next = next;
+		}
+
+	}
+
+	/**
 	 * Public method that pushes item on the top of stack that is associated wit
 	 * the given key in the map.
 	 * 
@@ -124,41 +162,4 @@ public class ObjectMultistack {
 		return !map.containsKey(name);
 	}
 
-	/**
-	 * <tt>MultistackEntry</tt> is inner static class which acts as a node of
-	 * single-linked list, list of values, associated with key in internal map
-	 * of <tt>ObjectMultistack</tt>.
-	 * 
-	 * @author Matteo Miloš
-	 *
-	 */
-	private static class MultistackEntry {
-
-		/**
-		 * Value of type <tt>ValueWrapper</tt> stored in node.
-		 */
-		private ValueWrapper value;
-
-		/**
-		 * Reference to the next node.
-		 */
-		private MultistackEntry next;
-
-		/**
-		 * Public constructor which receives object of type
-		 * <tt>ValueWrapper</tt> to be stored inside the node and reference to
-		 * the next node.
-		 * 
-		 * @param value
-		 *            value to be stored
-		 * @param next
-		 *            reference to the next node
-		 * 
-		 */
-		public MultistackEntry(ValueWrapper value, MultistackEntry next) {
-			this.value = value;
-			this.next = next;
-		}
-
-	}
 }

@@ -175,7 +175,11 @@ public class StudentDemo {
 		for (String line : lines) {
 			String[] splitted = line.split("\t");
 			if (splitted.length == 7) {
-				records.add(new StudentRecord(splitted));
+				try {
+					records.add(new StudentRecord(splitted));
+				} catch (NumberFormatException exc) {
+					System.out.println("Line in your document is invalid.");
+				}
 			}
 		}
 		return records;
