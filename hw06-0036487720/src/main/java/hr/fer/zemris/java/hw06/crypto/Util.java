@@ -4,18 +4,17 @@ public class Util {
 
 	private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
 
-	static byte[] hextobyte(String keytext) {
+	public static byte[] hextobyte(String keytext) {
 		String helper;
 		byte[] b = new byte[keytext.length() / 2];
-		int i;
-		for (i = 0; i < keytext.length() / 2; i++) {
+		for (int i = 0; i < keytext.length() / 2; i++) {
 			helper = keytext.substring(i * 2, i * 2 + 2);
 			b[i] = (byte) (Integer.parseInt(helper, 16) & 0xff);
 		}
 		return b;
 	}
 
-	static String bytetohex(byte[] bytearray) {
+	public static String bytetohex(byte[] bytearray) {
 		char[] hexChars = new char[bytearray.length * 2];
 		for (int j = 0; j < bytearray.length; j++) {
 			int v = bytearray[j] & 0xFF;
