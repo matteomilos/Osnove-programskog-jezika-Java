@@ -9,7 +9,11 @@ import hr.fer.zemris.java.hw06.shell.ShellStatus;
 public class SymbolCommand extends AbstractCommand implements ShellCommand {
 
 	public SymbolCommand() {
-		super("symbol", Arrays.asList("descr"));
+		super("symbol", Arrays.asList("The symbol command takes either one or two arguments.",
+				"If it takes one argument, it has to be one of these:", "PROMPT", "MORELINES", "MULTILINE",
+				"Then it will display symbol that represents one of those values.", "If there are two arguments given",
+				"first argument has to be the same", "and second argument which has to be single character",
+				"will be used as a new symbol for value from the first argument."));
 	}
 
 	@Override
@@ -18,7 +22,8 @@ public class SymbolCommand extends AbstractCommand implements ShellCommand {
 		String[] args = arguments.split("\\s+");
 
 		if (args.length < 1 || args.length > 2) {
-			throw new RuntimeException("Invalid arguments for symbol command");
+			env.writeln("Invalid arguments for symbol command");
+			return ShellStatus.CONTINUE;
 		}
 
 		switch (args[0]) {
@@ -31,7 +36,7 @@ public class SymbolCommand extends AbstractCommand implements ShellCommand {
 				env.setPromptSymbol(newPrompt);
 				env.writeln("Symbol for PROMPT changed from '" + oldPrompt + "' to '" + newPrompt + "'");
 			} else {
-				throw new RuntimeException("Invalid arguments for symbol command.");
+				env.writeln("Invalid arguments for symbol command.");
 			}
 			break;
 
@@ -44,7 +49,7 @@ public class SymbolCommand extends AbstractCommand implements ShellCommand {
 				env.setMorelinesSymbol(newMorelines);
 				env.writeln("Symbol for MORELINES changed from '" + oldMorelines + "' to '" + newMorelines + "'");
 			} else {
-				throw new RuntimeException("Invalid arguments for symbol command.");
+				env.writeln("Invalid arguments for symbol command.");
 			}
 			break;
 		case "MULTILINE":
@@ -56,11 +61,11 @@ public class SymbolCommand extends AbstractCommand implements ShellCommand {
 				env.setMultilineSymbol(newMultiline);
 				env.writeln("Symbol for MULTILINE changed from " + oldMultiline + " to " + newMultiline + ".");
 			} else {
-				throw new RuntimeException("Invalid arguments for symbol command.");
+				env.writeln("Invalid arguments for symbol command.");
 			}
 			break;
 		default:
-			throw new RuntimeException("Invalid symbol identificator.");
+			env.writeln("Invalid symbol identificator.");
 		}
 
 		return ShellStatus.CONTINUE;

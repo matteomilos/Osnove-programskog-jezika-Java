@@ -17,7 +17,13 @@ import hr.fer.zemris.java.hw06.shell.ShellStatus;
 public class HexdumpCommand extends AbstractCommand implements ShellCommand {
 
 	public HexdumpCommand() {
-		super("hexdump", Arrays.asList("descr"));
+		super("hexdump",
+				Arrays.asList("The hexdump command expects a single argument:", "file name,",
+						"It produces hex-output of this file in this way:", "In the first column, there will be",
+						"hexadecimal line values.", "In the second and third column, there will be",
+						"hexadecimal representation of each charahter.", "In the fourth, last column, each charahter",
+						"will be shown in its normal representation. Characters",
+						"whose value is either less than 32 or greater than 127", "will be replaced with dots."));
 	}
 
 	@Override
@@ -37,7 +43,8 @@ public class HexdumpCommand extends AbstractCommand implements ShellCommand {
 		}
 
 		if (file.isDirectory()) {
-			throw new RuntimeException("Given path can't be represented as file");
+			env.writeln("Given path can't be represented as file.");
+			return ShellStatus.CONTINUE;
 		}
 
 		try (InputStream is = new BufferedInputStream(new FileInputStream(file))) {
@@ -55,7 +62,7 @@ public class HexdumpCommand extends AbstractCommand implements ShellCommand {
 				sb.append(createText(buffer, nRead));
 
 				printNum += BASE;
-				
+
 				sb.append("\n");
 
 			}
@@ -63,48 +70,48 @@ public class HexdumpCommand extends AbstractCommand implements ShellCommand {
 			env.writeln(sb.toString());
 
 		} catch (IOException e) {
-			throw new RuntimeException("File couldn't be read");
+			env.writeln("File does not exist.");
 		}
 
 		return ShellStatus.CONTINUE;
 	}
 
 	private String createText(byte[] buffer, int nRead) {
-		StringBuilder buff = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0, value; i < nRead; i++) {
 			value = buffer[i] & 0xff;
 			if (value < 32 || value > 127) {
-				buff.append('.');
+				sb.append('.');
 			} else {
-				buff.append((char) value);
+				sb.append((char) value);
 			}
 		}
 
-		return buff.toString();
+		return sb.toString();
 	}
 
 	private String bytesToHex(byte[] buffer, int nRead) {
-		StringBuilder buff = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < buffer.length; i++) {
 
 			if (i < nRead) {
 				if ((buffer[i] & 0xff) < 0x10) {
-					buff.append('0');
+					sb.append('0');
 				}
-				buff.append(Integer.toHexString(buffer[i] & 0xff).toUpperCase());
+				sb.append(Integer.toHexString(buffer[i] & 0xff).toUpperCase());
 			} else {
-				buff.append("  ");
+				sb.append("  ");
 			}
 
 			if (i == buffer.length / 2 - 1) {
-				buff.append("|");
+				sb.append("|");
 			} else {
-				buff.append(" ");
+				sb.append(" ");
 			}
 
 		}
-		return buff.append("| ").toString();
+		return sb.append("| ").toString();
 	}
 
 }

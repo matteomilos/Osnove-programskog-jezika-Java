@@ -5,15 +5,11 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.swing.ComponentInputMap;
 
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
@@ -22,25 +18,37 @@ import hr.fer.zemris.java.hw06.shell.ShellStatus;
 public class TreeCommand extends AbstractCommand implements ShellCommand {
 
 	public TreeCommand() {
-		super("tree", Arrays.asList("descr"));
+		super("tree",
+				Arrays.asList("The tree command expects a single argument:", "directory name",
+						"and prints a tree in a way that", "each directory level shifts output",
+						"two characters to the right."));
 	}
 
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 
+		if (arguments == null) {
+			env.writeln("You have to specify path for tree command.");
+			return ShellStatus.CONTINUE;
+		}
 		final Pattern pattern = Pattern.compile("\\s*((\"(.+)\")|(\\S+))\\s*");
 		final Matcher matcher = pattern.matcher(arguments.trim());
 
 		File file = null;
 		if (matcher.find()) {
-			file = (matcher.group(3) == null) ? new File(matcher.group(1)) : new File(matcher.group(3));
+			try {
+				file = (matcher.group(3) == null) ? new File(matcher.group(1)) : new File(matcher.group(3));
+			} catch (IllegalStateException | IndexOutOfBoundsException | NullPointerException exc) {
+				env.writeln("Invalid arguments for tree comand.");
+			}
 		} else {
 			env.writeln("Specified path is not valid.");
 			return ShellStatus.CONTINUE;
 		}
 
 		if (!file.isDirectory()) {
-			throw new RuntimeException("Specified path is not directory!");
+			env.writeln("Specified path is not directory!");
+			return ShellStatus.CONTINUE;
 		}
 
 		FileVisitor visitor = new FileVisitor(env);
@@ -48,8 +56,7 @@ public class TreeCommand extends AbstractCommand implements ShellCommand {
 		try {
 			Files.walkFileTree(file.toPath(), visitor);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			env.writeln(e.getMessage());
 		}
 
 		return ShellStatus.CONTINUE;

@@ -40,42 +40,41 @@ public class MyShell {
 
 	public static void main(String[] args) {
 
-		env.writeln("Welcome to MyShell v 1.0");
-		while (true) {
-			env.write(env.getPromptSymbol().toString()+" ");
-			String line = env.readLine().trim();
+		try {
+			env.writeln("Welcome to MyShell v 1.0");
+			while (true) {
+				env.write(env.getPromptSymbol().toString() + " ");
+				String line = env.readLine().trim();
 
-			while (line.endsWith(env.getMorelinesSymbol().toString())) {
-				env.write(env.getMultilineSymbol().toString()+ " ");
-				line = line.substring(0, line.length() - 1) + env.readLine().trim();
-			}
-			String command = null;
-			String argument = null;
-			if (line.contains(" ")) {
-				String[] split = line.split(" ", 2);
-				command = split[0];
-				argument = split[1];
-			} else {
-				command = line;
-			}
+				while (line.endsWith(env.getMorelinesSymbol().toString())) {
+					env.write(env.getMultilineSymbol().toString() + " ");
+					line = line.substring(0, line.length() - 1) + env.readLine().trim();
+				}
+				String command = null;
+				String argument = null;
+				if (line.contains(" ")) {
+					String[] split = line.split(" ", 2);
+					command = split[0];
+					argument = split[1];
+				} else {
+					command = line;
+				}
 
-			ShellCommand shellCommand = commands.get(command.toLowerCase());
-			if (shellCommand == null) {
-				env.writeln("Invalid command");
-				continue;
-			}
-
-			try {
+				ShellCommand shellCommand = commands.get(command.toLowerCase());
+				if (shellCommand == null) {
+					env.writeln("Command " + command + " does not exist. Type help to list existing commands.");
+					continue;
+				}
 				if (shellCommand.executeCommand(env, argument).equals(ShellStatus.TERMINATE)) {
 					break;
 				}
-			} catch (RuntimeException exc) {
-				env.writeln(exc.getMessage());
 			}
 
+			env.writeln("Goodbye");
+		} catch (ShellIOException exc) {
+			System.out.println("ShellIOException, terminating.");
+			System.exit(0);
 		}
-
-		env.writeln("Goodbye");
 
 	}
 
@@ -91,6 +90,11 @@ public class MyShell {
 
 		private char multilineSymbol = '|';
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see hr.fer.zemris.java.hw06.shell.Environment#readLine()
+		 */
 		@Override
 		public String readLine() throws ShellIOException {
 			String read;
@@ -102,6 +106,12 @@ public class MyShell {
 			return read;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * hr.fer.zemris.java.hw06.shell.Environment#write(java.lang.String)
+		 */
 		@Override
 		public void write(String text) throws ShellIOException {
 			try {
@@ -113,6 +123,12 @@ public class MyShell {
 
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * hr.fer.zemris.java.hw06.shell.Environment#writeln(java.lang.String)
+		 */
 		@Override
 		public void writeln(String text) throws ShellIOException {
 			try {
@@ -125,38 +141,79 @@ public class MyShell {
 
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see hr.fer.zemris.java.hw06.shell.Environment#commands()
+		 */
 		@Override
 		public SortedMap<String, ShellCommand> commands() {
 			return Collections.unmodifiableSortedMap(commands);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see hr.fer.zemris.java.hw06.shell.Environment#getMultilineSymbol()
+		 */
 		@Override
 		public Character getMultilineSymbol() {
 			return multilineSymbol;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * hr.fer.zemris.java.hw06.shell.Environment#setMultilineSymbol(java.
+		 * lang.Character)
+		 */
 		@Override
 		public void setMultilineSymbol(Character symbol) {
 			this.multilineSymbol = symbol;
 
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see hr.fer.zemris.java.hw06.shell.Environment#getPromptSymbol()
+		 */
 		@Override
 		public Character getPromptSymbol() {
 			return promptSymbol;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * hr.fer.zemris.java.hw06.shell.Environment#setPromptSymbol(java.lang.
+		 * Character)
+		 */
 		@Override
 		public void setPromptSymbol(Character symbol) {
 			this.promptSymbol = symbol;
 
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see hr.fer.zemris.java.hw06.shell.Environment#getMorelinesSymbol()
+		 */
 		@Override
 		public Character getMorelinesSymbol() {
 			return moreLinesSymbol;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * hr.fer.zemris.java.hw06.shell.Environment#setMorelinesSymbol(java.
+		 * lang.Character)
+		 */
 		@Override
 		public void setMorelinesSymbol(Character symbol) {
 			this.moreLinesSymbol = symbol;

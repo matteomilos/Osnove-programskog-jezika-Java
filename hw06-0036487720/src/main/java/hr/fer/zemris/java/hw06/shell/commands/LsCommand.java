@@ -22,11 +22,11 @@ import hr.fer.zemris.java.hw06.shell.ShellStatus;
 public class LsCommand extends AbstractCommand implements ShellCommand {
 
 	public LsCommand() {
-		super("ls", Arrays.asList("descr"));
-	}
-
-	public static void main(String[] args) {
-
+		super("ls", Arrays.asList("The ls command takes a single argument - directory",
+				"and writes a directory listing.", "Output consists of four columns.",
+				"First column indicates if current object is", "directory (d)", "readable (r)", "writable(w) and",
+				"executable (x)", "Second column contains object size in bytes.",
+				"Third column contains file creation date and time.", "Fourth, last column contains file name."));
 	}
 
 	@Override
@@ -38,13 +38,13 @@ public class LsCommand extends AbstractCommand implements ShellCommand {
 		Path path = null;
 		if (matcher.find()) {
 			path = (matcher.group(3) == null) ? Paths.get(matcher.group(1)) : Paths.get(matcher.group(3));
-		}
-		else{
+		} else {
 			env.writeln("Specified path is not valid.");
 			return ShellStatus.CONTINUE;
 		}
 		if (!Files.isDirectory(path)) {
-			throw new RuntimeException("Specified path is not directory!");
+			env.writeln("Specified path is not directory!");
+			return ShellStatus.CONTINUE;
 		}
 
 		File[] files = path.toFile().listFiles();

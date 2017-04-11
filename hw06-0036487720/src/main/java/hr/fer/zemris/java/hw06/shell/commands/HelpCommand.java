@@ -10,7 +10,11 @@ import hr.fer.zemris.java.hw06.shell.ShellStatus;
 public class HelpCommand extends AbstractCommand implements ShellCommand {
 
 	public HelpCommand() {
-		super("help", Arrays.asList("descr"));
+		super("help",
+				Arrays.asList("The help command can be started with one or no arguments.",
+						"If started with no arguments, it will", "list names of all suported commands.",
+						"If started with single argument, it will", "print name and the description of",
+						"the selected command."));
 	}
 
 	@Override
@@ -29,11 +33,13 @@ public class HelpCommand extends AbstractCommand implements ShellCommand {
 
 			if (shellCommand != null) {
 
-				env.write(command + "\t");
+				env.write(command);
 
 				for (String string : shellCommand.getCommandDescription()) {
-					env.writeln(string);
+					env.writeln("\t\t" + string);
 				}
+			} else {
+				env.writeln("That command doesn't exist.");
 			}
 
 		}

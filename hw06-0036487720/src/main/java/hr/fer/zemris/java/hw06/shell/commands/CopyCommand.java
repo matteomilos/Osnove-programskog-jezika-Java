@@ -18,21 +18,20 @@ import hr.fer.zemris.java.hw06.shell.ShellStatus;
 public class CopyCommand extends AbstractCommand implements ShellCommand {
 
 	public CopyCommand() {
-		super("copy", Arrays.asList("descr"));
+		super("copy", Arrays.asList("The copy command expects two arguments:", "source file name", "and",
+				"destination file name.", "If destination file exists, you must choose do you want to overwrite it.",
+				"First argument mustn't be directory.", "Second argument can be directory and",
+				"it will be assumed that you want to copy", "the original file into that directory using",
+				"the original file name."));
 	}
 
-	public static void main(String[] args) {
-		final Pattern pattern = Pattern.compile("\\s*((\"(.+)\")|(\\S+))\\s+((\"(.+)\")|(\\S+))");
-		final Matcher matcher = pattern.matcher("C:/ProgramFiles/Program1/info.txt \"C:/tmp/informacije.txt\"");
-
-		while (matcher.find()) {
-			System.out.println(matcher.group(0));
-			for (int i = 1; i < matcher.groupCount(); i++) {
-				System.out.println("Group " + i + ":" + matcher.group(i));
-			}
-		}
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.
+	 * java.hw06.shell.Environment, java.lang.String)
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 
@@ -55,6 +54,10 @@ public class CopyCommand extends AbstractCommand implements ShellCommand {
 			env.writeln("Origin and destination paths are equals");
 		}
 
+		if (file2.isDirectory()) {
+			file2 = new File(file2.getAbsolutePath().toString(), file1.getName());
+		}
+
 		if (file2.exists()) {
 			env.writeln("Do you want to overwrite destination file? (YES\\NO)");
 			env.write(env.getPromptSymbol() + " ");
@@ -62,10 +65,6 @@ public class CopyCommand extends AbstractCommand implements ShellCommand {
 			if (!answer.toLowerCase().equals("yes")) {
 				return ShellStatus.CONTINUE;
 			}
-		}
-
-		if (file2.isDirectory()) {
-			file2 = new File(file2.getAbsolutePath().toString(), file1.getName());
 		}
 
 		try (InputStream inStream = new BufferedInputStream(Files.newInputStream(file1.toPath()));
@@ -77,7 +76,7 @@ public class CopyCommand extends AbstractCommand implements ShellCommand {
 			}
 			env.writeln("File has been copied successfully!");
 		} catch (IOException exception) {
-			throw new RuntimeException("Copy command. Could not access given files.");
+			env.writeln("Copying unsuccesful. Couldn't acces given files.");
 		}
 
 		return ShellStatus.CONTINUE;

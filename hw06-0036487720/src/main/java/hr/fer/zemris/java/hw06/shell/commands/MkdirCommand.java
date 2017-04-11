@@ -12,7 +12,8 @@ import hr.fer.zemris.java.hw06.shell.ShellStatus;
 public class MkdirCommand extends AbstractCommand implements ShellCommand {
 
 	public MkdirCommand() {
-		super("mkdir", Arrays.asList("descr"));
+		super("mkdir", Arrays.asList("The mkdir command takes a single argument:", "directory name",
+				"and creates appropriate directory structure."));
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class MkdirCommand extends AbstractCommand implements ShellCommand {
 		if (file.mkdirs()) {
 			env.writeln("Directory structure successfully created.");
 		} else {
-			throw new RuntimeException("Specified directory structure could not be created.");
+			env.writeln("Specified directory structure could not be created.");
 		}
 
 		return ShellStatus.CONTINUE;
