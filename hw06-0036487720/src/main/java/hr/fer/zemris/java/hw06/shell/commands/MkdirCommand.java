@@ -6,11 +6,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import hr.fer.zemris.java.hw06.shell.Environment;
+import hr.fer.zemris.java.hw06.shell.MyShell;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+/**
+ * Command/class <code>MkdirCommand</code> is used in {@linkplain MyShell} class
+ * for creating new directory and appropriate directory structure from given
+ * arguments.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class MkdirCommand extends AbstractCommand implements ShellCommand {
 
+	/**
+	 * Public constructor used for creating a new mkdir command
+	 */
 	public MkdirCommand() {
 		super("mkdir", Arrays.asList("The mkdir command takes a single argument:", "directory name",
 				"and creates appropriate directory structure."));
@@ -19,7 +31,12 @@ public class MkdirCommand extends AbstractCommand implements ShellCommand {
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 
-		final Pattern pattern = Pattern.compile("\\s*((\"(.+)\")|(\\S+))\\s*");
+		if (arguments == null) {
+			env.writeln("You must provide arguments for this command.");
+			return ShellStatus.CONTINUE;
+		}
+
+		final Pattern pattern = Pattern.compile(REGEX_FOR_READING_FILEPATH);
 		final Matcher matcher = pattern.matcher(arguments.trim());
 
 		File file = null;

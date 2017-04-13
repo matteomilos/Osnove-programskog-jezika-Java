@@ -20,13 +20,14 @@ public class Util {
 	 * @return byte array that represents given hex string
 	 */
 	public static byte[] hextobyte(String hexString) {
-		String helper;
-		byte[] b = new byte[hexString.length() / 2];
-		for (int i = 0; i < hexString.length() / 2; i++) {
-			helper = hexString.substring(i * 2, i * 2 + 2);
-			b[i] = (byte) (Integer.parseInt(helper, 16) & 0xff);
+		int len = hexString.length();
+		byte[] data = new byte[len / 2];
+
+		for (int i = 0; i < len; i += 2) {
+			data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
+					+ Character.digit(hexString.charAt(i + 1), 16));
 		}
-		return b;
+		return data;
 	}
 
 	/**

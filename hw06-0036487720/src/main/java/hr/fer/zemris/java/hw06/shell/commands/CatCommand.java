@@ -15,11 +15,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import hr.fer.zemris.java.hw06.shell.Environment;
+import hr.fer.zemris.java.hw06.shell.MyShell;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+/**
+ * Command/class <code>CatCommand</code> is used in {@linkplain MyShell} class
+ * for printing the content of some file to the standard output. Printing can be
+ * executed either by using default charset or by the one that user provided (if
+ * it has provided it).
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class CatCommand extends AbstractCommand implements ShellCommand {
 
+	/**
+	 * Public constructor used for creating a new cat command
+	 */
 	public CatCommand() {
 		super("cat",
 				Arrays.asList("Command takes one or two arguments. ",
@@ -30,11 +43,24 @@ public class CatCommand extends AbstractCommand implements ShellCommand {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.
+	 * java.hw06.shell.Environment, java.lang.String)
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
+		if (arguments == null) {
+			env.writeln("You must provide arguments for this command.");
+			return ShellStatus.CONTINUE;
+		}
 
-		final Pattern pattern = Pattern.compile("\\s*((\"(.+)\")|(\\S+))(\\s+(\\S*))?\\s*");
-		final Matcher matcher = pattern.matcher(arguments);
+		final String REGEX_FOR_READING_CHARSET_NAME = "(\\s+(\\S*))?\\s*";
+
+		final Pattern pattern = Pattern.compile(REGEX_FOR_READING_FILEPATH + REGEX_FOR_READING_CHARSET_NAME);
+		final Matcher matcher = pattern.matcher(arguments.trim());
 
 		Path file = null;
 		Charset charset = null;

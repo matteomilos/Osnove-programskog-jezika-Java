@@ -4,11 +4,22 @@ import java.util.Arrays;
 import java.util.SortedMap;
 
 import hr.fer.zemris.java.hw06.shell.Environment;
+import hr.fer.zemris.java.hw06.shell.MyShell;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+/**
+ * Command/class <code>ExitCommand</code> is used in {@linkplain MyShell} class
+ * for listing names and descriptions of command supported by shell.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class HelpCommand extends AbstractCommand implements ShellCommand {
 
+	/**
+	 * Public constructor used for creating a new help command
+	 */
 	public HelpCommand() {
 		super("help",
 				Arrays.asList("The help command can be started with one or no arguments.",

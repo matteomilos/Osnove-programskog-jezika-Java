@@ -3,11 +3,32 @@ package hr.fer.zemris.java.hw06.shell.commands;
 import java.util.Arrays;
 
 import hr.fer.zemris.java.hw06.shell.Environment;
+import hr.fer.zemris.java.hw06.shell.MyShell;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+/**
+ * Command/class <code>SymbolCommand</code> is used in {@linkplain MyShell}
+ * class for displaying and modifying current command line symbols used by
+ * shell.
+ * 
+ * <ul>
+ * <li>PROMPT symbol is displayed at the beginning of each command.</li>
+ * <li>MORELINES symbol informs shell that more lines of command are expected.
+ * </li>
+ * <li>MULTILINE symbol is displayed for each line that is part of multi-line
+ * command (except for the first one) at the beginning, followed by a single
+ * whitespace.</li>
+ * </ul>
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class SymbolCommand extends AbstractCommand implements ShellCommand {
 
+	/**
+	 * Public constructor used for creating a new symbol command
+	 */
 	public SymbolCommand() {
 		super("symbol", Arrays.asList("The symbol command takes either one or two arguments.",
 				"If it takes one argument, it has to be one of these:", "PROMPT", "MORELINES", "MULTILINE",
@@ -18,6 +39,11 @@ public class SymbolCommand extends AbstractCommand implements ShellCommand {
 
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
+
+		if (arguments == null) {
+			env.writeln("You must provide arguments for this command.");
+			return ShellStatus.CONTINUE;
+		}
 
 		String[] args = arguments.split("\\s+");
 

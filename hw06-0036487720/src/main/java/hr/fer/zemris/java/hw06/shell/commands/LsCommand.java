@@ -16,11 +16,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import hr.fer.zemris.java.hw06.shell.Environment;
+import hr.fer.zemris.java.hw06.shell.MyShell;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+/**
+ * Command/class <code>LsCommand</code> is used in {@linkplain MyShell} class
+ * for displaying detailed directory listing for passed directory.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class LsCommand extends AbstractCommand implements ShellCommand {
 
+	/**
+	 * Public constructor used for creating a new ls command
+	 */
 	public LsCommand() {
 		super("ls", Arrays.asList("The ls command takes a single argument - directory",
 				"and writes a directory listing.", "Output consists of four columns.",
@@ -32,7 +43,12 @@ public class LsCommand extends AbstractCommand implements ShellCommand {
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 
-		final Pattern pattern = Pattern.compile("\\s*((\"(.+)\")|(\\S+))\\s*");
+		if (arguments == null) {
+			env.writeln("You must provide arguments for this command.");
+			return ShellStatus.CONTINUE;
+		}
+
+		final Pattern pattern = Pattern.compile(REGEX_FOR_READING_FILEPATH);
 		final Matcher matcher = pattern.matcher(arguments.trim());
 
 		Path path = null;
@@ -49,14 +65,24 @@ public class LsCommand extends AbstractCommand implements ShellCommand {
 
 		File[] files = path.toFile().listFiles();
 		for (File file : files) {
-			env.writeln(printfile(file));
+			env.writeln(printfile(file, env));
 		}
 
 		return ShellStatus.CONTINUE;
 
 	}
 
-	private String printfile(File file) {
+	/**
+	 * Prints given file by analyzing it's properties and passing formated
+	 * output, detailed view, to the given environment.
+	 * 
+	 * @param env
+	 *            environment
+	 * @param file
+	 *            file to be analyzed
+	 * @return String String representation of file information
+	 */
+	private String printfile(File file, Environment env) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Path path = Paths.get(file.getAbsolutePath());
@@ -76,7 +102,7 @@ public class LsCommand extends AbstractCommand implements ShellCommand {
 			sb.append(" ").append(file.getName());
 			return sb.toString();
 		} catch (IOException e) {
-			throw new RuntimeException("Could not read file attributes");
+			return "Could not read file attributes";
 		}
 	}
 

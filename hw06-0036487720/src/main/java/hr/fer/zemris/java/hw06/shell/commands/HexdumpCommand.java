@@ -5,17 +5,27 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import hr.fer.zemris.java.hw06.shell.Environment;
+import hr.fer.zemris.java.hw06.shell.MyShell;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+/**
+ * Command/class <code>HexdumpCommand</code> is used in {@linkplain MyShell}
+ * class for producing hex-output of given file.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class HexdumpCommand extends AbstractCommand implements ShellCommand {
 
+	/**
+	 * Public constructor used for creating a new help command
+	 */
 	public HexdumpCommand() {
 		super("hexdump",
 				Arrays.asList("The hexdump command expects a single argument:", "file name,",
@@ -29,9 +39,14 @@ public class HexdumpCommand extends AbstractCommand implements ShellCommand {
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 
+		if (arguments == null) {
+			env.writeln("You must provide arguments for this command.");
+			return ShellStatus.CONTINUE;
+		}
+
 		final int BASE = 16;
 
-		final Pattern pattern = Pattern.compile("\\s*((\"(.+)\")|(\\S+))\\s*");
+		final Pattern pattern = Pattern.compile(REGEX_FOR_READING_FILEPATH);
 		final Matcher matcher = pattern.matcher(arguments.trim());
 
 		File file = null;
@@ -76,6 +91,17 @@ public class HexdumpCommand extends AbstractCommand implements ShellCommand {
 		return ShellStatus.CONTINUE;
 	}
 
+	/**
+	 * Private method used to create text representation of the given byte
+	 * array. All the bytes whose value is either less than 32 or greater than
+	 * 127 will be represented as '.'.
+	 * 
+	 * @param buffer
+	 *            byte array
+	 * @param nRead
+	 *            number of characters to be printed.
+	 * @return text
+	 */
 	private String createText(byte[] buffer, int nRead) {
 		StringBuilder sb = new StringBuilder();
 
@@ -91,6 +117,16 @@ public class HexdumpCommand extends AbstractCommand implements ShellCommand {
 		return sb.toString();
 	}
 
+	/**
+	 * Private method used for getting hexadecimal representation of given
+	 * array.
+	 * 
+	 * @param buffer
+	 *            byte array
+	 * @param nRead
+	 *            number of characters to be printed.
+	 * @return text
+	 */
 	private String bytesToHex(byte[] buffer, int nRead) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < buffer.length; i++) {

@@ -89,9 +89,11 @@ public class Crypto {
 		Scanner sc = new Scanner(System.in);
 
 		System.out.println("Please provide password as hex-encoded text (16 bytes, i.e. 32 hex-digits): ");
+		System.out.print(">");
 		String keyText = sc.nextLine();
 
 		System.out.println("Please provide initialization vector as hex-encoded text (32 hex-digits): ");
+		System.out.print(">");
 		String ivText = sc.nextLine();
 		sc.close();
 
@@ -143,9 +145,9 @@ public class Crypto {
 		}
 
 		if (encrypt) {
-			System.out.printf("Encryption completed. Generated file %s based on file %s.\n", filename, cryptedFilename);
+			System.out.printf("Encryption completed. Generated file %s based on file %s.\n", cryptedFilename, filename);
 		} else {
-			System.out.printf("Decryption completed. Generated file %s based on file %s.\n", filename, cryptedFilename);
+			System.out.printf("Decryption completed. Generated file %s based on file %s.\n", cryptedFilename, filename);
 		}
 
 	}
@@ -189,6 +191,7 @@ public class Crypto {
 
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please provide expected sha-256 digest for hw06part2.pdf: ");
+		System.out.print(">");
 		String expectedDigest = sc.nextLine();
 		sc.close();
 

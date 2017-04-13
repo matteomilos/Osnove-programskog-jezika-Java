@@ -12,11 +12,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import hr.fer.zemris.java.hw06.shell.Environment;
+import hr.fer.zemris.java.hw06.shell.MyShell;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+/**
+ * Command/class <code>CopyCommand</code> is used in {@linkplain MyShell} class
+ * for copying some file from one to the other location. User provides two
+ * arguments, first is the location of the file, and second is location of the
+ * copied file. Second argument also can be a directory.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class CopyCommand extends AbstractCommand implements ShellCommand {
 
+	/**
+	 * Public constructor used for creating a new copy command
+	 */
 	public CopyCommand() {
 		super("copy", Arrays.asList("The copy command expects two arguments:", "source file name", "and",
 				"destination file name.", "If destination file exists, you must choose do you want to overwrite it.",
@@ -35,7 +48,12 @@ public class CopyCommand extends AbstractCommand implements ShellCommand {
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 
-		final Pattern pattern = Pattern.compile("\\s*((\"(.+)\")|(\\S+))\\s+((\"(.+)\")|(\\S+))");
+		if (arguments == null) {
+			env.writeln("You must provide arguments for this command.");
+			return ShellStatus.CONTINUE;
+		}
+
+		final Pattern pattern = Pattern.compile(REGEX_FOR_READING_FILEPATH + "\\s+" + REGEX_FOR_READING_FILEPATH);
 		final Matcher matcher = pattern.matcher(arguments.trim());
 
 		File file1 = null;
