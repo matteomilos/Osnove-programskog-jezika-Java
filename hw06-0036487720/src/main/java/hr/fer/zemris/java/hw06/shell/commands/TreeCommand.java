@@ -66,7 +66,7 @@ public class TreeCommand extends AbstractCommand implements ShellCommand {
 
 		try {
 			Files.walkFileTree(file.toPath(), visitor);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			env.writeln(e.getMessage());
 		}
 
@@ -122,7 +122,9 @@ public class TreeCommand extends AbstractCommand implements ShellCommand {
 		 */
 		private void print(Path directory) {
 			if (indent == 0) {
+				System.out.println("biotu");
 				env.writeln(directory.getFileName().toString());
+				System.out.println("biotu");
 			} else {
 				env.writeln(String.format("%" + indent + "s%s", "", directory.getFileName()));
 			}

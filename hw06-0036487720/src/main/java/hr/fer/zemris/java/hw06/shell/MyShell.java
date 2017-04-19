@@ -2,9 +2,11 @@ package hr.fer.zemris.java.hw06.shell;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -66,6 +68,13 @@ public class MyShell {
 	 */
 	public static void main(String[] args) {
 
+		File file = new File("D:/Program Files/");
+
+		Path path = file.toPath();
+
+		System.out.println(path.getFileName().toString());
+		
+		
 		try {
 			env.writeln("Welcome to MyShell v 1.0");
 			while (true) {
