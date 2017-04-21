@@ -2,12 +2,13 @@ package demo;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import hr.fer.zemris.bf.model.Node;
 import hr.fer.zemris.bf.parser.Parser;
 import hr.fer.zemris.bf.utils.Util;
 import hr.fer.zemris.bf.utils.VariablesGetter;
+
+@SuppressWarnings("javadoc")
 
 public class UtilDemo1 {
 

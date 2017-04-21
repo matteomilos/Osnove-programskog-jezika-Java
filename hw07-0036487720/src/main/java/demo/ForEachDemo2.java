@@ -9,6 +9,7 @@ import hr.fer.zemris.bf.utils.ExpressionEvaluator;
 import hr.fer.zemris.bf.utils.Util;
 import hr.fer.zemris.bf.utils.VariablesGetter;
 
+@SuppressWarnings("javadoc")
 public class ForEachDemo2 {
 
 	public static void main(String[] args) {

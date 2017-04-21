@@ -8,10 +8,11 @@ import hr.fer.zemris.bf.model.VariableNode;
 import hr.fer.zemris.bf.parser.Parser;
 
 /**
- * Visitor that implements interface {@link NodeVisitor}. It is used for
- * printing content of the tree that we got using the {@link Parser} class. It
- * minds parent-child relation of the nodes and based on that prints indentation
- * before the node value (parent and child are separated with two spaces).
+ * Visitor <code>ExpressionTreePrinter</code> implements interface
+ * {@link NodeVisitor}. It is used for printing content of the tree that we got
+ * using the {@link Parser} class. It minds parent-child relation of the nodes
+ * and based on that prints indentation before the node value (parent and child
+ * are separated with two spaces).
  * 
  * @author Matteo Miloš
  *

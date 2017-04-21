@@ -1,37 +1,40 @@
 package hr.fer.zemris.bf.model;
 
+import hr.fer.zemris.bf.parser.Parser;
 import hr.fer.zemris.bf.utils.NodeVisitor;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class VariableNode.
+ * Implementation of the interface {@link Node}, represents variable in the
+ * expression which was gotten from {@link Parser}. Variable is represented with
+ * its name which can be any instance of the {@link String}.
+ * 
+ * @author Matteo Miloš
+ *
  */
 public class VariableNode implements Node {
 
-	/** The name. */
+	/** Name of the variable */
 	private String name;
 
 	/**
-	 * Instantiates a new variable node.
-	 *
-	 * @param name the name
+	 * Public constructor that initializes variable to the given name.
+	 * 
+	 * @param name
+	 *            name of the variable
 	 */
 	public VariableNode(String name) {
 		this.name = name;
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.bf.model.Node#accept(hr.fer.zemris.bf.utils.NodeVisitor)
-	 */
 	@Override
 	public void accept(NodeVisitor visitor) {
 		visitor.visit(this);
 	}
 
 	/**
-	 * Gets the name.
-	 *
-	 * @return the name
+	 * Public getter method used for returning name of the variable.
+	 * 
+	 * @return name of the variable
 	 */
 	public String getName() {
 		return name;

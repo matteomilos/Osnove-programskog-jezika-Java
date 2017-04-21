@@ -1,17 +1,23 @@
 package hr.fer.zemris.bf.model;
 
+import hr.fer.zemris.bf.parser.Parser;
 import hr.fer.zemris.bf.utils.NodeVisitor;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Interface Node.
+ * Interface representing node one one of the tree generated from the logical
+ * expression in {@link Parser}.
+ * 
+ * @author Matteo Miloš
+ *
  */
 public interface Node {
 
 	/**
-	 * Accept.
-	 *
-	 * @param visitor the visitor
+	 * Only method of the interface <code>Node</code>, represents method that
+	 * will be done after visiting this node.
+	 * 
+	 * @param visitor
+	 *            visitor used for visiting this node
 	 */
 	void accept(NodeVisitor visitor);
 

@@ -3,7 +3,6 @@ package hr.fer.zemris.bf.parser;
 import java.util.ArrayList;
 
 import hr.fer.zemris.bf.lexer.Lexer;
-import hr.fer.zemris.bf.lexer.LexerException;
 import hr.fer.zemris.bf.lexer.Token;
 import hr.fer.zemris.bf.lexer.TokenType;
 import hr.fer.zemris.bf.model.BinaryOperatorNode;
@@ -70,7 +69,7 @@ public class Parser {
 		try {
 			parse();
 
-		} catch (LexerException e) {
+		} catch (Exception e) {
 			throw new ParserException("Lexer has thrown exception: " + e.getMessage());
 		}
 	}
@@ -145,10 +144,8 @@ public class Parser {
 			if (endOfOperator("or")) {
 				return orNode;
 			}
-
 		}
 		return node;
-
 	}
 
 	/**
@@ -169,6 +166,7 @@ public class Parser {
 		if (lexer.getToken().getTokenValue() == null) {
 			return node;
 		}
+
 		ArrayList<Node> children = new ArrayList<>();
 		children.add(node);
 		while (lexer.getToken().getTokenValue().equals("xor")) {
@@ -183,7 +181,6 @@ public class Parser {
 			}
 		}
 		return node;
-
 	}
 
 	/**

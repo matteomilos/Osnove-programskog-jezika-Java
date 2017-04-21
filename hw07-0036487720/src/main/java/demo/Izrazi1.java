@@ -5,6 +5,8 @@ import hr.fer.zemris.bf.lexer.LexerException;
 import hr.fer.zemris.bf.lexer.Token;
 import hr.fer.zemris.bf.lexer.TokenType;
 
+@SuppressWarnings("javadoc")
+
 public class Izrazi1 {
 
 	public static void main(String[] args) {
