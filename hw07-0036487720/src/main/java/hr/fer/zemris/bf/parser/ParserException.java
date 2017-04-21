@@ -1,22 +1,22 @@
-package hr.fer.zemris.bf.lexer;
+package hr.fer.zemris.bf.parser;
 
 /**
- * Class <code>LexerException</code> represents exception that is thrown in case
- * of error in lexical analysis of text. It is derived from
+ * Class <code>ParserException</code> represents exception that is thrown in
+ * case of error in syntax analysis of text. It is derived from
  * {@linkplain RuntimeException}.
  * 
  * @author Matteo Miloš
  *
  */
-public class LexerException extends RuntimeException {
+public class ParserException extends RuntimeException {
 
 	/** Generated serialVersionUID */
-	private static final long serialVersionUID = -1793002611864185529L;
+	private static final long serialVersionUID = -921539956905845634L;
 
 	/**
 	 * Default public constructor, delegates its work to superclass constructor.
 	 */
-	public LexerException() {
+	public ParserException() {
 		super();
 	}
 
@@ -27,7 +27,7 @@ public class LexerException extends RuntimeException {
 	 * @param message
 	 *            message that explains exception
 	 */
-	public LexerException(String message) {
+	public ParserException(String message) {
 		super(message);
 	}
 
