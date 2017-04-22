@@ -3,6 +3,7 @@ package hr.fer.zemris.bf.parser;
 import java.util.ArrayList;
 
 import hr.fer.zemris.bf.lexer.Lexer;
+import hr.fer.zemris.bf.lexer.LexerException;
 import hr.fer.zemris.bf.lexer.Token;
 import hr.fer.zemris.bf.lexer.TokenType;
 import hr.fer.zemris.bf.model.BinaryOperatorNode;
@@ -23,14 +24,17 @@ import hr.fer.zemris.bf.model.VariableNode;
  * logical expression.
  * 
  * This parser will be constructed as a recursive descent parser and will use
- * following grammar:
+ * following grammar (uppercase - NONTERMINAL SYMBOLS, lowercase or in single
+ * quotation marks - 'terminal symbols'):
  * 
- * 		S  -> E1
- * 		E1 -> E2 (OR E2)* 
- * 		E2 -> E3 (XOR E3)* 
- * 		E3 -> E4 (AND E4)* 
- * 		E4 -> NOT E4 | E5 
- * 		E5 -> VAR | KONST | '(' E1 ')'
+ * <ul>
+ *		<li>			S  -> E1							</li>
+ * 		<li>			E1 -> E2 (or E2)*					</li>
+ * 		<li>			E2 -> E3 (xor E3)*					</li>
+ * 		<li>			E3 -> E4 (and E4)*					</li>
+ * 		<li>			E4 -> not E4 | E5					</li>
+ *		<li>			E5 -> var | konst | '(' E1 ')'		</li>
+ * </ul>
  * 
  * Private methods {@link Parser#startParsing()}, {@link Parser#e1()},
  * {@link Parser#e2()}, {@link Parser#e3()}, {@link Parser#e4()},
@@ -69,8 +73,10 @@ public class Parser {
 		try {
 			parse();
 
-		} catch (Exception e) {
+		} catch (LexerException e) {
 			throw new ParserException("Lexer has thrown exception: " + e.getMessage());
+		} catch (Exception e) {
+			throw new ParserException(e.getMessage());
 		}
 	}
 
