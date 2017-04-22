@@ -5,10 +5,7 @@ import hr.fer.zemris.bf.parser.Parser;
 import hr.fer.zemris.bf.parser.ParserException;
 import hr.fer.zemris.bf.utils.VariablesGetter;
 
-/**
- * @author Matteo Miloš
- *
- */
+@SuppressWarnings("javadoc")
 public class Izrazi3 {
 
 	public static void main(String[] args) {
