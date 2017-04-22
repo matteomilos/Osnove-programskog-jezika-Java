@@ -5,7 +5,6 @@ import hr.fer.zemris.bf.parser.ParserException;
 import hr.fer.zemris.bf.utils.ExpressionTreePrinter;
 
 @SuppressWarnings("javadoc")
-
 public class Izrazi2 {
 
 	public static void main(String[] args) {

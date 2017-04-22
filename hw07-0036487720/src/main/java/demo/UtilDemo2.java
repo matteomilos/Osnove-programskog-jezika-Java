@@ -10,7 +10,6 @@ import hr.fer.zemris.bf.utils.Util;
 import hr.fer.zemris.bf.utils.VariablesGetter;
 
 @SuppressWarnings("javadoc")
-
 public class UtilDemo2 {
 
 	public static void main(String[] args) {
@@ -21,11 +20,11 @@ public class UtilDemo2 {
 		expression.accept(getter);
 
 		List<String> variables = getter.getVariables();
-		System.out.println("Mintermi f(" + variables + "): " + Util.toProductOfMaxterms(variables, expression));
+		System.out.println("Mintermi f(" + variables + "): " + Util.toSumOfMinterms(variables, expression));
 
 		List<String> variables2 = new ArrayList<>(variables);
 		Collections.reverse(variables2);
-		System.out.println("Mintermi f(" + variables2 + "): " + Util.toProductOfMaxterms(variables2, expression));
+		System.out.println("Mintermi f(" + variables2 + "): " + Util.toSumOfMinterms(variables2, expression));
 	}
 
 }

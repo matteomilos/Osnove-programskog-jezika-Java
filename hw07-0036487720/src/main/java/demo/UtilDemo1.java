@@ -9,7 +9,6 @@ import hr.fer.zemris.bf.utils.Util;
 import hr.fer.zemris.bf.utils.VariablesGetter;
 
 @SuppressWarnings("javadoc")
-
 public class UtilDemo1 {
 
 	public static void main(String[] args) {
