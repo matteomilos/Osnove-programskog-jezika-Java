@@ -75,9 +75,7 @@ public class Parser {
 
 		} catch (LexerException e) {
 			throw new ParserException("Lexer has thrown exception: " + e.getMessage());
-		} catch (Exception e) {
-			throw new ParserException(e.getMessage());
-		}
+		} 
 	}
 
 	/**

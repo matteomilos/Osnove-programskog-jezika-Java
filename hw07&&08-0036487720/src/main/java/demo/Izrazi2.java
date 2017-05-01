@@ -11,7 +11,8 @@ public class Izrazi2 {
 		String[] expressions = new String[] { "0", "tRue", "Not a", "A aNd b", "a or b", "a xoR b", "A and b * c",
 				"a or b or c", "a xor b :+: c", "not not a", "a or b xor c and d", "a or b xor c or d",
 				"a xor b or c xor d", "(a + b) xor (c or d)", "(d or b) xor not (a or c)", "(c or d) mor not (a or b)",
-				"not a not b", "a and (b or", "a and (b or c", "a and 10" };
+				"not a not b", "a and (b or", "a and (b or c", "a and 10",
+				"A AND C OR NOT A AND NOT C AND NOT D OR NOT A OR NOT B OR D" };
 
 		for (String expr : expressions) {
 			System.out.println("==================================");

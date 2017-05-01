@@ -32,7 +32,7 @@ public class Util {
 	public static void forEach(List<String> variables, Consumer<boolean[]> consumer) {
 		int length = variables.size();
 		int rows = (int) Math.pow(2, length);
-		boolean[] bol = new boolean[3];
+		boolean[] bol = new boolean[variables.size()];
 
 		for (int i = 0; i < rows; i++) {
 			for (int j = length - 1; j >= 0; j--) {
@@ -158,6 +158,29 @@ public class Util {
 	 */
 	private static boolean calculateBoolean(int i, int j) {
 		return ((i / (int) Math.pow(2, j)) % 2) == 1;
+	}
+
+	/**
+	 * Method used for converting integer to binary notation using format of
+	 * given <code>n</code> bits. For storing each digit is used byte array.
+	 * 
+	 * @param x
+	 *            integer number to be converted
+	 * @param n
+	 *            number of bits of binary notation
+	 * @return int number converted to byte array
+	 */
+	public static byte[] indexToByteArray(int x, int n) {
+		if (n < 1) {
+			throw new IllegalArgumentException("Given number of bits has to be greater than 0.");
+		}
+		byte[] bits = new byte[n];
+
+		for (int i = n - 1; i >= 0; i--) {
+			bits[n - 1 - i] = (byte) ((x & (1 << i)) == 0 ? 0 : 1);
+		}
+
+		return bits;
 	}
 
 }
