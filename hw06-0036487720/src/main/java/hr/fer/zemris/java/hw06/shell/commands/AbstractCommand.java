@@ -59,6 +59,6 @@ public abstract class AbstractCommand implements ShellCommand {
 	@Override
 	public List<String> getCommandDescription() {
 		return Collections.unmodifiableList(description);
-	}
 
+	}
 }
