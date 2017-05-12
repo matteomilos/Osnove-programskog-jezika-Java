@@ -1,0 +1,6 @@
+Fancy boys in the coffeeshop
+Hairstyle
+30,8 2,20 3,22 4,10 5,-4 1,2 34,22 -200,13
+-10
+222
+20

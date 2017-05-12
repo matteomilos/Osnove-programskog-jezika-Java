@@ -22,7 +22,7 @@ import hr.fer.zemris.math.ComplexRootedPolynomial;
  * This class represents Newton-Rhapson iteration used to extended to complex
  * functions and to systems of equations.
  * 
- * In numerical analysis, Newton's method (also known as the Newton–Raphson
+ * In numerical analysis, Newton's method (also known as the Newtonï¿½Raphson
  * method), named after Isaac Newton and Joseph Raphson, is a method for finding
  * successively better approximations to the roots (or zeroes) of a real-valued
  * function.
@@ -31,7 +31,7 @@ import hr.fer.zemris.math.ComplexRootedPolynomial;
  *  x : f(x) = 0
  * </pre>
  * 
- * The Newton–Raphson method in one variable is implemented as follows:
+ * The Newtonï¿½Raphson method in one variable is implemented as follows:
  * 
  * The method starts with a function f defined over the real numbers x, the
  * function's derivative f', and an initial guess x0 for a root of the function
@@ -57,7 +57,7 @@ import hr.fer.zemris.math.ComplexRootedPolynomial;
  * Halley's method. The method can also be extended to complex functions and to
  * systems of equations.
  * 
- * @author Matteo Miloš
+ * @author Matteo MiloÅ¡
  *
  */
 public class Newton {
