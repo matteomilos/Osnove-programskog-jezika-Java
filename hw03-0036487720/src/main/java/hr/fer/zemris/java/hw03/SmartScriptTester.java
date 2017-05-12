@@ -47,12 +47,13 @@ public class SmartScriptTester {
 		SmartScriptParser parser = new SmartScriptParser(docBody);
 		DocumentNode document = parser.getDocumentNode();
 		String originalDocumentBody = createOriginalDocumentBody(document);
-
+		System.out.println(originalDocumentBody);
 		SmartScriptParser parser2 = new SmartScriptParser(originalDocumentBody);
 		DocumentNode document2 = parser2.getDocumentNode();
 		@SuppressWarnings("unused")
 		String originalDocumentBody2 = createOriginalDocumentBody(document2);
-
+		System.out.println(originalDocumentBody2);
+		System.out.println(originalDocumentBody.equals(originalDocumentBody2));
 		//originalDocumentBody2 and originalDocumentBody should be the same
 
 	}
