@@ -26,7 +26,7 @@ public class CalculateInfoAction extends AbstractAction {
 			String text = currentTab.getText();
 			int numOfChars = text.length();
 			int numOfNonBlankChars = text.replaceAll("\\s+", "").length();
-			int numOfLines = text.split("\r\n|\r|\n", -1).length;
+			int numOfLines = currentTab.getLineCount();
 			JOptionPane.showMessageDialog(
 					jNotepadPP,
 					"Your document has " + numOfChars + " characters, " + numOfNonBlankChars

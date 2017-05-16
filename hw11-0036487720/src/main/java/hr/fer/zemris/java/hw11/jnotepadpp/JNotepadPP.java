@@ -2,6 +2,8 @@ package hr.fer.zemris.java.hw11.jnotepadpp;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -12,15 +14,20 @@ import java.nio.file.Path;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit.CopyAction;
 import javax.swing.text.DefaultEditorKit.CutAction;
 import javax.swing.text.DefaultEditorKit.PasteAction;
@@ -38,6 +45,8 @@ public class JNotepadPP extends JFrame {
 
 	private JTabbedPane tabbedPane;
 
+	private StatusBar statusBar;
+
 	public JTabbedPane getTabbedPane() {
 		return tabbedPane;
 	}
@@ -46,6 +55,13 @@ public class JNotepadPP extends JFrame {
 
 	public JNotepadPP() throws IOException {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+		setTitle("JNotepad++");
+		setSize(700, 700);
+		setLocation(100, 100);
+
+		initGUI();
+
 		addWindowListener(
 				new WindowAdapter() {
 
@@ -80,17 +96,11 @@ public class JNotepadPP extends JFrame {
 								}
 							}
 						}
-
+						statusBar.getClock().terminate();
 						dispose();
 					}
 				}
 		);
-		setTitle("JNotepad++");
-		setSize(700, 700);
-		setLocation(100, 100);
-
-		initGUI();
-
 	}
 
 	private void initGUI() throws IOException {
@@ -98,6 +108,9 @@ public class JNotepadPP extends JFrame {
 		cp.setLayout(new BorderLayout());
 
 		tabbedPane = new JTabbedPane();
+
+		statusBar = new StatusBar(addNewTab(null, null));
+
 		tabbedPane.addChangeListener(
 				(l) -> {
 					JScrollPane scrollPane = (JScrollPane) tabbedPane.getSelectedComponent();
@@ -106,19 +119,21 @@ public class JNotepadPP extends JFrame {
 					}
 					Tab tab = (Tab) scrollPane.getViewport().getView();
 					JNotepadPP.this.setTitle(tab.getLongName() + " - JNotepad++");
+					statusBar.setTextArea(tab);
+					statusBar.refresh(tab);
 				}
 		);
 
-		addNewTab(null, null);
+		add(tabbedPane, BorderLayout.CENTER);
 
-		add(tabbedPane);
+		add(statusBar, BorderLayout.AFTER_LAST_LINE);
 		createActions();
 		createMenus();
 		createToolbars();
 
 	}
 
-	public void addNewTab(Path path, String text) throws IOException {
+	public Tab addNewTab(Path path, String text) throws IOException {
 
 		String tabName = path == null ? "new " + getnTabs() : path.getFileName().toString();
 		Tab tab = new Tab(path, text, tabName, this);
@@ -129,20 +144,23 @@ public class JNotepadPP extends JFrame {
 		tabbedPane.setToolTipTextAt(getnTabs(), tab.getLongName());
 		tabbedPane.setSelectedIndex(getnTabs());
 		setnTabs(getnTabs() + 1);
+		return tab;
 
 	}
 
 	private void createToolbars() {
 		JToolBar toolBar = new JToolBar("Toolbar");
-
+		toolBar.add(new JButton(newDocumentAction));
 		toolBar.add(new JButton(openDocumentAction));
+		toolBar.add(new JButton(closeDocumentAction));
+		toolBar.addSeparator();
 		toolBar.add(new JButton(saveDocumentAction));
 		toolBar.add(new JButton(saveAsDocumentAction));
-		toolBar.add(new JButton(newDocumentAction));
-		toolBar.add(new JButton(closeDocumentAction));
+		toolBar.addSeparator();
 		toolBar.add(new JButton(cutAction));
 		toolBar.add(new JButton(copyAction));
 		toolBar.add(new JButton(pasteAction));
+		toolBar.addSeparator();
 		toolBar.add(new JButton(calculateInfoAction));
 		getContentPane().add(toolBar, BorderLayout.PAGE_START);
 
