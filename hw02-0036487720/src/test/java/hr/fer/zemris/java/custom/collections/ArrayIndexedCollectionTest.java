@@ -9,6 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+@SuppressWarnings("javadoc")
 public class ArrayIndexedCollectionTest {
 	ArrayIndexedCollection emptyArray;
 	ArrayIndexedCollection fullyFilledArray;

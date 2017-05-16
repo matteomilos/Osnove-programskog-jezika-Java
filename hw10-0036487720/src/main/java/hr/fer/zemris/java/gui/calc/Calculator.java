@@ -359,6 +359,7 @@ public class Calculator extends JFrame {
 			} else {
 				result.setText(inverted.apply(Double.parseDouble(result.getText())).toString());
 			}
+			calculated = true;
 			dotClicked = false;
 		}
 

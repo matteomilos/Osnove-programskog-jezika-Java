@@ -43,6 +43,7 @@ public class BarChartDemo extends JFrame {
 		setTitle("Bar chart display");
 		setLocation(getContentPane().getLocation());
 		initGUI(lines, name);
+		setMinimumSize(getContentPane().getMinimumSize());
 		setSize(getContentPane().getPreferredSize());
 	}
 

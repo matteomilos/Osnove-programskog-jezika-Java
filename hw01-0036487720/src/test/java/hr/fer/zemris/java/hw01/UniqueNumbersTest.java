@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import hr.fer.zemris.java.hw01.UniqueNumbers.TreeNode;;
 
+@SuppressWarnings("javadoc")
 public class UniqueNumbersTest {
 
 	

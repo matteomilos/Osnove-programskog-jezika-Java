@@ -12,6 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+@SuppressWarnings("javadoc")
 public class ComplexNumberTest {
 
 	private static final double EPSILON = 1e-10;
