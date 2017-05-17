@@ -2,8 +2,6 @@ package hr.fer.zemris.java.hw11.jnotepadpp;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -14,30 +12,30 @@ import java.nio.file.Path;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultEditorKit.CopyAction;
-import javax.swing.text.DefaultEditorKit.CutAction;
 import javax.swing.text.DefaultEditorKit.PasteAction;
 
-import hr.fer.zemris.java.hw11.jnotepadpp.actions.CalculateInfoAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CloseDocumentAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.MyCopyAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.MyCutAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.MyPasteAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.NewDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.OpenDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveAsDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveDocumentAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.SetCroatianAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.SetEnglishAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.StatisticsAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationProvider;
+import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
+import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.LJMenu;
 
 public class JNotepadPP extends JFrame {
 
@@ -46,6 +44,8 @@ public class JNotepadPP extends JFrame {
 	private JTabbedPane tabbedPane;
 
 	private StatusBar statusBar;
+
+	private FormLocalizationProvider flp = new FormLocalizationProvider(LocalizationProvider.getInstance(), this);
 
 	public JTabbedPane getTabbedPane() {
 		return tabbedPane;
@@ -59,7 +59,6 @@ public class JNotepadPP extends JFrame {
 		setTitle("JNotepad++");
 		setSize(700, 700);
 		setLocation(100, 100);
-
 		initGUI();
 
 		addWindowListener(
@@ -109,7 +108,7 @@ public class JNotepadPP extends JFrame {
 
 		tabbedPane = new JTabbedPane();
 
-		statusBar = new StatusBar(addNewTab(null, null));
+		statusBar = new StatusBar(addNewTab(null, null), flp);
 
 		tabbedPane.addChangeListener(
 				(l) -> {
@@ -127,7 +126,6 @@ public class JNotepadPP extends JFrame {
 		add(tabbedPane, BorderLayout.CENTER);
 
 		add(statusBar, BorderLayout.AFTER_LAST_LINE);
-		createActions();
 		createMenus();
 		createToolbars();
 
@@ -143,7 +141,7 @@ public class JNotepadPP extends JFrame {
 		tabbedPane.setTitleAt(getnTabs(), tab.getSimpleName());
 		tabbedPane.setToolTipTextAt(getnTabs(), tab.getLongName());
 		tabbedPane.setSelectedIndex(getnTabs());
-		setnTabs(getnTabs() + 1);
+		nTabs++;
 		return tab;
 
 	}
@@ -161,7 +159,7 @@ public class JNotepadPP extends JFrame {
 		toolBar.add(new JButton(copyAction));
 		toolBar.add(new JButton(pasteAction));
 		toolBar.addSeparator();
-		toolBar.add(new JButton(calculateInfoAction));
+		toolBar.add(new JButton(statisticsAction));
 		getContentPane().add(toolBar, BorderLayout.PAGE_START);
 
 	}
@@ -169,7 +167,7 @@ public class JNotepadPP extends JFrame {
 	private void createMenus() {
 		JMenuBar menuBar = new JMenuBar();
 
-		JMenu fileMenu = new JMenu("File");
+		LJMenu fileMenu = new LJMenu("file", flp);
 		menuBar.add(fileMenu);
 		fileMenu.add(new JMenuItem(newDocumentAction));
 		fileMenu.add(new JMenuItem(openDocumentAction));
@@ -177,84 +175,50 @@ public class JNotepadPP extends JFrame {
 		fileMenu.add(new JMenuItem(saveAsDocumentAction));
 		fileMenu.add(new JMenuItem(closeDocumentAction));
 
-		JMenu editMenu = new JMenu("Edit");
+		LJMenu editMenu = new LJMenu("edit", flp);
 		editMenu.add(new JMenuItem(cutAction));
 		editMenu.add(new JMenuItem(copyAction));
 		editMenu.add(new JMenuItem(pasteAction));
 		menuBar.add(editMenu);
 
-		JMenu calculateMenu = new JMenu("Calculate");
-		calculateMenu.add(new JMenuItem(calculateInfoAction));
+		LJMenu calculateMenu = new LJMenu("statistics", flp);
+		calculateMenu.add(new JMenuItem(statisticsAction));
 		menuBar.add(calculateMenu);
+
+		LJMenu languageMenu = new LJMenu("language", flp);
+		languageMenu.add(new JMenuItem(setEnglishAction));
+		languageMenu.add(new JMenuItem(setCroatianAction));
+		menuBar.add(languageMenu);
 
 		setJMenuBar(menuBar);
 	}
 
-	private void createActions() {
-		openDocumentAction.putValue(Action.NAME, "Open");
-		openDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control O"));
-		openDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
-		openDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Used to open document from disc");
+	private final Action openDocumentAction = new OpenDocumentAction(this, flp);
 
-		saveDocumentAction.putValue(Action.NAME, "Save");
-		saveDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
-		saveDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
-		saveDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Used to save document from disc");
+	private final Action saveDocumentAction = new SaveDocumentAction(this, flp);
 
-		saveAsDocumentAction.putValue(Action.NAME, "Save as");
-		saveAsDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt S"));
-		saveAsDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S | InputEvent.ALT_DOWN_MASK);
-		saveAsDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Used to save as new document from disc");
+	private final Action saveAsDocumentAction = new SaveAsDocumentAction(this, flp);
 
-		newDocumentAction.putValue(Action.NAME, "New");
-		newDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control N"));
-		newDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_N);
-		newDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Used to create new document");
+	private final Action newDocumentAction = new NewDocumentAction(this, flp);
 
-		closeDocumentAction.putValue(Action.NAME, "Close");
-		closeDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control W"));
-		closeDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_W);
-		closeDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Used to close opened document");
+	private final Action closeDocumentAction = new CloseDocumentAction(this, flp);
 
-		copyAction.putValue(Action.NAME, "Copy");
-		copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control C"));
-		copyAction.putValue(Action.SHORT_DESCRIPTION, "Used to copy part of the text");
+	private final Action copyAction = new MyCopyAction(flp);
 
-		pasteAction.putValue(Action.NAME, "Paste");
-		pasteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control V"));
-		pasteAction.putValue(Action.SHORT_DESCRIPTION, "Used to paste part of the text");
+	private final Action cutAction = new MyCutAction(flp);
 
-		cutAction.putValue(Action.NAME, "Cut");
-		cutAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control X"));
-		cutAction.putValue(Action.SHORT_DESCRIPTION, "Used to cut part of the text");
+	private final Action pasteAction = new MyPasteAction(flp);
 
-		calculateInfoAction.putValue(Action.NAME, "Calculate");
-		calculateInfoAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control P"));
-		calculateInfoAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_P);
-		calculateInfoAction.putValue(Action.SHORT_DESCRIPTION, "Used to calculate statistical info of document");
-	}
+	private final Action statisticsAction = new StatisticsAction(this, flp);
 
-	private final Action openDocumentAction = new OpenDocumentAction(this);
+	private final Action setEnglishAction = new SetEnglishAction(flp);
 
-	private final Action saveDocumentAction = new SaveDocumentAction(this);
-
-	private final Action saveAsDocumentAction = new SaveAsDocumentAction(this);
-
-	private final Action newDocumentAction = new NewDocumentAction(this);
-
-	private final Action closeDocumentAction = new CloseDocumentAction(this);
-
-	private final Action copyAction = new CopyAction();
-
-	private final Action cutAction = new CutAction();
-
-	private final Action pasteAction = new PasteAction();
-
-	private final Action calculateInfoAction = new CalculateInfoAction(this);
+	private final Action setCroatianAction = new SetCroatianAction(flp);
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(
 				() -> {
+					LocalizationProvider.getInstance().setLanguage(args[0]);
 					try {
 						new JNotepadPP().setVisible(true);
 					} catch (IOException e) {
@@ -277,4 +241,7 @@ public class JNotepadPP extends JFrame {
 		this.nTabs = nTabs;
 	}
 
+	public FormLocalizationProvider getFlp() {
+		return flp;
+	}
 }

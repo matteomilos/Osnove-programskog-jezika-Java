@@ -3,11 +3,14 @@ package hr.fer.zemris.java.hw11.jnotepadpp;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 import javax.swing.ImageIcon;
 import javax.swing.JTextArea;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class Tab extends JTextArea {
 
@@ -103,13 +106,31 @@ public class Tab extends JTextArea {
 		}
 		byte[] green = readAllBytes(is);
 		jNotepadPP.getTabbedPane().setIconAt(jNotepadPP.getnTabs(), new ImageIcon(green));
-		this.addCaretListener(
-				(l) -> {
-					jNotepadPP.getTabbedPane().setIconAt(
-							jNotepadPP.getTabbedPane().getSelectedIndex(),
-							new ImageIcon(this.isChanged() ? red : green)
-					);
+		this.getDocument().addDocumentListener(
+				new DocumentListener() {
+
+					@Override
+					public void removeUpdate(DocumentEvent e) {
+						jNotepadPP.getTabbedPane()
+								.setIconAt(jNotepadPP.getTabbedPane().getSelectedIndex(), new ImageIcon(red));
+					}
+
+					@Override
+					public void insertUpdate(DocumentEvent e) {
+						jNotepadPP.getTabbedPane()
+								.setIconAt(jNotepadPP.getTabbedPane().getSelectedIndex(), new ImageIcon(red));
+					}
+
+					@Override
+					public void changedUpdate(DocumentEvent e) {
+					}
 				}
 		);
+//		this.addCaretListener(
+//				(l) -> {
+//					jNotepadPP.getTabbedPane()
+//							.setIconAt(jNotepadPP.getTabbedPane().getSelectedIndex(), new ImageIcon(red));
+//				}
+//		);
 	}
 }

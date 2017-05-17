@@ -10,13 +10,18 @@ import java.awt.GridLayout;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
 import javax.swing.text.BadLocationException;
+
+import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
 
 public class StatusBar extends JPanel {
 
@@ -30,50 +35,52 @@ public class StatusBar extends JPanel {
 
 	private JLabel selectedLabel;
 
-	private MojSat clock;
+	private MyClock clock;
 
-	public StatusBar(JTextArea textArea) {
-		super(new FlowLayout(FlowLayout.LEFT));
-		setTextArea(textArea);
-		lengthLabel = new JLabel("length: " + textArea.getText().length());
+	private FormLocalizationProvider flp;
+
+	public StatusBar(Tab tab, FormLocalizationProvider flp) {
+		this.flp = flp;
+		setBorder(new BevelBorder(BevelBorder.LOWERED));
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setTextArea(tab);
+
+		lengthLabel = new JLabel();
 		add(lengthLabel);
+		add(Box.createHorizontalGlue());
 
+		JPanel panel = new JPanel();
+		
 		JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
 		separator.setPreferredSize(new Dimension(3, 20));
-		add(separator);
-		JPanel panel = new JPanel();
-		lineLabel = new JLabel("Ln: " + textArea.getLineCount());
+		panel.add(separator);
+
+		lineLabel = new JLabel();
 		panel.add(lineLabel);
-
-		panel.add(new JSeparator());
-
-		columnLabel = new JLabel("Col: " + textArea.getCaretPosition());
+		columnLabel = new JLabel();
 		panel.add(columnLabel);
-
-		panel.add(new JSeparator());
-
-		selectedLabel = new JLabel("Sel: " + getSelected());
+		selectedLabel = new JLabel();
 		panel.add(selectedLabel);
 		add(panel);
-		JPanel panel2 = new JPanel(new BorderLayout());
-
-		clock = new MojSat();
-		panel2.add(clock);
-		add(panel2);
-
+		
+		add(Box.createHorizontalGlue());
+		
+		clock = new MyClock();
+		add(clock);
+		
+		refresh(textArea);
 	}
 
-	void refresh(JTextArea textArea) {
+	protected void refresh(JTextArea textArea) {
 		lengthLabel.setText("length: " + textArea.getText().length());
 		lineLabel.setText("Ln: " + textArea.getLineCount());
 		int caretPos = textArea.getCaretPosition();
 		int offset;
-		int colNum;
+		int colNum = 1;
 		try {
 			offset = textArea.getLineOfOffset(caretPos);
 			colNum = caretPos - textArea.getLineStartOffset(offset) + 1;
-		} catch (BadLocationException e) {
-			return;
+		} catch (Exception ignorable) {
 		}
 		columnLabel.setText("Col: " + colNum);
 		selectedLabel.setText("Sel: " + getSelected());
@@ -92,22 +99,24 @@ public class StatusBar extends JPanel {
 		return Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
 	}
 
-	public MojSat getClock() {
+	public MyClock getClock() {
 		return clock;
 	}
 
-	static class MojSat extends JLabel {
+	protected static class MyClock extends JLabel {
 
 		private volatile boolean stopRequested = false;
 
-		public MojSat() {
+		DateTimeFormatter dtf;
+
+		public MyClock() {
+			dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 			Thread radnik = new Thread(
 					() -> {
 						while (!stopRequested) {
 
 							SwingUtilities.invokeLater(
 									() -> {
-										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 										LocalDateTime now = LocalDateTime.now();
 										this.setText(dtf.format(now));
 									}
@@ -124,7 +133,7 @@ public class StatusBar extends JPanel {
 			radnik.start();
 		}
 
-		public void terminate() {
+		protected void terminate() {
 			stopRequested = true;
 		}
 	}

@@ -1,25 +1,36 @@
 package hr.fer.zemris.java.hw11.jnotepadpp.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 
 import hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP;
 import hr.fer.zemris.java.hw11.jnotepadpp.Tab;
+import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
+import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.LocalizableAction;
 
-public class SaveDocumentAction extends AbstractAction {
+public class SaveDocumentAction extends LocalizableAction {
 
 	private JNotepadPP jNotepadPP;
 
-	public SaveDocumentAction(JNotepadPP jNotepadPP) {
+	public SaveDocumentAction(JNotepadPP jNotepadPP, FormLocalizationProvider flp) {
+		super("save", flp);
 		this.jNotepadPP = jNotepadPP;
+		putValue(Action.NAME, flp.getString("save"));
+		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
+		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
+		putValue(Action.SHORT_DESCRIPTION, "Used to save document from disc");
+		flp.getProvider().addLocalizationListener(() -> update());
 	}
 
 	@Override
