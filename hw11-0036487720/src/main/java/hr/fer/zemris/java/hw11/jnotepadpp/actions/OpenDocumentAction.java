@@ -17,13 +17,17 @@ import javax.swing.KeyStroke;
 import hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.LocalizableAction;
+import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.*;
 
 public class OpenDocumentAction extends LocalizableAction {
 
-	JNotepadPP jNotepadPP;
+	private JNotepadPP jNotepadPP;
+
+	private FormLocalizationProvider flp;
 
 	public OpenDocumentAction(JNotepadPP jNotepadPP, FormLocalizationProvider flp) {
 		super("open", flp);
+		this.flp = flp;
 		this.jNotepadPP = jNotepadPP;
 		putValue(Action.NAME, flp.getString("open"));
 		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control O"));
@@ -36,7 +40,7 @@ public class OpenDocumentAction extends LocalizableAction {
 	public void actionPerformed(ActionEvent e) {
 		update();
 		JFileChooser fc = new JFileChooser();
-		fc.setDialogTitle("Open file");
+		fc.setDialogTitle(flp.getString(OPEN_FILE));
 		if (fc.showOpenDialog(jNotepadPP) != JFileChooser.APPROVE_OPTION) {
 			return;
 		}
@@ -45,12 +49,8 @@ public class OpenDocumentAction extends LocalizableAction {
 		Path filePath = fileName.toPath();
 
 		if (!Files.isReadable(filePath)) {
-			JOptionPane.showMessageDialog(
-					jNotepadPP,
-					"Datoteka " + filePath + " se ne može čitati!",
-					"Pogreška",
-					JOptionPane.ERROR_MESSAGE
-			);
+			String message = String.format(flp.getString(NOT_READABLE), filePath);
+			JOptionPane.showMessageDialog(jNotepadPP, message, flp.getString(ERROR), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -58,12 +58,8 @@ public class OpenDocumentAction extends LocalizableAction {
 		try {
 			data = Files.readAllBytes(filePath);
 		} catch (IOException exc) {
-			JOptionPane.showMessageDialog(
-					jNotepadPP,
-					"Došlo je do pogreške pri učitavanju datoteke: " + filePath + ".",
-					"Pogreška",
-					JOptionPane.ERROR_MESSAGE
-			);
+			String message = String.format(flp.getString(LOAD_ERROR), filePath);
+			JOptionPane.showMessageDialog(jNotepadPP, message, flp.getString(ERROR), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 

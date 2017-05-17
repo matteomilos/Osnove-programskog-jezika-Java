@@ -1,15 +1,16 @@
 package hr.fer.zemris.java.hw11.jnotepadpp;
 
+import static hr.fer.zemris.java.hw11.jnotepadpp.icons.Icons.*;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.nio.file.Path;
 
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -18,11 +19,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.text.DefaultEditorKit.PasteAction;
 
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.AscendingAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CloseDocumentAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.DescendingAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.LowerCaseAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.MyCopyAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.MyCutAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.MyPasteAction;
@@ -32,14 +34,38 @@ import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveAsDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SetCroatianAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SetEnglishAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.SetGermanAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.StatisticsAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.ToggleCaseAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.UniqueAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.UpperCaseAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationProvider;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.LJMenu;
 
 public class JNotepadPP extends JFrame {
 
+	private static final String NEW = "new";
+
+	private static final String FILE = "file";
+
+	private static final String EDIT = "edit";
+
+	private static final String STATISTICS = "statistics";
+
+	private static final String LANGUAGE = "language";
+
 	private static final long serialVersionUID = 1L;
+
+	private static final String CLOSING_WINDOW = "closing";
+
+	private static final String INFORMATION = "info";
+
+	private static final String TOOLS = "tools";
+
+	private static final String SORT = "sort";
+
+	private static final String CHANGE_CASE = "changecase";
 
 	private JTabbedPane tabbedPane;
 
@@ -57,7 +83,7 @@ public class JNotepadPP extends JFrame {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
 		setTitle("JNotepad++");
-		setSize(700, 700);
+		setSize(1000, 700);
 		setLocation(100, 100);
 		initGUI();
 
@@ -77,11 +103,11 @@ public class JNotepadPP extends JFrame {
 							JScrollPane scrollPane = (JScrollPane) tabbedPane.getComponentAt(i);
 							Tab tab = (Tab) scrollPane.getViewport().getView();
 							if (tab.isChanged()) {
+								String message = String.format(flp.getString(CLOSING_WINDOW), tab.getSimpleName());
 								int selected = JOptionPane.showConfirmDialog(
 										JNotepadPP.this,
-										"You have unsaved changes, do you want to save document \""
-												+ tab.getSimpleName() + "\"",
-										"Information",
+										message,
+										INFORMATION,
 										JOptionPane.YES_NO_CANCEL_OPTION
 								);
 								switch (selected) {
@@ -148,48 +174,78 @@ public class JNotepadPP extends JFrame {
 
 	private void createToolbars() {
 		JToolBar toolBar = new JToolBar("Toolbar");
-		toolBar.add(new JButton(newDocumentAction));
-		toolBar.add(new JButton(openDocumentAction));
-		toolBar.add(new JButton(closeDocumentAction));
-		toolBar.addSeparator();
-		toolBar.add(new JButton(saveDocumentAction));
-		toolBar.add(new JButton(saveAsDocumentAction));
-		toolBar.addSeparator();
-		toolBar.add(new JButton(cutAction));
-		toolBar.add(new JButton(copyAction));
-		toolBar.add(new JButton(pasteAction));
-		toolBar.addSeparator();
-		toolBar.add(new JButton(statisticsAction));
-		getContentPane().add(toolBar, BorderLayout.PAGE_START);
 
+		addToolBarItem(toolBar, newDocumentAction, NEWFILE_ICON);
+		addToolBarItem(toolBar, openDocumentAction, OPEN_EXISTING);
+		addToolBarItem(toolBar, closeDocumentAction, CLOSE_ICON);
+		toolBar.addSeparator();
+
+		addToolBarItem(toolBar, saveDocumentAction, SAVE_ICON);
+		addToolBarItem(toolBar, saveAsDocumentAction, SAVEAS_ICON);
+		toolBar.addSeparator();
+
+		addToolBarItem(toolBar, cutAction, CUT_ICON);
+		addToolBarItem(toolBar, copyAction, COPY_ICON);
+		addToolBarItem(toolBar, pasteAction, PASTE_ICON);
+		toolBar.addSeparator();
+
+		addToolBarItem(toolBar, statisticsAction, STATISTICS_ICON);
+		getContentPane().add(toolBar, BorderLayout.PAGE_START);
+	}
+
+	private void addToolBarItem(JToolBar toolBar, Action action, Icon icon) {
+		JButton button = new JButton(action);
+		button.setIcon(icon);
+		toolBar.add(button);
 	}
 
 	private void createMenus() {
 		JMenuBar menuBar = new JMenuBar();
 
-		LJMenu fileMenu = new LJMenu("file", flp);
-		menuBar.add(fileMenu);
+		LJMenu fileMenu = new LJMenu(FILE, flp);
 		fileMenu.add(new JMenuItem(newDocumentAction));
 		fileMenu.add(new JMenuItem(openDocumentAction));
 		fileMenu.add(new JMenuItem(saveDocumentAction));
 		fileMenu.add(new JMenuItem(saveAsDocumentAction));
 		fileMenu.add(new JMenuItem(closeDocumentAction));
+		
+		menuBar.add(fileMenu);
 
-		LJMenu editMenu = new LJMenu("edit", flp);
+		LJMenu editMenu = new LJMenu(EDIT, flp);
 		editMenu.add(new JMenuItem(cutAction));
 		editMenu.add(new JMenuItem(copyAction));
 		editMenu.add(new JMenuItem(pasteAction));
+		
 		menuBar.add(editMenu);
 
-		LJMenu calculateMenu = new LJMenu("statistics", flp);
+		LJMenu calculateMenu = new LJMenu(STATISTICS, flp);
 		calculateMenu.add(new JMenuItem(statisticsAction));
+		
 		menuBar.add(calculateMenu);
 
-		LJMenu languageMenu = new LJMenu("language", flp);
+		LJMenu languageMenu = new LJMenu(LANGUAGE, flp);
 		languageMenu.add(new JMenuItem(setEnglishAction));
 		languageMenu.add(new JMenuItem(setCroatianAction));
+		languageMenu.add(new JMenuItem(setGermanAction));
+		
 		menuBar.add(languageMenu);
 
+		LJMenu toolsMenu = new LJMenu(TOOLS, flp);
+
+		LJMenu sortSubMenu = new LJMenu(SORT, flp);
+		sortSubMenu.add(ascendingAction);
+		sortSubMenu.add(descendingAction);
+
+		LJMenu changeCasesubMenu = new LJMenu(CHANGE_CASE, flp);
+		changeCasesubMenu.add(upperCaseAction);
+		changeCasesubMenu.add(lowerCaseAction);
+		changeCasesubMenu.add(toggleCaseAction);
+
+		toolsMenu.add(sortSubMenu);
+		toolsMenu.add(changeCasesubMenu);
+		toolsMenu.add(new JMenuItem(uniqueAction));
+
+		menuBar.add(toolsMenu);
 		setJMenuBar(menuBar);
 	}
 
@@ -215,14 +271,27 @@ public class JNotepadPP extends JFrame {
 
 	private final Action setCroatianAction = new SetCroatianAction(flp);
 
+	private final Action setGermanAction = new SetGermanAction(flp);
+
+	private final Action ascendingAction = new AscendingAction(this, flp);
+
+	private final Action descendingAction = new DescendingAction(this, flp);
+
+	private final Action upperCaseAction = new UpperCaseAction(this, flp);
+
+	private final Action lowerCaseAction = new LowerCaseAction(this, flp);
+
+	private final Action toggleCaseAction = new ToggleCaseAction(this, flp);
+
+	private final Action uniqueAction = new UniqueAction(this, flp);
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(
 				() -> {
-					LocalizationProvider.getInstance().setLanguage(args[0]);
+					LocalizationProvider.getInstance().setLanguage(args.length == 0 ? "en" : args[0]);
 					try {
 						new JNotepadPP().setVisible(true);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

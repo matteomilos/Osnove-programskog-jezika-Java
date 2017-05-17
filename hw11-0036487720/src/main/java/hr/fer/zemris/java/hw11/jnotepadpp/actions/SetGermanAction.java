@@ -8,17 +8,17 @@ import hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationProvider;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.LocalizableAction;
 
-public class SetCroatianAction extends LocalizableAction {
+public class SetGermanAction extends LocalizableAction {
 
-	public SetCroatianAction(FormLocalizationProvider flp) {
-		super("hr", flp);
-		putValue(Action.NAME, flp.getString("hr"));
+	public SetGermanAction(FormLocalizationProvider flp) {
+		super("de", flp);
+		putValue(Action.NAME, flp.getString("de"));
 		flp.getProvider().addLocalizationListener(() -> update());
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		LocalizationProvider.getInstance().setLanguage("hr");
+		LocalizationProvider.getInstance().setLanguage("de");
 		update();
 
 	}

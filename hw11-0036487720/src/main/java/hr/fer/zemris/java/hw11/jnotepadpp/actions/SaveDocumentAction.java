@@ -1,16 +1,19 @@
 package hr.fer.zemris.java.hw11.jnotepadpp.actions;
 
+import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.ERROR;
+import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.INFORMATION;
+import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.NOT_SAVED;
+import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.SAVED;
+import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.SAVE_NOT_SUCCESSFUL;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
@@ -23,8 +26,11 @@ public class SaveDocumentAction extends LocalizableAction {
 
 	private JNotepadPP jNotepadPP;
 
+	private FormLocalizationProvider flp;
+
 	public SaveDocumentAction(JNotepadPP jNotepadPP, FormLocalizationProvider flp) {
 		super("save", flp);
+		this.flp = flp;
 		this.jNotepadPP = jNotepadPP;
 		putValue(Action.NAME, flp.getString("save"));
 		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
@@ -43,12 +49,6 @@ public class SaveDocumentAction extends LocalizableAction {
 		JScrollPane scrollPane = i == -1 ? (JScrollPane) jNotepadPP.getTabbedPane().getSelectedComponent()
 				: (JScrollPane) jNotepadPP.getTabbedPane().getComponentAt(i);
 		if (scrollPane == null) {
-			JOptionPane.showMessageDialog(
-					jNotepadPP,
-					"No tab is currently opened!",
-					"Save",
-					JOptionPane.INFORMATION_MESSAGE
-			);
 			return;
 		}
 		Tab closingTab = (Tab) scrollPane.getViewport().getView();
@@ -60,8 +60,8 @@ public class SaveDocumentAction extends LocalizableAction {
 			if (fc.showSaveDialog(jNotepadPP) != JFileChooser.APPROVE_OPTION) {
 				JOptionPane.showMessageDialog(
 						jNotepadPP,
-						"File is not saved",
-						"Information",
+						flp.getString(NOT_SAVED),
+						flp.getString(INFORMATION),
 						JOptionPane.INFORMATION_MESSAGE
 				);
 				return;
@@ -72,12 +72,21 @@ public class SaveDocumentAction extends LocalizableAction {
 		try {
 			Files.write(closingTab.getOpenedFilePath(), closingTab.getText().getBytes(StandardCharsets.UTF_8));
 		} catch (Exception exc) {
-			JOptionPane.showMessageDialog(jNotepadPP, "Saving unsuccessful", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(
+					jNotepadPP,
+					flp.getString(SAVE_NOT_SUCCESSFUL),
+					flp.getString(ERROR),
+					JOptionPane.ERROR_MESSAGE
+			);
 			return;
 		}
-		closingTab.setOldText(closingTab.getText());
 
-		JOptionPane.showMessageDialog(jNotepadPP, "File is saved!", "Information", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(
+				jNotepadPP,
+				flp.getString(SAVED),
+				flp.getString(INFORMATION),
+				JOptionPane.INFORMATION_MESSAGE
+		);
 
 		jNotepadPP.getTabbedPane()
 				.setTitleAt(jNotepadPP.getTabbedPane().getSelectedIndex(), closingTab.getSimpleName());

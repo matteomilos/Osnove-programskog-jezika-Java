@@ -1,13 +1,11 @@
 package hr.fer.zemris.java.hw11.jnotepadpp;
 
-import java.io.ByteArrayOutputStream;
+import static hr.fer.zemris.java.hw11.jnotepadpp.icons.Icons.GREEN_ICON;
+import static hr.fer.zemris.java.hw11.jnotepadpp.icons.Icons.RED_ICON;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
-import javax.swing.ImageIcon;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -17,8 +15,6 @@ public class Tab extends JTextArea {
 	JNotepadPP jNotepadPP;
 
 	private JTextArea editor;
-
-	private String oldText;
 
 	private Path openedFilePath;
 
@@ -33,31 +29,13 @@ public class Tab extends JTextArea {
 		openedFilePath = path;
 		simpleName = tabName;
 		longName = path == null ? simpleName : path.toString();
-		oldText = text == null ? "" : text;
 		setDocument(createDefaultModel());
 		setText(text);
 
 	}
 
-	private byte[] readAllBytes(InputStream is) throws IOException {
-		int nRead;
-		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		byte[] data = new byte[4096];
-
-		while ((nRead = is.read(data, 0, data.length)) != -1) {
-			buffer.write(data, 0, nRead);
-		}
-
-		buffer.flush();
-		return buffer.toByteArray();
-	}
-
 	public JTextArea getEditor() {
 		return editor;
-	}
-
-	public String getOldText() {
-		return oldText;
 	}
 
 	public Path getOpenedFilePath() {
@@ -73,17 +51,17 @@ public class Tab extends JTextArea {
 	}
 
 	public boolean isChanged() {
-		return !this.getOldText().equals(this.getText());
+		return changed;
+	}
+
+	public void setChanged(boolean changed) {
+		this.changed = changed;
 	}
 
 	public void setOpenedFilePath(Path path) {
 		this.openedFilePath = path;
 		setSimpleName(path.getFileName().toString());
 		setLongName(path.toString());
-	}
-
-	public void setOldText(String oldText) {
-		this.oldText = oldText;
 	}
 
 	public void setSimpleName(String simpleName) {
@@ -95,30 +73,21 @@ public class Tab extends JTextArea {
 	}
 
 	public void addIcon() throws IOException {
-		InputStream is = this.getClass().getResourceAsStream("icons/red.png");
-		if (is == null) {
-			throw new NoSuchFileException("icon");
-		}
-		byte[] red = readAllBytes(is);
-		is = this.getClass().getResourceAsStream("icons/green.png");
-		if (is == null) {
-			throw new NoSuchFileException("icon");
-		}
-		byte[] green = readAllBytes(is);
-		jNotepadPP.getTabbedPane().setIconAt(jNotepadPP.getnTabs(), new ImageIcon(green));
+
+		jNotepadPP.getTabbedPane().setIconAt(jNotepadPP.getnTabs(), GREEN_ICON);
 		this.getDocument().addDocumentListener(
 				new DocumentListener() {
 
 					@Override
 					public void removeUpdate(DocumentEvent e) {
-						jNotepadPP.getTabbedPane()
-								.setIconAt(jNotepadPP.getTabbedPane().getSelectedIndex(), new ImageIcon(red));
+						jNotepadPP.getTabbedPane().setIconAt(jNotepadPP.getTabbedPane().getSelectedIndex(), RED_ICON);
+						setChanged(true);
 					}
 
 					@Override
 					public void insertUpdate(DocumentEvent e) {
-						jNotepadPP.getTabbedPane()
-								.setIconAt(jNotepadPP.getTabbedPane().getSelectedIndex(), new ImageIcon(red));
+						jNotepadPP.getTabbedPane().setIconAt(jNotepadPP.getTabbedPane().getSelectedIndex(), RED_ICON);
+						setChanged(true);
 					}
 
 					@Override
@@ -126,11 +95,5 @@ public class Tab extends JTextArea {
 					}
 				}
 		);
-//		this.addCaretListener(
-//				(l) -> {
-//					jNotepadPP.getTabbedPane()
-//							.setIconAt(jNotepadPP.getTabbedPane().getSelectedIndex(), new ImageIcon(red));
-//				}
-//		);
 	}
 }

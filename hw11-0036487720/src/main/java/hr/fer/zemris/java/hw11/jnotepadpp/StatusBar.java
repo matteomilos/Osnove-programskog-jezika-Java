@@ -25,6 +25,12 @@ import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
 
 public class StatusBar extends JPanel {
 
+	private static final String LENGTH = "length";
+
+	private static final String COL = "col";
+
+	private static final String SEL = "sel";
+
 	private JTextArea textArea;
 
 	private JLabel lengthLabel;
@@ -50,7 +56,7 @@ public class StatusBar extends JPanel {
 		add(Box.createHorizontalGlue());
 
 		JPanel panel = new JPanel();
-		
+
 		JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
 		separator.setPreferredSize(new Dimension(3, 20));
 		panel.add(separator);
@@ -62,17 +68,19 @@ public class StatusBar extends JPanel {
 		selectedLabel = new JLabel();
 		panel.add(selectedLabel);
 		add(panel);
-		
+
 		add(Box.createHorizontalGlue());
-		
+
 		clock = new MyClock();
 		add(clock);
-		
+
 		refresh(textArea);
+
+		flp.getProvider().addLocalizationListener(() -> refresh(this.textArea));
 	}
 
 	protected void refresh(JTextArea textArea) {
-		lengthLabel.setText("length: " + textArea.getText().length());
+		lengthLabel.setText(flp.getString(LENGTH) + ": " + textArea.getText().length());
 		lineLabel.setText("Ln: " + textArea.getLineCount());
 		int caretPos = textArea.getCaretPosition();
 		int offset;
@@ -82,8 +90,8 @@ public class StatusBar extends JPanel {
 			colNum = caretPos - textArea.getLineStartOffset(offset) + 1;
 		} catch (Exception ignorable) {
 		}
-		columnLabel.setText("Col: " + colNum);
-		selectedLabel.setText("Sel: " + getSelected());
+		columnLabel.setText(flp.getString(COL) + ": " + colNum);
+		selectedLabel.setText(flp.getString(SEL) + ": " + getSelected());
 	}
 
 	public void setTextArea(JTextArea textArea) {
