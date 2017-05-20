@@ -1,10 +1,9 @@
 package hr.fer.zemris.java.hw11.jnotepadpp.actions;
 
 import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.ACTION;
-import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.NEW;
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.EXIT;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 import javax.swing.Action;
 import javax.swing.KeyStroke;
@@ -14,13 +13,13 @@ import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.LocalizableAction;
 
 /**
- * Action derived from {@link LocalizableAction} class, used to open new blank
- * document in our frame.
+ * Action derived from {@link LocalizableAction} class, used to exit
+ * application.
  * 
  * @author Matteo Miloš
  *
  */
-public class NewDocumentAction extends LocalizableAction {
+public class ExitAction extends LocalizableAction {
 
 	/**
 	 * 
@@ -33,26 +32,25 @@ public class NewDocumentAction extends LocalizableAction {
 	private JNotepadPP jNotepadPP;
 
 	/**
-	 * Constructor that creates new instance of {@link NewDocumentAction}
+	 * Constructor that creates new instance of {@link ExitAction}
 	 * 
 	 * @param jNotepadPP
 	 *            instance of {@link JNotepadPP} class
 	 * @param flp
 	 *            localization provider
 	 */
-	public NewDocumentAction(JNotepadPP jNotepadPP, FormLocalizationProvider flp) {
-		super(NEW, flp);
-		putValue(Action.NAME, flp.getString(NEW));
-		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control N"));
-		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_N);
-		putValue(Action.SHORT_DESCRIPTION, flp.getString(NEW + ACTION));
-		flp.getProvider().addLocalizationListener(() -> update());
+	public ExitAction(JNotepadPP jNotepadPP, FormLocalizationProvider flp) {
+		super(EXIT, flp);
 		this.jNotepadPP = jNotepadPP;
+		putValue(Action.NAME, flp.getString(EXIT));
+		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt f4"));
+		putValue(Action.SHORT_DESCRIPTION, flp.getString(EXIT + ACTION));
+		flp.getProvider().addLocalizationListener(() -> update());
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		jNotepadPP.addNewTab(null, null);
-		jNotepadPP.getTabbedPane().setSelectedIndex(jNotepadPP.getnTabs() - 1);
+		jNotepadPP.closingWindow();
 	}
+
 }

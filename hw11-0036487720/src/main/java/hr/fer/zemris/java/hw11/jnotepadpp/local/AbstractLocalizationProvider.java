@@ -3,10 +3,21 @@ package hr.fer.zemris.java.hw11.jnotepadpp.local;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractLocalizationProvider implements ILocalizationProvider, ILocalizationListener {
+/**
+ * The Class AbstractLocalizationProvider is responsible only for storing and
+ * notifying listeners of a provider.
+ * 
+ * @author Matteo Miloš
+ * 
+ */
+public abstract class AbstractLocalizationProvider implements ILocalizationProvider {
 
+	/** The listeners. */
 	private List<ILocalizationListener> list;
 
+	/**
+	 * Instantiates a new abstract localization provider.
+	 */
 	public AbstractLocalizationProvider() {
 		list = new ArrayList<>();
 	}
@@ -21,8 +32,10 @@ public abstract class AbstractLocalizationProvider implements ILocalizationProvi
 		list.remove(listener);
 	}
 
+	/**
+	 * Notifies all listeners of a change in a provider.
+	 */
 	public void fire() {
-
 		list.forEach(l -> l.localizationChanged());
 	}
 

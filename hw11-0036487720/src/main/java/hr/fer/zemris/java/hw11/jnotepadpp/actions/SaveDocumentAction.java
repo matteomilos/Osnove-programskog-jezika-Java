@@ -1,19 +1,14 @@
 package hr.fer.zemris.java.hw11.jnotepadpp.actions;
 
-import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.ERROR;
-import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.INFORMATION;
-import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.NOT_SAVED;
-import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.SAVED;
-import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.SAVE_NOT_SUCCESSFUL;
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.ACTION;
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.SAVE;
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.SAVE_FILE_DIALOG;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 import javax.swing.Action;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
@@ -22,20 +17,48 @@ import hr.fer.zemris.java.hw11.jnotepadpp.Tab;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.LocalizableAction;
 
+/**
+ * Action derived from {@link LocalizableAction} class, used to save our
+ * document as an existing document.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class SaveDocumentAction extends LocalizableAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * instance of {@link JNotepadPP} class
+	 */
 	private JNotepadPP jNotepadPP;
 
+	/**
+	 * localization provider
+	 */
 	private FormLocalizationProvider flp;
 
+	/**
+	 * Constructor that creates new instance of {@link SaveDocumentAction}
+	 * 
+	 * @param jNotepadPP
+	 *            instance of {@link JNotepadPP} class
+	 * @param flp
+	 *            localization provider
+	 */
 	public SaveDocumentAction(JNotepadPP jNotepadPP, FormLocalizationProvider flp) {
-		super("save", flp);
+		super(SAVE, flp);
 		this.flp = flp;
 		this.jNotepadPP = jNotepadPP;
-		putValue(Action.NAME, flp.getString("save"));
+
+		putValue(Action.NAME, flp.getString(SAVE));
 		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
 		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
-		putValue(Action.SHORT_DESCRIPTION, "Used to save document from disc");
+		putValue(Action.SHORT_DESCRIPTION, flp.getString(SAVE + ACTION));
+
 		flp.getProvider().addLocalizationListener(() -> update());
 	}
 
@@ -45,52 +68,31 @@ public class SaveDocumentAction extends LocalizableAction {
 
 	}
 
-	public void saveDocument(int i) {
-		JScrollPane scrollPane = i == -1 ? (JScrollPane) jNotepadPP.getTabbedPane().getSelectedComponent()
-				: (JScrollPane) jNotepadPP.getTabbedPane().getComponentAt(i);
+	/**
+	 * Method used for saving document on the specified index of the tabbed
+	 * pane. If index is -1, then selected component is saved.
+	 * 
+	 * @param index
+	 *            index of the tab to save
+	 */
+	private void saveDocument(int index) {
+		JScrollPane scrollPane = (index == -1) ? (JScrollPane) jNotepadPP.getTabbedPane().getSelectedComponent()
+				: (JScrollPane) jNotepadPP.getTabbedPane().getComponentAt(index);
+
 		if (scrollPane == null) {
 			return;
 		}
+
 		Tab closingTab = (Tab) scrollPane.getViewport().getView();
 
+		JFileChooser fc = new JFileChooser();
+		fc.setDialogTitle(flp.getString(SAVE_FILE_DIALOG));
+
 		if (closingTab.getOpenedFilePath() == null) {
-			JFileChooser fc = new JFileChooser();
-			fc.setDialogTitle("Save file");
-
-			if (fc.showSaveDialog(jNotepadPP) != JFileChooser.APPROVE_OPTION) {
-				JOptionPane.showMessageDialog(
-						jNotepadPP,
-						flp.getString(NOT_SAVED),
-						flp.getString(INFORMATION),
-						JOptionPane.INFORMATION_MESSAGE
-				);
-				return;
-			}
-			closingTab.setOpenedFilePath(fc.getSelectedFile().toPath());
-		}
-
-		try {
-			Files.write(closingTab.getOpenedFilePath(), closingTab.getText().getBytes(StandardCharsets.UTF_8));
-		} catch (Exception exc) {
-			JOptionPane.showMessageDialog(
-					jNotepadPP,
-					flp.getString(SAVE_NOT_SUCCESSFUL),
-					flp.getString(ERROR),
-					JOptionPane.ERROR_MESSAGE
-			);
+			((SaveAsDocumentAction) jNotepadPP.getSaveAsDocumentAction()).saveDocument(index);
 			return;
 		}
 
-		JOptionPane.showMessageDialog(
-				jNotepadPP,
-				flp.getString(SAVED),
-				flp.getString(INFORMATION),
-				JOptionPane.INFORMATION_MESSAGE
-		);
-
-		jNotepadPP.getTabbedPane()
-				.setTitleAt(jNotepadPP.getTabbedPane().getSelectedIndex(), closingTab.getSimpleName());
-		jNotepadPP.getTabbedPane()
-				.setToolTipTextAt(jNotepadPP.getTabbedPane().getSelectedIndex(), closingTab.getLongName());
+		Util.executeSaving(closingTab, fc, jNotepadPP, flp, scrollPane);
 	}
 }

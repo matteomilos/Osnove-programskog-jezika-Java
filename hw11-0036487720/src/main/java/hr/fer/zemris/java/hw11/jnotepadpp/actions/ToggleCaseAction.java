@@ -11,27 +11,52 @@ import hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP;
 import hr.fer.zemris.java.hw11.jnotepadpp.Tab;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.LocalizableAction;
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.*;
 
+/**
+ * Action derived from {@link LocalizableAction} class, used to set selected
+ * characters to the opposite case of the current one.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class ToggleCaseAction extends LocalizableAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * instance of {@link JNotepadPP} class
+	 */
 	private JNotepadPP jNotepadPP;
 
-	private FormLocalizationProvider flp;
-
+	/**
+	 * Constructor that creates new instance of {@link ToggleCaseAction}
+	 * 
+	 * @param jNotepadPP
+	 *            instance of {@link JNotepadPP} class
+	 * @param flp
+	 *            localization provider
+	 */
 	public ToggleCaseAction(JNotepadPP jNotepadPP, FormLocalizationProvider flp) {
-		super("toggle", flp);
+		super(TOGGLE, flp);
 		this.jNotepadPP = jNotepadPP;
-		this.flp = flp;
-		putValue(Action.NAME, flp.getString("toggle"));
+		putValue(Action.NAME, flp.getString(TOGGLE));
+		putValue(Action.SHORT_DESCRIPTION, flp.getString(TOGGLE+ACTION));
 		flp.getProvider().addLocalizationListener(() -> update());
+		setEnabled(false);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JScrollPane scrollPane = (JScrollPane) jNotepadPP.getTabbedPane().getSelectedComponent();
+
 		if (scrollPane == null) {
 			return;
 		}
+
 		Tab tab = (Tab) scrollPane.getViewport().getView();
 		Document doc = tab.getDocument();
 
@@ -47,6 +72,7 @@ public class ToggleCaseAction extends LocalizableAction {
 		try {
 			String text = doc.getText(offset, len);
 			text = invertText(text);
+
 			doc.remove(offset, len);
 			doc.insertString(offset, text, null);
 		} catch (BadLocationException ignorable) {
@@ -54,6 +80,13 @@ public class ToggleCaseAction extends LocalizableAction {
 
 	}
 
+	/**
+	 * Method used for inverting case of characters of given text
+	 * 
+	 * @param text
+	 *            text whose characters will be inverted
+	 * @return inverted text
+	 */
 	private String invertText(String text) {
 		StringBuilder sb = new StringBuilder(text.length());
 

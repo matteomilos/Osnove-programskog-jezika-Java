@@ -1,12 +1,14 @@
 package hr.fer.zemris.java.hw11.jnotepadpp.actions;
 
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.ACTION;
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.UNIQUE;
+
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.swing.Action;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -15,28 +17,51 @@ import hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP;
 import hr.fer.zemris.java.hw11.jnotepadpp.Tab;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.LocalizableAction;
-import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.*;
 
+/**
+ * Action derived from {@link LocalizableAction} class, used to remove identical
+ * lines from the selected text.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class UniqueAction extends LocalizableAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * instance of {@link JNotepadPP} class
+	 */
 	private JNotepadPP jNotepadPP;
 
-	private FormLocalizationProvider flp;
-
+	/**
+	 * Constructor that creates new instance of {@link UniqueAction}
+	 * 
+	 * @param jNotepadPP
+	 *            instance of {@link JNotepadPP} class
+	 * @param flp
+	 *            localization provider
+	 */
 	public UniqueAction(JNotepadPP jNotepadPP, FormLocalizationProvider flp) {
-		super("unique", flp);
+		super(UNIQUE, flp);
 		this.jNotepadPP = jNotepadPP;
-		this.flp = flp;
-		putValue(Action.NAME, flp.getString("unique"));
+
+		putValue(Action.NAME, flp.getString(UNIQUE));
+		putValue(Action.SHORT_DESCRIPTION, flp.getString(UNIQUE + ACTION));
 		flp.getProvider().addLocalizationListener(() -> update());
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JScrollPane scrollPane = (JScrollPane) jNotepadPP.getTabbedPane().getSelectedComponent();
+
 		if (scrollPane == null) {
 			return;
 		}
+
 		Tab tab = (Tab) scrollPane.getViewport().getView();
 		Document doc = tab.getDocument();
 
@@ -57,6 +82,7 @@ public class UniqueAction extends LocalizableAction {
 				doc.insertString(offset, string + (--numOfLines > 0 ? "\n" : ""), null);
 				offset += string.length() + 1;
 			}
+
 		} catch (BadLocationException ignorable) {
 		}
 	}

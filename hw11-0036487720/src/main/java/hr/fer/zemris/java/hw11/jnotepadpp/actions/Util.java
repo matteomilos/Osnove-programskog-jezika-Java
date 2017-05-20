@@ -1,14 +1,19 @@
 package hr.fer.zemris.java.hw11.jnotepadpp.actions;
 
-import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.NO_TAB_OPENED;
-import static hr.fer.zemris.java.hw11.jnotepadpp.actions.ActionConstants.SAVE_AS;
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.ERROR;
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.INFORMATION;
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.SAVED;
+import static hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationConstants.SAVE_NOT_SUCCESSFUL;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.text.BadLocationException;
@@ -18,13 +23,32 @@ import hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP;
 import hr.fer.zemris.java.hw11.jnotepadpp.Tab;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.swing.FormLocalizationProvider;
 
+/**
+ * Class used for some helper methods used in classes from actions package.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class Util {
 
-	public static void sortSelectedText(boolean ascending, JNotepadPP jNotepadPP, Collator hrCollator) {
+	/**
+	 * Method used for sorting selected text ascending or descending, based on
+	 * the given flag. Method used Croatian collator for comparing strings.
+	 * 
+	 * @param isAscending
+	 *            <code>true</code> if we want ascending sort, false otherwise
+	 * @param jNotepadPP
+	 *            instance of {@link JNotepadPP} class
+	 * @param hrCollator
+	 *            Croatian instance of {@link Collator} class
+	 */
+	public static void sortSelectedText(boolean isAscending, JNotepadPP jNotepadPP, Collator hrCollator) {
 		JScrollPane scrollPane = (JScrollPane) jNotepadPP.getTabbedPane().getSelectedComponent();
+
 		if (scrollPane == null) {
 			return;
 		}
+
 		Tab tab = (Tab) scrollPane.getViewport().getView();
 		Document doc = tab.getDocument();
 
@@ -38,7 +62,7 @@ public class Util {
 			String text = doc.getText(offset, len - offset);
 			List<String> sort = Arrays.asList(text.split("\\r?\\n"));
 			Comparator<String> myComp = (a, b) -> hrCollator.compare(a, b);
-			Collections.sort(sort, ascending ? myComp : myComp.reversed());
+			Collections.sort(sort, isAscending ? myComp : myComp.reversed());
 
 			int lines = tab.getLineCount();
 			doc.remove(offset, len - offset);
@@ -51,6 +75,15 @@ public class Util {
 		}
 	}
 
+	/**
+	 * Method used for setting case to the upper or lower, based on given flag.
+	 * 
+	 * @param isUpper
+	 *            <code>true</code> if we want upper case, false otherwise
+	 * @param text
+	 *            string whose characters are going to be set to the new case
+	 * @return changed text
+	 */
 	public static String setCase(boolean isUpper, String text) {
 		StringBuilder sb = new StringBuilder(text.length());
 
@@ -61,7 +94,17 @@ public class Util {
 		return sb.toString();
 	}
 
+	/**
+	 * Method used for converting case of the selected text to the new case,
+	 * based on given flag.
+	 * 
+	 * @param jNotepadPP
+	 *            instance of {@link JNotepadPP} class
+	 * @param isUpper
+	 *            <code>true</code> if we want upper case, false otherwise
+	 */
 	public static void convertCase(JNotepadPP jNotepadPP, boolean isUpper) {
+
 		JScrollPane scrollPane = (JScrollPane) jNotepadPP.getTabbedPane().getSelectedComponent();
 		if (scrollPane == null) {
 			return;
@@ -81,10 +124,65 @@ public class Util {
 		try {
 			String text = doc.getText(offset, len);
 			text = Util.setCase(isUpper, text);
+
 			doc.remove(offset, len);
 			doc.insertString(offset, text, null);
 		} catch (BadLocationException ignorable) {
 		}
+	}
+
+	/**
+	 * Method called from actions {@link SaveAsDocumentAction} and
+	 * {@link SaveDocumentAction} during the saving process, used to avoid
+	 * duplicating similar code.
+	 * 
+	 * @param savingTab
+	 *            tab being saved
+	 * @param fc
+	 *            instance of {@link JFileChooser} class
+	 * @param jNotepadPP
+	 *            instance of {@link JNotepadPP} class
+	 * @param flp
+	 *            localization provider
+	 * @param scrollPane
+	 *            current scrollPane
+	 */
+	public static void executeSaving(
+			Tab savingTab,
+			JFileChooser fc,
+			JNotepadPP jNotepadPP,
+			FormLocalizationProvider flp,
+			JScrollPane scrollPane
+	) {
+		if (fc.getSelectedFile() != null) {
+			savingTab.setOpenedFilePath(fc.getSelectedFile().toPath());
+		}
+		try {
+			Files.write(savingTab.getOpenedFilePath(), savingTab.getText().getBytes(StandardCharsets.UTF_8));
+		} catch (
+
+		Exception exc) {
+			JOptionPane.showMessageDialog(
+					jNotepadPP,
+					flp.getString(SAVE_NOT_SUCCESSFUL),
+					flp.getString(ERROR),
+					JOptionPane.ERROR_MESSAGE
+			);
+			return;
+		}
+
+		JOptionPane.showMessageDialog(
+				jNotepadPP,
+				flp.getString(SAVED),
+				flp.getString(INFORMATION),
+				JOptionPane.INFORMATION_MESSAGE
+		);
+		jNotepadPP.getTabbedPane()
+				.setTitleAt(jNotepadPP.getTabbedPane().indexOfComponent(scrollPane), savingTab.getSimpleName());
+		jNotepadPP.getTabbedPane()
+				.setToolTipTextAt(jNotepadPP.getTabbedPane().indexOfComponent(scrollPane), savingTab.getLongName());
+		savingTab.refresh(false, scrollPane);
+
 	}
 
 }
