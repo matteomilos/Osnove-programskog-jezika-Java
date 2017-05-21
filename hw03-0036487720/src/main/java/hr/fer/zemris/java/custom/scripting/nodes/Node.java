@@ -10,7 +10,8 @@ import hr.fer.zemris.java.custom.collections.ArrayIndexedCollection;
  * @author Matteo Miloš
  *
  */
-public class Node {
+public abstract class Node {
+
 	/**
 	 * Collection that represents children of this node, also of type
 	 * <code>Node</code>.
@@ -61,6 +62,8 @@ public class Node {
 											// collectiona
 	}
 
+	public abstract String getText();
+
 	/**
 	 * Protected method that returns string representation of the child nodes of
 	 * parent node by iterating through all the children and appending them
@@ -74,9 +77,15 @@ public class Node {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0, numOfChildren = parent.numberOfChildren(); i < numOfChildren; i++) {
 			Node child = parent.getChild(i);
-			sb.append(child);
+			sb.append(child.getText());
 		}
 		return sb.toString();
+	}
+
+	public abstract void accept(INodeVisitor visitor);
+
+	public ArrayIndexedCollection getChildren() {
+		return children;
 	}
 
 }

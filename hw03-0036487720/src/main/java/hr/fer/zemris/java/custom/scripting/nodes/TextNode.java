@@ -31,8 +31,13 @@ public class TextNode extends Node {
 	}
 
 	@Override
-	public String toString() {
-		return text.replace("\\", "\\\\").replace("{", "\\{");
+	public String getText() {
+		return text.replace("{", "\\{");
+	}
+
+	@Override
+	public void accept(INodeVisitor visitor) {
+		visitor.visitTextNode(this);
 	}
 
 }

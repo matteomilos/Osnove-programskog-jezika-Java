@@ -59,7 +59,7 @@ public class ForLoopNode extends Node {
 	}
 
 	@Override
-	public String toString() {
+	public String getText() {
 		StringBuilder sb = new StringBuilder();
 		// @formatter:off   isključen formatter radi ljepše preglednosti
 		sb.	append("{$ FOR ").
@@ -80,6 +80,31 @@ public class ForLoopNode extends Node {
 		// @formatter:on
 
 		return sb.toString();
+	}
+
+	@Override
+	public void accept(INodeVisitor visitor) {
+		visitor.visitForLoopNode(this);
+	}
+
+	
+	public ElementVariable getVariable() {
+		return variable;
+	}
+
+	
+	public Element getStartExpression() {
+		return startExpression;
+	}
+
+	
+	public Element getEndExpression() {
+		return endExpression;
+	}
+
+	
+	public Element getStepExpression() {
+		return stepExpression;
 	}
 
 }

@@ -31,7 +31,7 @@ public class EchoNode extends Node {
 	}
 
 	@Override
-	public String toString() {
+	public String getText() {
 		StringBuilder sb = new StringBuilder();
 		// @formatter:off
 		sb.append("{$= ");
@@ -57,5 +57,15 @@ public class EchoNode extends Node {
 		sb.append("$}");
 		// @formatter:on
 		return sb.toString();
+	}
+	
+	
+	public Element[] getElements() {
+		return elements;
+	}
+
+	@Override
+	public void accept(INodeVisitor visitor) {
+		visitor.visitEchoNode(this);
 	}
 }

@@ -30,18 +30,18 @@ public class SmartScriptTester {
 	 */
 	public static void main(String[] args) {
 
-		if (args.length != 1) {
-			System.out.println("Command line accepts only one argument.");
-			System.exit(0);
-		}
-		String filepath = args[0];
-		/*- String filepath = "D:\\Java\\workspace\\zadace\\hw03-0036487720\\example\\primjer3.txt";*/
+//		if (args.length != 1) {
+//			System.out.println("Command line accepts only one argument.");
+//			System.exit(0);
+//		}
+//		String filepath = args[0];
 		String docBody = null;
 		
 		try {
-			docBody = new String(Files.readAllBytes(Paths.get(filepath)), StandardCharsets.UTF_8);
+			docBody = new String(Files.readAllBytes(Paths.get("primjer.txt")), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return;
 		}
 		
 		SmartScriptParser parser = new SmartScriptParser(docBody);

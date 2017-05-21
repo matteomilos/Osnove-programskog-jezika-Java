@@ -25,18 +25,22 @@ import hr.fer.zemris.java.custom.scripting.parser.SmartScriptParser;
  *
  */
 public class SmartScriptLexer {
+
 	/**
 	 * Array of characters that contains processed text.
 	 */
 	private char[] data;
+
 	/**
 	 * Last generated token by lexer.
 	 */
 	private SmartScriptToken token;
+
 	/**
 	 * Current position in processed text.
 	 */
 	private int currentIndex;
+
 	/**
 	 * Current working state of lexer.
 	 */
@@ -218,7 +222,8 @@ public class SmartScriptLexer {
 			if (data[currentIndex] == '.') {
 				if (dotFlag) {
 					throw new SmartScriptLexerException(
-							"Too many dots in your number. There can be only one dot in a number.");
+							"Too many dots in your number. There can be only one dot in a number."
+					);
 				}
 				dotFlag = true;
 			}
@@ -230,11 +235,13 @@ public class SmartScriptLexer {
 		SmartScriptToken token = null;
 
 		if (number.contains(".")) {
-			token = new SmartScriptToken(SmartScriptTokenType.DOUBLE_NUMBER,
-					new ElementConstantDouble(Double.parseDouble(number)));
+			token = new SmartScriptToken(
+					SmartScriptTokenType.DOUBLE_NUMBER, new ElementConstantDouble(Double.parseDouble(number))
+			);
 		} else {
-			token = new SmartScriptToken(SmartScriptTokenType.INT_NUMBER,
-					new ElementConstantInteger(Integer.parseInt(number)));
+			token = new SmartScriptToken(
+					SmartScriptTokenType.INT_NUMBER, new ElementConstantInteger(Integer.parseInt(number))
+			);
 		}
 
 		return token;
@@ -297,7 +304,10 @@ public class SmartScriptLexer {
 			}
 		}
 		currentIndex++;
-		return new SmartScriptToken(SmartScriptTokenType.STRING, new ElementString(sb.toString()));
+
+		return new SmartScriptToken(
+				SmartScriptTokenType.STRING, new ElementString(sb.toString().replace("\\n", "\n").replace("\\r", "\r"))
+		);
 	}
 
 	/**
