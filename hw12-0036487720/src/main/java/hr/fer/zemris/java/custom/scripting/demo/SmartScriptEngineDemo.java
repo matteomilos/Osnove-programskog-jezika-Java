@@ -21,7 +21,9 @@ public class SmartScriptEngineDemo {
 		String documentBody = null;
 
 		try {
-			documentBody = new String(Files.readAllBytes(Paths.get("fibonacci.smscr")), StandardCharsets.UTF_8);
+			documentBody = new String(
+					Files.readAllBytes(Paths.get("src/main/resources/zbrajanje.smscr")), StandardCharsets.UTF_8
+			);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -29,11 +31,14 @@ public class SmartScriptEngineDemo {
 		Map<String, String> parameters = new HashMap<String, String>();
 		Map<String, String> persistentParameters = new HashMap<String, String>();
 		List<RCCookie> cookies = new ArrayList<RequestContext.RCCookie>();
+		parameters.put("a", "4");
+		parameters.put("b", "2");
 		// create engine and execute it
 		DocumentNode docnode = new SmartScriptParser(documentBody).getDocumentNode();
 		RequestContext context = new RequestContext(System.out, parameters, persistentParameters, cookies);
 		SmartScriptEngine engine = new SmartScriptEngine(docnode, context);
 		engine.execute();
+		System.out.println("Vrijednost u mapi: " + context.getPersistentParameter("brojPoziva"));
 
 	}
 

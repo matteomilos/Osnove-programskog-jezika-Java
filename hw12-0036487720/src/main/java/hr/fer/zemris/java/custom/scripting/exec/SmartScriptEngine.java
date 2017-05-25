@@ -118,13 +118,15 @@ public class SmartScriptEngine {
 		switch (function.getName()) {
 		case "sin":
 			ValueWrapper argument = (ValueWrapper) stack.pop();
-			ValueWrapper result = new ValueWrapper(Math.sin(Double.parseDouble(argument.getValue().toString())));
+			ValueWrapper result = new ValueWrapper(
+					Math.sin(Math.toRadians(Double.valueOf(argument.getValue().toString())))
+			);
 			stack.push(result);
 			break;
 		case "decfmt":
 			DecimalFormat decFormat = new DecimalFormat(stack.pop().toString());
 			argument = (ValueWrapper) stack.pop();
-			result = new ValueWrapper(decFormat.format(Double.parseDouble(argument.getValue().toString())));
+			result = new ValueWrapper(decFormat.format(Double.valueOf(argument.getValue().toString())));
 			stack.push(result);
 			break;
 		case "dup":

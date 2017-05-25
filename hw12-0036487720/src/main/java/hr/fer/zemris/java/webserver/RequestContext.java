@@ -37,6 +37,17 @@ public class RequestContext {
 
 	private boolean headerGenerated; // constructor false
 
+	private IDispatcher dispatcher;
+
+	public RequestContext(
+			OutputStream outputStream, Map<String, String> parameters, Map<String, String> persistentParameters,
+			List<RCCookie> outputCookies, Map<String, String> temporaryParameters, IDispatcher dispatcher
+	) {
+		this(outputStream, parameters, persistentParameters, outputCookies);
+		this.temporaryParameters = temporaryParameters;
+		this.dispatcher = dispatcher;
+	}
+
 	public RequestContext(
 			OutputStream outputStream, Map<String, String> parameters, Map<String, String> persistentParameters,
 			List<RCCookie> outputCookies
@@ -67,8 +78,9 @@ public class RequestContext {
 			outputStream.write(createHeader().getBytes(charset));
 		}
 
-		outputStream.flush();
 		outputStream.write(data);
+		outputStream.flush();
+
 		return this;
 	}
 
@@ -78,8 +90,9 @@ public class RequestContext {
 			charset = Charset.forName(encoding);
 			outputStream.write(createHeader().getBytes(charset));
 		}
-		outputStream.flush();
 		outputStream.write(text.getBytes(charset));
+		outputStream.flush();
+
 		return this;
 	}
 
@@ -117,7 +130,7 @@ public class RequestContext {
 	}
 
 	public void setPersistentParameter(String name, String value) {
-		if(persistentParameters == null){
+		if (persistentParameters == null) {
 			persistentParameters = new HashMap<>();
 		}
 		persistentParameters.put(name, value);
@@ -136,7 +149,7 @@ public class RequestContext {
 	}
 
 	public void setTemporaryParameter(String name, String value) {
-		if(temporaryParameters == null){
+		if (temporaryParameters == null) {
 			temporaryParameters = new HashMap<>();
 		}
 		temporaryParameters.put(name, value);
@@ -180,6 +193,10 @@ public class RequestContext {
 
 	public void setMimeType(String mimeType) {
 		this.mimeType = mimeType;
+	}
+
+	public IDispatcher getDispatcher() {
+		return dispatcher;
 	}
 
 	public static class RCCookie {
