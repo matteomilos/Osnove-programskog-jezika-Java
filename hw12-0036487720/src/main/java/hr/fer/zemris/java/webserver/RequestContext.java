@@ -19,13 +19,13 @@ public class RequestContext {
 
 	private Charset charset;
 
-	public String encoding = "UTF-8";
+	private String encoding = "UTF-8";
 
-	public int statusCode; // constructor stavi na 200
+	private int statusCode; // constructor stavi na 200
 
-	public String statusText; // constructor "OK"
+	private String statusText; // constructor "OK"
 
-	public String mimeType; // "text/html"
+	private String mimeType; // "text/html"
 
 	private Map<String, String> parameters;
 
@@ -35,7 +35,7 @@ public class RequestContext {
 
 	private List<RCCookie> outputCookies;
 
-	private boolean headerGenerated; // constructor false
+	private boolean headerGenerated;
 
 	private IDispatcher dispatcher;
 
@@ -44,7 +44,7 @@ public class RequestContext {
 			List<RCCookie> outputCookies, Map<String, String> temporaryParameters, IDispatcher dispatcher
 	) {
 		this(outputStream, parameters, persistentParameters, outputCookies);
-		this.temporaryParameters = temporaryParameters;
+		this.temporaryParameters = (temporaryParameters == null) ? new HashMap<>() : temporaryParameters;
 		this.dispatcher = dispatcher;
 	}
 
@@ -68,6 +68,9 @@ public class RequestContext {
 	}
 
 	public void addRCCookie(RCCookie rcCookie) {
+		if (headerGenerated) {
+			throw new RuntimeException("Header already generated!");
+		}
 		outputCookies.add(rcCookie);
 	}
 
@@ -85,15 +88,7 @@ public class RequestContext {
 	}
 
 	public RequestContext write(String text) throws IOException {
-		if (!headerGenerated) {
-			headerGenerated = true;
-			charset = Charset.forName(encoding);
-			outputStream.write(createHeader().getBytes(charset));
-		}
-		outputStream.write(text.getBytes(charset));
-		outputStream.flush();
-
-		return this;
+		return write(text.getBytes(Charset.forName(encoding)));
 	}
 
 	private String createHeader() {
@@ -180,18 +175,30 @@ public class RequestContext {
 	}
 
 	public void setEncoding(String encoding) {
+		if (headerGenerated) {
+			throw new RuntimeException("Header already generated!");
+		}
 		this.encoding = encoding;
 	}
 
 	public void setStatusCode(int statusCode) {
+		if (headerGenerated) {
+			throw new RuntimeException("Header already generated!");
+		}
 		this.statusCode = statusCode;
 	}
 
 	public void setStatusText(String statusText) {
+		if (headerGenerated) {
+			throw new RuntimeException("Header already generated!");
+		}
 		this.statusText = statusText;
 	}
 
 	public void setMimeType(String mimeType) {
+		if (headerGenerated) {
+			throw new RuntimeException("Header already generated!");
+		}
 		this.mimeType = mimeType;
 	}
 
@@ -211,12 +218,15 @@ public class RequestContext {
 
 		private Integer maxAge;
 
-		public RCCookie(String name, String value, Integer maxAge, String domain, String path) {
+		private boolean isHttpOnly;
+
+		public RCCookie(String name, String value, Integer maxAge, String domain, String path, boolean isHttpOnly) {
 			this.name = name;
 			this.value = value;
 			this.domain = domain;
 			this.path = path;
 			this.maxAge = maxAge;
+			this.isHttpOnly = isHttpOnly;
 		}
 
 		public String getName() {

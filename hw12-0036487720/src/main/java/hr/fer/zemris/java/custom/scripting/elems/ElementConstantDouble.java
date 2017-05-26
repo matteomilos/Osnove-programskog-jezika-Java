@@ -25,15 +25,26 @@ public class ElementConstantDouble extends Element {
 		this.value = value;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public double getValue() {
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.custom.scripting.elems.Element#asText()
+	 */
 	@Override
 	public String asText() {
 		return Double.toString(value);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return asText();

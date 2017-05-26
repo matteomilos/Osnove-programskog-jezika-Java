@@ -18,14 +18,17 @@ public class ForLoopNode extends Node {
 	 * Variable of for-tag, has to be defined.
 	 */
 	private ElementVariable variable;
+
 	/**
 	 * Starting element of for-tag, has to be defined
 	 */
 	private Element startExpression;
+
 	/**
 	 * Ending element of for-tag, has to be defined
 	 */
 	private Element endExpression;
+
 	/**
 	 * Step element of for-tag, doesn't need to be defined
 	 */
@@ -47,9 +50,10 @@ public class ForLoopNode extends Node {
 	 * @throws IllegalArgumentException
 	 *             if one of neccessary elements is null
 	 */
-	public ForLoopNode(ElementVariable variable, Element startExpression, Element endExpression,
-			Element stepExpression) {
-		if(variable == null || startExpression == null || endExpression ==null){
+	public ForLoopNode(
+			ElementVariable variable, Element startExpression, Element endExpression, Element stepExpression
+	) {
+		if (variable == null || startExpression == null || endExpression == null) {
 			throw new IllegalArgumentException("Value given can not be null.");
 		}
 		this.variable = variable;
@@ -80,31 +84,6 @@ public class ForLoopNode extends Node {
 		// @formatter:on
 
 		return sb.toString();
-	}
-
-	@Override
-	public void accept(INodeVisitor visitor) {
-		visitor.visitForLoopNode(this);
-	}
-
-	
-	public ElementVariable getVariable() {
-		return variable;
-	}
-
-	
-	public Element getStartExpression() {
-		return startExpression;
-	}
-
-	
-	public Element getEndExpression() {
-		return endExpression;
-	}
-
-	
-	public Element getStepExpression() {
-		return stepExpression;
 	}
 
 }

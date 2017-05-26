@@ -9,9 +9,7 @@ package hr.fer.zemris.java.custom.scripting.elems;
  */
 public class ElementOperator extends Element {
 
-	/**
-	 * Symbol that represents operator
-	 */
+	/** Symbol that represents operator. */
 	private String symbol;
 
 	/**
@@ -30,15 +28,26 @@ public class ElementOperator extends Element {
 		this.symbol = symbol;
 	}
 
+	/**
+	 * Gets the symbol.
+	 *
+	 * @return the symbol
+	 */
 	public String getSymbol() {
 		return symbol;
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.custom.scripting.elems.Element#asText()
+	 */
 	@Override
 	public String asText() {
 		return symbol;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return asText();

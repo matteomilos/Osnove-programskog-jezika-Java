@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import hr.fer.zemris.java.custom.scripting.elems.Element;
 import hr.fer.zemris.java.custom.scripting.elems.ElementConstantDouble;
@@ -39,6 +42,7 @@ public class SmartScriptEngine {
 
 		@Override
 		public void visitTextNode(TextNode node) {
+
 			try {
 				requestContext.write(node.getText());
 			} catch (IOException e) {
@@ -53,6 +57,7 @@ public class SmartScriptEngine {
 			String step = node.getStepExpression().asText();
 			ValueWrapper start = new ValueWrapper(node.getStartExpression().asText());
 			String end = node.getEndExpression().asText();
+
 			multistack.push(variable, new ValueWrapper(start));
 
 			while (start.numCompare(end) <= 0) {
@@ -70,31 +75,41 @@ public class SmartScriptEngine {
 		@Override
 		public void visitEchoNode(EchoNode node) {
 			Stack<Object> stack = new Stack<>();
+
 			for (Element token : node.getElements()) {
+
 				if (token instanceof ElementConstantDouble) {
 					stack.push(((ElementConstantDouble) token).getValue());
 				}
+
 				if (token instanceof ElementConstantInteger) {
 					stack.push(((ElementConstantInteger) token).getValue());
 				}
+
 				if (token instanceof ElementString) {
 					stack.push(((ElementString) token).getValue());
 				}
+
 				if (token instanceof ElementVariable) {
 					ValueWrapper variable = multistack.peek(((ElementVariable) token).getName());
 					stack.push(variable.getValue());
 				}
+
 				if (token instanceof ElementOperator) {
 					calculateOperator((ElementOperator) token, stack);
 				}
+
 				if (token instanceof ElementFunction) {
 					calculateFunction((ElementFunction) token, stack);
 				}
 			}
+
 			for (Object object : stack) {
+
 				try {
 					String write = object.toString();
 					requestContext.write(write);
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -115,7 +130,9 @@ public class SmartScriptEngine {
 	}
 
 	protected void calculateFunction(ElementFunction function, Stack<Object> stack) {
+
 		switch (function.getName()) {
+
 		case "sin":
 			ValueWrapper argument = (ValueWrapper) stack.pop();
 			ValueWrapper result = new ValueWrapper(
@@ -123,61 +140,76 @@ public class SmartScriptEngine {
 			);
 			stack.push(result);
 			break;
+
 		case "decfmt":
 			DecimalFormat decFormat = new DecimalFormat(stack.pop().toString());
 			argument = (ValueWrapper) stack.pop();
 			result = new ValueWrapper(decFormat.format(Double.valueOf(argument.getValue().toString())));
 			stack.push(result);
 			break;
+
 		case "dup":
 			stack.push(stack.peek());
 			break;
+
 		case "swap":
+			/*-pushes penultimate, then removes it (but at that time it is third from behind)*/
 			stack.push(stack.get(stack.size() - 2));
 			stack.remove(stack.size() - 3);
 			break;
+
 		case "setMimeType":
 			requestContext.setMimeType(stack.pop().toString());
 			break;
+
 		case "paramGet":
-			String defValue = stack.pop().toString();
-			String name = stack.pop().toString();
-			String value = requestContext.getParameter(name);
-			stack.push(value == null ? defValue : value);
+			paramGetter(stack, (name) -> requestContext.getParameter(name));
 			break;
+
 		case "pparamGet":
-			defValue = stack.pop().toString();
-			name = stack.pop().toString();
-			value = requestContext.getPersistentParameter(name);
-			stack.push(value == null ? defValue : value);
+			paramGetter(stack, (name) -> requestContext.getPersistentParameter(name));
 			break;
+
 		case "pparamSet":
-			name = stack.pop().toString();
-			value = stack.pop().toString();
-			requestContext.setPersistentParameter(name, value);
+			paramSetter(stack, (name, value) -> requestContext.setPersistentParameter(name, value));
 			break;
+
 		case "pparamDel":
-			name = stack.pop().toString();
-			requestContext.removePersistentParameter(name);
+			paramDeleter(stack, (name) -> requestContext.removePersistentParameter(name));
 			break;
+
 		case "tparamGet":
-			defValue = stack.pop().toString();
-			name = stack.pop().toString();
-			value = requestContext.getTemporaryParameter(name);
-			stack.push(value == null ? defValue : value);
+			paramGetter(stack, (name) -> requestContext.getTemporaryParameter(name));
 			break;
 		case "tparamSet":
-			name = stack.pop().toString();
-			value = stack.pop().toString();
-			requestContext.setTemporaryParameter(name, value);
+			paramSetter(stack, (name, value) -> requestContext.setTemporaryParameter(name, value));
 			break;
+
 		case "tparamDel":
-			name = stack.pop().toString();
-			requestContext.removeTemporaryParameter(name);
+			paramDeleter(stack, (name) -> requestContext.removeTemporaryParameter(name));
 			break;
+
 		default:
 			throw new IllegalArgumentException("Illegal function");
 		}
+	}
+
+	private void paramDeleter(Stack<Object> stack, Consumer<String> deleter) {
+		String name = stack.pop().toString();
+		deleter.accept(name);
+	}
+
+	private void paramGetter(Stack<Object> stack, Function<String, String> getter) {
+		String defValue = stack.pop().toString();
+		String name = stack.pop().toString();
+		String value = getter.apply(name);
+		stack.push(value == null ? defValue : value);
+	}
+
+	private void paramSetter(Stack<Object> stack, BiConsumer<String, String> setter) {
+		String name = stack.pop().toString();
+		String value = stack.pop().toString();
+		setter.accept(name, value);
 	}
 
 	protected void calculateOperator(ElementOperator operator, Stack<Object> stack) {
@@ -212,11 +244,11 @@ public class SmartScriptEngine {
 	public static void main(String[] args) {
 
 		if (args.length != 1) {
-			System.out.println("Ne valja"); // TODO:
+			System.out.println("Invalid number of arguments, should be one"); // TODO:
 			return;
 		}
 		String filepath = args[0];
-		/*- String filepath = "D:\\Java\\workspace\\zadace\\hw03-0036487720\\example\\primjer3.txt";*/
+		/*- String filepath = "D:/Java workspace/zadace/hw12-0036487720/primjer3.txt";*/
 		String documentBody = null;
 
 		try {
@@ -225,12 +257,15 @@ public class SmartScriptEngine {
 			e.printStackTrace();
 			return;
 		}
+		
 		Map<String, String> parameters = new HashMap<String, String>();
 		Map<String, String> persistentParameters = new HashMap<String, String>();
 		List<RCCookie> cookies = new ArrayList<RequestContext.RCCookie>();
+		
 		// put some parameter into parameters map
 		parameters.put("broj", "4");
 		// create engine and execute it
+		
 		new SmartScriptEngine(
 				new SmartScriptParser(documentBody).getDocumentNode(),
 				new RequestContext(System.out, parameters, persistentParameters, cookies)

@@ -58,14 +58,5 @@ public class EchoNode extends Node {
 		// @formatter:on
 		return sb.toString();
 	}
-	
-	
-	public Element[] getElements() {
-		return elements;
-	}
 
-	@Override
-	public void accept(INodeVisitor visitor) {
-		visitor.visitEchoNode(this);
-	}
 }

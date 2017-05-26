@@ -9,19 +9,15 @@ package hr.fer.zemris.java.custom.scripting.elems;
  */
 public class ElementString extends Element {
 
-	/**
-	 * Value of the object
-	 */
+	/** Value of the object. */
 	private String value;
 
 	/**
 	 * Public constructor that creates instance with the name set to argument
-	 * given
-	 * 
-	 * @param value
-	 *            word that is stored
-	 * @throws IllegalArgumentException
-	 *             if argument given is null
+	 * given.
+	 *
+	 * @param value            word that is stored
+	 * @throws IllegalArgumentException             if argument given is null
 	 */
 	public ElementString(String value) {
 		if (value == null) {
@@ -30,15 +26,26 @@ public class ElementString extends Element {
 		this.value = value;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.custom.scripting.elems.Element#asText()
+	 */
 	@Override
 	public String asText() {
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		//@formatter:off

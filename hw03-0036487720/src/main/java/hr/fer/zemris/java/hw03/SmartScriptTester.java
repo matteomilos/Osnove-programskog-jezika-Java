@@ -30,31 +30,30 @@ public class SmartScriptTester {
 	 */
 	public static void main(String[] args) {
 
-//		if (args.length != 1) {
-//			System.out.println("Command line accepts only one argument.");
-//			System.exit(0);
-//		}
-//		String filepath = args[0];
+		// if (args.length != 1) {
+		// System.out.println("Command line accepts only one argument.");
+		// System.exit(0);
+		// }
+		// String filepath = args[0];
 		String docBody = null;
-		
+
 		try {
-			docBody = new String(Files.readAllBytes(Paths.get("primjer.txt")), StandardCharsets.UTF_8);
+			docBody = new String(Files.readAllBytes(Paths.get("doc1.txt")), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		SmartScriptParser parser = new SmartScriptParser(docBody);
 		DocumentNode document = parser.getDocumentNode();
 		String originalDocumentBody = createOriginalDocumentBody(document);
 
 		SmartScriptParser parser2 = new SmartScriptParser(originalDocumentBody);
 		DocumentNode document2 = parser2.getDocumentNode();
-		@SuppressWarnings("unused")
 		String originalDocumentBody2 = createOriginalDocumentBody(document2);
 
-		//originalDocumentBody2 and originalDocumentBody should be the same
-
+		// originalDocumentBody2 and originalDocumentBody should be the same
+		System.out.println(originalDocumentBody.equals(originalDocumentBody2));
 	}
 
 	/**
@@ -69,7 +68,7 @@ public class SmartScriptTester {
 		if (document == null) {
 			throw new IllegalArgumentException("Document given can not be null.");
 		}
-		return document.toString();
+		return document.getText();
 	}
 
 }

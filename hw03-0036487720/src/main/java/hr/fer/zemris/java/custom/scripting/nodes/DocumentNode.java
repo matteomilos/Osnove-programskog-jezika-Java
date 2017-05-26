@@ -15,8 +15,4 @@ public class DocumentNode extends Node {
 		return getChildrenToString(this);
 	}
 
-	@Override
-	public void accept(INodeVisitor visitor) {
-		visitor.visitDocumentNode(this);
-	}
 }

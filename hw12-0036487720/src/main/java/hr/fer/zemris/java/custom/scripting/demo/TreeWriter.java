@@ -22,7 +22,6 @@ public class TreeWriter {
 			return;
 		}
 		String filepath = args[0];
-		/*- String filepath = "D:\\Java\\workspace\\zadace\\hw03-0036487720\\example\\primjer3.txt";*/
 		String docBody = null;
 
 		try {

@@ -35,9 +35,4 @@ public class TextNode extends Node {
 		return text.replace("{", "\\{");
 	}
 
-	@Override
-	public void accept(INodeVisitor visitor) {
-		visitor.visitTextNode(this);
-	}
-
 }

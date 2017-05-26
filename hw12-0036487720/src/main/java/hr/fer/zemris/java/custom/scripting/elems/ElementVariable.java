@@ -9,9 +9,7 @@ package hr.fer.zemris.java.custom.scripting.elems;
  */
 public class ElementVariable extends Element {
 
-	/**
-	 * Value in form <code>String</code>
-	 */
+	/** Value in form <code>String</code>. */
 	private String name;
 
 	/**
@@ -30,15 +28,26 @@ public class ElementVariable extends Element {
 		this.name = name;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.custom.scripting.elems.Element#asText()
+	 */
 	@Override
 	public String asText() {
 		return name;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return asText();

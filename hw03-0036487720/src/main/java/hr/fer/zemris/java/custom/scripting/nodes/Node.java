@@ -62,6 +62,11 @@ public abstract class Node {
 											// collectiona
 	}
 
+	/**
+	 * Method used for getting text from node.
+	 * 
+	 * @return text representation of the node
+	 */
 	public abstract String getText();
 
 	/**
@@ -82,8 +87,11 @@ public abstract class Node {
 		return sb.toString();
 	}
 
-	public abstract void accept(INodeVisitor visitor);
-
+	/**
+	 * Method used for retrieving all children nodes of this node.
+	 * 
+	 * @return children nodes
+	 */
 	public ArrayIndexedCollection getChildren() {
 		return children;
 	}

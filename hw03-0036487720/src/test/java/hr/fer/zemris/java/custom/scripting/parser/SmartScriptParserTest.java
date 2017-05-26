@@ -14,76 +14,95 @@ import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptLexerException;
 
 /**
  * Class <code>SmartScriptParserTest</code> will be used for testing both
- * {@linkplain SmartScriptLexer} and {@linkplain SmartScriptParser} classes. Tests will be executed
- * using documents from (<i>src/main/resources</i>), and will be properly loaded using
- * the {@linkplain SmartScriptParserTest#loader(String)} method
+ * {@linkplain SmartScriptLexer} and {@linkplain SmartScriptParser} classes.
+ * Tests will be executed using documents from (<i>src/main/resources</i>), and
+ * will be properly loaded using the
+ * {@linkplain SmartScriptParserTest#loader(String)} method
  * 
  * @author Matteo Miloš
  *
  */
 @SuppressWarnings("javadoc")
 public class SmartScriptParserTest {
+
 	SmartScriptParser parser1;
+
 	String document = loader("primjer.txt");
+
 	String document1 = loader("primjer1.txt");
+
 	String document2 = loader("primjer2.txt");
+
 	String document3 = loader("primjer3.txt");
+
 	String document4 = loader("primjer4.txt");
+
 	String document5 = loader("primjer5.txt");
+
 	String document6 = loader("primjer6.txt");
+
 	String document7 = loader("primjer7.txt");
+
 	String document8 = loader("primjer8.txt");
+
 	String document9 = loader("primjer9.txt");
+
 	String document10 = loader("primjer10.txt");
+
 	String document11 = loader("primjer11.txt");
+
 	String document12 = loader("primjer12.txt");
+
 	String document13 = loader("primjer13.txt");
+
 	String document14 = loader("primjer14.txt");
+
 	String document15 = loader("primjer15.txt");
+
 	String document16 = loader("primjer16.txt");
 
 	@Test
 	public void testDocumentWithForAndEmptyTags1() {
 		parser1 = new SmartScriptParser(document);
-		String first = parser1.getDocumentNode().toString();
+		String first = parser1.getDocumentNode().getText();
 		parser1 = new SmartScriptParser(first);
-		String second = parser1.getDocumentNode().toString();
+		String second = parser1.getDocumentNode().getText();
 		assertEquals(first, second);
 	}
 
 	@Test
 	public void testDocumentWithEmptyTags1() {
 		parser1 = new SmartScriptParser(document1);
-		String first = parser1.getDocumentNode().toString();
+		String first = parser1.getDocumentNode().getText();
 		parser1 = new SmartScriptParser(first);
-		String second = parser1.getDocumentNode().toString();
+		String second = parser1.getDocumentNode().getText();
 		assertEquals(first, second);
 	}
 
 	@Test
 	public void testDocumentWithEmptyTags2() {
 		parser1 = new SmartScriptParser(document2);
-		String first = parser1.getDocumentNode().toString();
+		String first = parser1.getDocumentNode().getText();
 		parser1 = new SmartScriptParser(first);
-		String second = parser1.getDocumentNode().toString();
+		String second = parser1.getDocumentNode().getText();
 		assertEquals(first, second);
 	}
 
 	@Test
 	public void testDocumentWithForAndEmptyTags2() {
 		parser1 = new SmartScriptParser(document3);
-		String first = parser1.getDocumentNode().toString();
+		String first = parser1.getDocumentNode().getText();
 		parser1 = new SmartScriptParser(first);
-		String second = parser1.getDocumentNode().toString();
+		String second = parser1.getDocumentNode().getText();
 		assertEquals(first, second);
 	}
 
 	@Test
 	public void testDocumentEscapeBeforeTag() {
 		parser1 = new SmartScriptParser(document4);
-		String first = parser1.getDocumentNode().toString();
+		String first = parser1.getDocumentNode().getText();
 		parser1 = new SmartScriptParser(first);
-		String second = parser1.getDocumentNode().toString();
+		String second = parser1.getDocumentNode().getText();
 		assertEquals(first, second);
 	}
 

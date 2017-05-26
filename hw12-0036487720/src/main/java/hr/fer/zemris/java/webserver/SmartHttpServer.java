@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -21,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,13 +31,31 @@ import hr.fer.zemris.java.webserver.RequestContext.RCCookie;
 
 public class SmartHttpServer {
 
+	private static final String USER_DIR = "user.dir";
+
+	private static final String SERVER_WORKERS = "server.workers";
+
+	private static final String SERVER_MIME_CONFIG = "server.mimeConfig";
+
+	private static final String SESSION_TIMEOUT = "session.timeout";
+
+	private static final String SERVER_DOCUMENT_ROOT = "server.documentRoot";
+
+	private static final String SERVER_WORKER_THREADS = "server.workerThreads";
+
+	private static final String SERVER_PORT = "server.port";
+
+	private static final String SERVER_ADDRESS = "server.address";
+
 	public static void main(String[] args) throws FileNotFoundException {
 
 		SmartHttpServer server = new SmartHttpServer("server.properties");
 		server.start();
+
 		while (true) {
 
 		}
+
 	}
 
 	private String address;
@@ -57,24 +76,30 @@ public class SmartHttpServer {
 
 	private Map<String, IWebWorker> workersMap = new HashMap<>();
 
+	private Map<String, SessionMapEntry> sessions = new HashMap<>();
+
+	private Random sessionRandom = new Random();
+
 	public SmartHttpServer(String configFileName) {
 		parse(configFileName);
 	}
 
 	private void parse(String configFileName) {
 		Properties prop = new Properties();
+
 		try {
-			prop.load(new FileInputStream(System.getProperty("user.dir") + "/config/" + configFileName));
+			prop.load(new FileInputStream(System.getProperty(USER_DIR) + "/config/" + configFileName));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.address = prop.getProperty("server.address");
-		this.port = Integer.valueOf(prop.getProperty("server.port"));
-		this.workerThreads = Integer.valueOf(prop.getProperty("server.workerThreads"));
-		this.documentRoot = Paths.get(prop.getProperty("server.documentRoot"));
-		this.sessionTimeout = Integer.valueOf(prop.getProperty("session.timeout"));
-		parseMime(prop.getProperty("server.mimeConfig"));
-		parseWorkers(prop.getProperty("server.workers"));
+		this.address = prop.getProperty(SERVER_ADDRESS);
+		this.port = Integer.valueOf(prop.getProperty(SERVER_PORT));
+		this.workerThreads = Integer.valueOf(prop.getProperty(SERVER_WORKER_THREADS));
+		this.documentRoot = Paths.get(prop.getProperty(SERVER_DOCUMENT_ROOT));
+		this.sessionTimeout = Integer.valueOf(prop.getProperty(SESSION_TIMEOUT));
+
+		parseMime(prop.getProperty(SERVER_MIME_CONFIG));
+		parseWorkers(prop.getProperty(SERVER_WORKERS));
 	}
 
 	private void parseWorkers(String workersConfigFilePath) {
@@ -87,19 +112,28 @@ public class SmartHttpServer {
 		}
 
 		for (Entry<Object, Object> entry : prop.entrySet()) {
-			Class<?> referenceToClass;
-			Object newObject = null;
-			try {
-				referenceToClass = this.getClass().getClassLoader().loadClass(entry.getValue().toString());
-				newObject = referenceToClass.newInstance();
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
-			IWebWorker iww = (IWebWorker) newObject;
-			Path path = Paths.get(System.getProperty("user.dir") + "/webroot/" + entry.getKey().toString());
+
+			IWebWorker iww = findIWWFromEntry(entry);
+			Path path = Paths.get(System.getProperty(USER_DIR) + "/webroot/" + entry.getKey().toString());
+
 			workersMap.put(path.toString(), iww);
 		}
 
+	}
+
+	private IWebWorker findIWWFromEntry(Entry<Object, Object> entry) {
+		Class<?> referenceToClass;
+		Object iwwObject = null;
+
+		try {
+			referenceToClass = this.getClass().getClassLoader().loadClass(entry.getValue().toString());
+			iwwObject = referenceToClass.newInstance();
+
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		return (IWebWorker) iwwObject;
 	}
 
 	private void parseMime(String mimeConfigFilePath) {
@@ -117,10 +151,12 @@ public class SmartHttpServer {
 	}
 
 	protected synchronized void start() {
+
 		if (serverThread == null) {
 			serverThread = new ServerThread();
 			serverThread.setDaemon(true);
 		}
+
 		if (!serverThread.isAlive()) {
 			serverThread.start();
 			threadPool = Executors.newFixedThreadPool(workerThreads);
@@ -128,30 +164,78 @@ public class SmartHttpServer {
 	}
 
 	protected synchronized void stop() {
-		serverThread.interrupt();
+		serverThread.finish();
 		threadPool.shutdown();
 	}
 
 	protected class ServerThread extends Thread {
 
+		private volatile boolean interrupt;
+
 		@Override
 		public void run() {
+
 			try {
 				ServerSocket serverSocket = new ServerSocket(port);
-				while (serverThread.isAlive()) {
+				ClearThread thread = new ClearThread();
+				thread.start();
+				while (!interrupt) {
 					Socket client = serverSocket.accept();
 					ClientWorker cw = new ClientWorker(client);
 					threadPool.submit(cw);
 				}
+
 				serverSocket.close();
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
 
+		public void finish() {
+			interrupt = true;
+			serverThread.interrupt();
+		}
+	}
+
+	private static class SessionMapEntry {
+
+		String sid;
+
+		long validUntil;
+
+		Map<String, String> map;
+	}
+
+	private class ClearThread extends Thread {
+
+		private static final int SLEEP = 300000;
+
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					Thread.sleep(SLEEP);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				synchronized (sessions) {
+					for (Entry<String, SessionMapEntry> entry : sessions.entrySet()) {
+						if (entry.getValue().validUntil < System.currentTimeMillis() / 1000) {
+							sessions.remove(entry.getKey(), entry.getValue());
+						}
+					}
+
+				}
+			}
 		}
 	}
 
 	private class ClientWorker implements Runnable, IDispatcher {
+
+		private static final String ALL_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+		private static final int SID_LENGTH = 20;
 
 		private Socket csocket;
 
@@ -171,7 +255,7 @@ public class SmartHttpServer {
 
 		private List<RCCookie> outputCookies = new ArrayList<RequestContext.RCCookie>();
 
-		private String SID;
+		private static final String SID = "sid";
 
 		private RequestContext context = null;
 
@@ -183,21 +267,32 @@ public class SmartHttpServer {
 		@Override
 		public void run() {
 			try {
+
 				istream = new PushbackInputStream(csocket.getInputStream());
 				ostream = csocket.getOutputStream();
-				List<String> request = extractHeaders();
-				if (request.size() < 1) {
+
+				List<String> header = extractHeaders();
+				for (String string : header) {
+					System.out.println("real" + string);
+				}
+				if (header.size() < 1) {
 					sendError(400, "Bad request");
 					return;
 				}
-				String[] firstLine = request.get(0).trim().split("\\s+");
+
+				String[] firstLine = header.get(0).trim().split("\\s+");
 				if (!(firstLine.length != 3 || firstLine[0].equals("GET") || firstLine[2].equals("HTTP/1.0")
 						|| firstLine[2].equals("HTTP/1.1"))) {
+
 					sendError(400, "Bad request");
 					return;
 				}
+
+				checkSession(header);
+
 				String[] requestedPathArray = firstLine[1].split("\\?");
 				String path = requestedPathArray[0];
+
 				if (requestedPathArray.length > 1) {
 					String paramString = requestedPathArray[1];
 					parseParameters(paramString);
@@ -207,7 +302,9 @@ public class SmartHttpServer {
 
 			} catch (Exception e) {
 				e.printStackTrace();
+
 			} finally {
+
 				try {
 					csocket.close();
 				} catch (IOException e) {
@@ -216,33 +313,130 @@ public class SmartHttpServer {
 			}
 		}
 
-		public void internalDispatchRequest(String urlPath, boolean directCall) throws Exception {
-			Path requestedPath = documentRoot.resolve(urlPath.substring(1));
-			if(urlPath.startsWith("/private") && directCall){
-				sendError(404, "Access denied");
+		private synchronized void checkSession(List<String> header) {
+			String sidCandidate = "";
+			for (String string : header) {
+				System.out.println("lin" + string);
 			}
+			String domain = findDomain(header);
+			for (String line : header) {
+
+				if (!line.trim().startsWith("Cookie:")) {
+					continue;
+				}
+				line = line.substring("Cookie:".length()).trim();
+				String[] cookies = line.split(";");
+
+				/*-set sidCandidate and add other cookies to the outputCookies list*/
+				sidCandidate = fillCookiesAndFindSidCandidate(sidCandidate, cookies, domain);
+			}
+
+			/*-if candidate is empty then generate new entry, otherwise try to find candidate in sessions*/
+			SessionMapEntry entry = sidCandidate.equals("") ? generateNewEntry(generateSID(), domain)
+					: checkCandidate(sidCandidate, domain);
+
+			permPrams = sessions.get(entry.sid).map;
+		}
+
+		private String findDomain(List<String> header) {
+			String domain = "";
+
+			for (String line : header) {
+
+				if (!line.trim().startsWith("Host:")) {
+					continue;
+				}
+
+				domain = line.substring("Host:".length()).substring(0, line.indexOf(":"));
+				break;
+			}
+
+			return domain.equals("") ? address : domain;
+		}
+
+		private String fillCookiesAndFindSidCandidate(String sidCandidate, String[] cookies, String domain) {
+
+			for (String cookie : cookies) {
+
+				String[] splitedCookie = cookie.split("=");
+
+				if (splitedCookie[0].trim().equals(SID)) {
+					sidCandidate = splitedCookie[1].trim().substring(1, splitedCookie[1].length() - 1);
+				} else {
+					outputCookies.add(new RCCookie(splitedCookie[0], splitedCookie[1], null, domain, "/", false));
+				}
+			}
+
+			return sidCandidate;
+		}
+
+		private SessionMapEntry checkCandidate(String sidCandidate, String domain) {
+
+			SessionMapEntry entry = sessions.get(sidCandidate);
+
+			if (entry == null || entry.validUntil < (System.currentTimeMillis() / 1000)) {
+				sessions.remove(sidCandidate);
+
+				/*-entry is invalid, generate new one and return it*/
+				return generateNewEntry(sidCandidate, domain);
+
+			} else {
+				entry.validUntil = (System.currentTimeMillis() / 1000) + sessionTimeout;
+			}
+
+			return entry;
+		}
+
+		private SessionMapEntry generateNewEntry(String sid, String domain) {
+
+			SessionMapEntry entry = new SessionMapEntry();
+
+			entry.sid = sid;
+			entry.validUntil = System.currentTimeMillis() / 1000 + sessionTimeout;
+			entry.map = new ConcurrentHashMap<>();
+			entry.map.put(SID, entry.sid);
+
+			for (RCCookie cookie : outputCookies) {
+				entry.map.put(cookie.getName(), cookie.getValue());
+			}
+
+			sessions.put(entry.sid, entry);
+			outputCookies.add(new RCCookie(SID, entry.sid, null, domain, "/", true));
+			System.out.println("dodao " + outputCookies.get(outputCookies.size() - 1).getValue());
+			for (RCCookie cook : outputCookies) {
+				System.out.println(cook.getValue());
+			}
+			return entry;
+		}
+
+		private String generateSID() {
+
+			char[] sid = new char[SID_LENGTH];
+
+			for (int i = 0; i < SID_LENGTH; i++) {
+				sid[i] = ALL_CHARACTERS.charAt(sessionRandom.nextInt(ALL_CHARACTERS.length()));
+			}
+
+			return String.valueOf(sid);
+		}
+
+		public void internalDispatchRequest(String urlPath, boolean directCall) throws Exception {
+
+			if (urlPath.startsWith("/private") && directCall) {
+				sendError(405, "Access denied");
+				return;
+			}
+
 			if (urlPath.startsWith("/ext/")) {
-				Class<?> referenceToClass;
-				Object newObject = null;
-				try {
-					String classPath = this.getClass().getPackage().getName() + ".workers." + urlPath.substring(5);
-					referenceToClass = this.getClass().getClassLoader().loadClass(classPath);
-					newObject = referenceToClass.newInstance();
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-					e.printStackTrace();
-					System.exit(0);
-				}
-				IWebWorker iww = (IWebWorker) newObject;
-				if (context == null) {
-					context = new RequestContext(ostream, params, permPrams, outputCookies);
-				}
+				IWebWorker iww = findIWWFromPath(urlPath);
+				initializeContext();
 				iww.processRequest(context);
 				return;
 			}
+			Path requestedPath = documentRoot.resolve(urlPath.substring(1));
+
 			if (workersMap.get(requestedPath.toString()) != null) {
-				if (context == null) {
-					context = new RequestContext(ostream, params, permPrams, outputCookies, tempParams, this);
-				}
+				initializeContext();
 				workersMap.get(requestedPath.toString()).processRequest(context);
 				return;
 			}
@@ -251,36 +445,61 @@ public class SmartHttpServer {
 				sendError(403, "Forbidden");
 				return;
 			}
+
 			if (!(Files.exists(requestedPath) && Files.isReadable(requestedPath)
 					&& Files.isRegularFile(requestedPath))) {
 				sendError(404, "Doesn't exist");
-
 				return;
 			}
 
-			String extension = "";
-			int i = requestedPath.toString().lastIndexOf('.');
-			if (i > 0) {
-				extension = requestedPath.toString().substring(i + 1);
-			}
+			String extension = findExtension(requestedPath);
 			String mimeType = mimeTypes.getOrDefault(extension, "application/octet-stream");
 
 			if (extension.equals("smscr")) {
-				SmartScriptParser parser = new SmartScriptParser(new String(Files.readAllBytes(requestedPath)));
+				initializeContext();
 
-				if (context == null) {
-					context = new RequestContext(ostream, params, permPrams, outputCookies, tempParams, this);
-				}
-				SmartScriptEngine engine = new SmartScriptEngine(parser.getDocumentNode(), context);
-				engine.execute();
+				SmartScriptParser parser = new SmartScriptParser(new String(Files.readAllBytes(requestedPath)));
+				new SmartScriptEngine(parser.getDocumentNode(), context).execute();
+
 			} else {
-				if (context == null) {
-					context = new RequestContext(ostream, params, permPrams, outputCookies);
-				}
+				initializeContext();
+
 				byte[] data = Files.readAllBytes(requestedPath);
 				context.setMimeType(mimeType);
 				context.write(data);
 			}
+		}
+
+		private IWebWorker findIWWFromPath(String urlPath) {
+			Class<?> referenceToClass;
+			Object newObject = null;
+			try {
+				String classPath = this.getClass().getPackage().getName() + ".workers."
+						+ urlPath.substring("/ext/".length());
+
+				referenceToClass = this.getClass().getClassLoader().loadClass(classPath);
+				newObject = referenceToClass.newInstance();
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+
+				e.printStackTrace();
+				System.exit(0);
+			}
+
+			IWebWorker iww = (IWebWorker) newObject;
+			return iww;
+		}
+
+		private void initializeContext() {
+			if (context == null) {
+				context = new RequestContext(ostream, params, permPrams, outputCookies, tempParams, this);
+			}
+		}
+
+		private String findExtension(Path requestedPath) {
+			int i = requestedPath.toString().lastIndexOf('.');
+
+			/*-ako je pronašao točku vraća sve nakon nje, ako nije vraća prazan string*/
+			return (i > 0) ? requestedPath.toString().substring(i + 1) : " ";
 		}
 
 		private void parseParameters(String paramString) {

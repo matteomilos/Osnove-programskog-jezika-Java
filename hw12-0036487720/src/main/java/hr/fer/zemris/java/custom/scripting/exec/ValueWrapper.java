@@ -51,8 +51,8 @@ public class ValueWrapper {
 	 */
 	public void add(Object incValue) {
 		performOperation(
-				determineValue(value.toString()),
-				determineValue(incValue.toString()),
+				determineValue(value),
+				determineValue(incValue),
 				(v1, v2) -> v1.doubleValue() + v2.doubleValue()
 		);
 	}
@@ -70,8 +70,8 @@ public class ValueWrapper {
 	 */
 	public void subtract(Object decValue) {
 		performOperation(
-				determineValue(value.toString()),
-				determineValue(decValue.toString()),
+				determineValue(value),
+				determineValue(decValue),
 				(v1, v2) -> v1.doubleValue() - v2.doubleValue()
 		);
 	}
@@ -89,8 +89,8 @@ public class ValueWrapper {
 	 */
 	public void multiply(Object mulValue) {
 		performOperation(
-				determineValue(value.toString()),
-				determineValue(mulValue.toString()),
+				determineValue(value),
+				determineValue(mulValue),
 				(v1, v2) -> v1.doubleValue() * v2.doubleValue()
 		);
 	}
@@ -107,13 +107,13 @@ public class ValueWrapper {
 	 *            divider of current value in wrapper
 	 */
 	public void divide(Object divValue) {
-		if (determineValue(divValue.toString()).doubleValue() == 0) {
+		if (determineValue(divValue).doubleValue() == 0) {
 			throw new ArithmeticException("Can't divide with zero.");
 		}
 
 		performOperation(
-				determineValue(value.toString()),
-				determineValue(divValue.toString()),
+				determineValue(value),
+				determineValue(divValue),
 				(v1, v2) -> v1.doubleValue() / v2.doubleValue()
 		);
 	}
@@ -135,8 +135,8 @@ public class ValueWrapper {
 	 *         smaller than second operand
 	 */
 	public int numCompare(Object withValue) {
-		double firstOperator = determineValue(value.toString()).doubleValue();
-		double secondOperator = determineValue(withValue.toString()).doubleValue();
+		double firstOperator = determineValue(value).doubleValue();
+		double secondOperator = determineValue(withValue).doubleValue();
 
 		return Double.compare(firstOperator, secondOperator);
 	}
@@ -176,25 +176,19 @@ public class ValueWrapper {
 		if (value == null) {
 			value = Integer.valueOf(0);
 
-		} else if (value instanceof String) {
-			String string = (String) value;
+		}
 
-			try {
-				if (string.contains(".") || string.contains("e") || string.contains("E")) {
-					value = Double.parseDouble(string);
+		String string = value.toString();
+		try {
+			if (string.contains(".") || string.contains("e") || string.contains("E")) {
+				value = Double.parseDouble(string);
 
-				} else {
-					value = Integer.parseInt(string);
-
-				}
-
-			} catch (NumberFormatException exc) {
-				throw new RuntimeException("Given string can't be parsed to number");
+			} else {
+				value = Integer.parseInt(string);
 			}
 
-		} else if (!(value instanceof Integer) && !(value instanceof Double)) {
-			System.out.println(value.getClass().toString());
-			throw new RuntimeException("Given object can't be parsed to number");
+		} catch (NumberFormatException exc) {
+			throw new RuntimeException("Given string can't be parsed to number");
 		}
 
 		return (Number) value;
