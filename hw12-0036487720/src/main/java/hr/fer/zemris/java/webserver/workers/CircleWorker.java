@@ -29,6 +29,7 @@ public class CircleWorker implements IWebWorker {
 
 			ImageIO.write(bim, "png", bos);
 			context.write(bos.toByteArray());
+			
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

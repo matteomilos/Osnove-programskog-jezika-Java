@@ -164,13 +164,11 @@ public class SmartHttpServer {
 	}
 
 	protected synchronized void stop() {
-		serverThread.finish();
+		serverThread.interrupt();
 		threadPool.shutdown();
 	}
 
 	protected class ServerThread extends Thread {
-
-		private volatile boolean interrupt;
 
 		@Override
 		public void run() {
@@ -179,7 +177,7 @@ public class SmartHttpServer {
 				ServerSocket serverSocket = new ServerSocket(port);
 				ClearThread thread = new ClearThread();
 				thread.start();
-				while (!interrupt) {
+				while (isAlive()) {
 					Socket client = serverSocket.accept();
 					ClientWorker cw = new ClientWorker(client);
 					threadPool.submit(cw);
@@ -192,10 +190,6 @@ public class SmartHttpServer {
 			}
 		}
 
-		public void finish() {
-			interrupt = true;
-			serverThread.interrupt();
-		}
 	}
 
 	private static class SessionMapEntry {
@@ -214,13 +208,16 @@ public class SmartHttpServer {
 		@Override
 		public void run() {
 			while (true) {
+
 				try {
 					Thread.sleep(SLEEP);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+
 				synchronized (sessions) {
 					for (Entry<String, SessionMapEntry> entry : sessions.entrySet()) {
+
 						if (entry.getValue().validUntil < System.currentTimeMillis() / 1000) {
 							sessions.remove(entry.getKey(), entry.getValue());
 						}
@@ -272,9 +269,6 @@ public class SmartHttpServer {
 				ostream = csocket.getOutputStream();
 
 				List<String> header = extractHeaders();
-				for (String string : header) {
-					System.out.println("real" + string);
-				}
 				if (header.size() < 1) {
 					sendError(400, "Bad request");
 					return;
@@ -315,10 +309,9 @@ public class SmartHttpServer {
 
 		private synchronized void checkSession(List<String> header) {
 			String sidCandidate = "";
-			for (String string : header) {
-				System.out.println("lin" + string);
-			}
+
 			String domain = findDomain(header);
+
 			for (String line : header) {
 
 				if (!line.trim().startsWith("Cookie:")) {
@@ -347,7 +340,8 @@ public class SmartHttpServer {
 					continue;
 				}
 
-				domain = line.substring("Host:".length()).substring(0, line.indexOf(":"));
+				line = line.substring("Host:".length()).trim();
+				domain = line.substring(0, line.indexOf(":"));
 				break;
 			}
 
@@ -359,11 +353,13 @@ public class SmartHttpServer {
 			for (String cookie : cookies) {
 
 				String[] splitedCookie = cookie.split("=");
+				String cookieName = splitedCookie[0].trim();
+				String cookieValue = splitedCookie[1].substring(1, splitedCookie[1].length() - 1).trim();
 
-				if (splitedCookie[0].trim().equals(SID)) {
-					sidCandidate = splitedCookie[1].trim().substring(1, splitedCookie[1].length() - 1);
+				if (cookieName.equals(SID)) {
+					sidCandidate = cookieValue;
 				} else {
-					outputCookies.add(new RCCookie(splitedCookie[0], splitedCookie[1], null, domain, "/", false));
+					outputCookies.add(new RCCookie(cookieName, cookieValue, null, domain, "/", false));
 				}
 			}
 
@@ -377,8 +373,8 @@ public class SmartHttpServer {
 			if (entry == null || entry.validUntil < (System.currentTimeMillis() / 1000)) {
 				sessions.remove(sidCandidate);
 
-				/*-entry is invalid, generate new one and return it*/
-				return generateNewEntry(sidCandidate, domain);
+				/*-entry is invalid, generate new one*/
+				entry = generateNewEntry(sidCandidate, domain);
 
 			} else {
 				entry.validUntil = (System.currentTimeMillis() / 1000) + sessionTimeout;
@@ -402,10 +398,7 @@ public class SmartHttpServer {
 
 			sessions.put(entry.sid, entry);
 			outputCookies.add(new RCCookie(SID, entry.sid, null, domain, "/", true));
-			System.out.println("dodao " + outputCookies.get(outputCookies.size() - 1).getValue());
-			for (RCCookie cook : outputCookies) {
-				System.out.println(cook.getValue());
-			}
+
 			return entry;
 		}
 
@@ -590,6 +583,7 @@ public class SmartHttpServer {
 
 		}
 
+		@Override
 		public void dispatchRequest(String urlPath) throws Exception {
 			internalDispatchRequest(urlPath, false);
 		}

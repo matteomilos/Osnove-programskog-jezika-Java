@@ -21,11 +21,11 @@ public class RequestContext {
 
 	private String encoding = "UTF-8";
 
-	private int statusCode; // constructor stavi na 200
+	private int statusCode;
 
-	private String statusText; // constructor "OK"
+	private String statusText;
 
-	private String mimeType; // "text/html"
+	private String mimeType;
 
 	private Map<String, String> parameters;
 
@@ -43,6 +43,7 @@ public class RequestContext {
 			OutputStream outputStream, Map<String, String> parameters, Map<String, String> persistentParameters,
 			List<RCCookie> outputCookies, Map<String, String> temporaryParameters, IDispatcher dispatcher
 	) {
+
 		this(outputStream, parameters, persistentParameters, outputCookies);
 		this.temporaryParameters = (temporaryParameters == null) ? new HashMap<>() : temporaryParameters;
 		this.dispatcher = dispatcher;
@@ -93,17 +94,19 @@ public class RequestContext {
 
 	private String createHeader() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("HTTP/1.1 " + statusCode + " " + statusText + "\r\n");
-		sb.append(
+		sb.append("HTTP/1.1 " + statusCode + " " + statusText + "\r\n").
+		   append(
 				"Content-Type: " + mimeType + (mimeType.startsWith("text/") ? ("; charset=" + encoding) : "") + "\r\n"
 		);
+
 		for (RCCookie rcCookie : outputCookies) {
-			sb.append("Set-Cookie: " + rcCookie.name + "=\"" + rcCookie.value + "\"");
-			sb.append(rcCookie.domain == null ? "" : "; Domain=" + rcCookie.domain);
-			sb.append(rcCookie.path == null ? "" : "; Path=" + rcCookie.path);
-			sb.append(rcCookie.maxAge == null ? "" : "; Max-Age=" + rcCookie.maxAge);
-			sb.append("\r\n");
+			sb.append("Set-Cookie: " + rcCookie.name + "=\"" + rcCookie.value + "\"").
+			append(rcCookie.domain == null ? "" : "; Domain=" + rcCookie.domain).
+			append(rcCookie.path == null ? "" : "; Path=" + rcCookie.path).
+			append(rcCookie.maxAge == null ? "" : "; Max-Age=" + rcCookie.maxAge).
+			append("\r\n");
 		}
+
 		sb.append("\r\n");
 		return sb.toString();
 	}

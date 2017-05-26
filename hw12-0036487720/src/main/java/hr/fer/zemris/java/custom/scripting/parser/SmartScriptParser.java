@@ -5,6 +5,7 @@ import hr.fer.zemris.java.custom.collections.ObjectStack;
 import hr.fer.zemris.java.custom.scripting.elems.Element;
 import hr.fer.zemris.java.custom.scripting.elems.ElementVariable;
 import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptLexer;
+import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptLexerException;
 import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptToken;
 import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptTokenType;
 import hr.fer.zemris.java.custom.scripting.nodes.DocumentNode;
@@ -29,14 +30,17 @@ import hr.fer.zemris.java.custom.scripting.nodes.TextNode;
  *
  */
 public class SmartScriptParser {
+
 	/**
 	 * Lexer that performs lexical analysis and provides parser with tokens.
 	 */
 	private SmartScriptLexer lexer;
+
 	/**
 	 * First, uppermost node, all other nodes are children of this node.
 	 */
 	private DocumentNode documentNode;
+
 	/**
 	 * Stack for pushing nodes that are children of the main node.
 	 */
@@ -51,10 +55,17 @@ public class SmartScriptParser {
 	 */
 	public SmartScriptParser(String documentBody) {
 		this.lexer = new SmartScriptLexer(documentBody);
-		 stack = new ObjectStack();
+		stack = new ObjectStack();
 		documentNode = new DocumentNode();
 		stack.push(documentNode);
-		parse();
+		
+		try {
+			parse();
+		} catch (SmartScriptLexerException e1) {
+			throw new SmartScriptParserException(e1.getMessage());
+		} catch (Exception e2) {
+			throw new SmartScriptParserException("Unexpected exception\n" + e2.getMessage());
+		}
 	}
 
 	/**
