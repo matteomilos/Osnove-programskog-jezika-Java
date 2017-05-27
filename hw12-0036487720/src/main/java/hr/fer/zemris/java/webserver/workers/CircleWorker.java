@@ -5,13 +5,20 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import javax.imageio.ImageIO;
 
 import hr.fer.zemris.java.webserver.IWebWorker;
 import hr.fer.zemris.java.webserver.RequestContext;
 
+/**
+ * Worker class used for printing circle to the context output stream in form of
+ * png image. It produces single png image with dimensions 200 x 200 and blue
+ * filled circle.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class CircleWorker implements IWebWorker {
 
 	@Override
@@ -21,7 +28,7 @@ public class CircleWorker implements IWebWorker {
 			BufferedImage bim = new BufferedImage(200, 200, BufferedImage.TYPE_3BYTE_BGR);
 
 			Graphics2D g2d = bim.createGraphics();
-			g2d.setColor(Color.RED);
+			g2d.setColor(Color.BLUE);
 			g2d.fillOval(0, 0, bim.getWidth(), bim.getHeight());
 			g2d.dispose();
 
@@ -29,7 +36,7 @@ public class CircleWorker implements IWebWorker {
 
 			ImageIO.write(bim, "png", bos);
 			context.write(bos.toByteArray());
-			
+
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

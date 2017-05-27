@@ -180,7 +180,9 @@ public class ValueWrapper {
 		
 		String string = value.toString();
 		try {
-			if (string.contains(".") || string.contains("e") || string.contains("E")) {
+			if (string.contains(".")
+					|| string.contains("e")
+					|| string.contains("E")) {
 				value = Double.parseDouble(string);
 
 			} else {

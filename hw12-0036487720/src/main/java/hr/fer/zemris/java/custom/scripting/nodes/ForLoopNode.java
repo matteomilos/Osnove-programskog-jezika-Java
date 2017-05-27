@@ -18,17 +18,14 @@ public class ForLoopNode extends Node {
 	 * Variable of for-tag, has to be defined.
 	 */
 	private ElementVariable variable;
-	/**
-	 * Starting element of for-tag, has to be defined
-	 */
+
+	/** Starting element of for-tag, has to be defined. */
 	private Element startExpression;
-	/**
-	 * Ending element of for-tag, has to be defined
-	 */
+
+	/** Ending element of for-tag, has to be defined. */
 	private Element endExpression;
-	/**
-	 * Step element of for-tag, doesn't need to be defined
-	 */
+
+	/** Step element of for-tag, doesn't need to be defined. */
 	private Element stepExpression;
 
 	/**
@@ -47,9 +44,8 @@ public class ForLoopNode extends Node {
 	 * @throws IllegalArgumentException
 	 *             if one of neccessary elements is null
 	 */
-	public ForLoopNode(ElementVariable variable, Element startExpression, Element endExpression,
-			Element stepExpression) {
-		if(variable == null || startExpression == null || endExpression ==null){
+	public ForLoopNode(ElementVariable variable, Element startExpression, Element endExpression, Element stepExpression) {
+		if (variable == null || startExpression == null || endExpression == null) {
 			throw new IllegalArgumentException("Value given can not be null.");
 		}
 		this.variable = variable;
@@ -58,51 +54,70 @@ public class ForLoopNode extends Node {
 		this.stepExpression = stepExpression;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see hr.fer.zemris.java.custom.scripting.nodes.Node#getText()
+	 */
 	@Override
 	public String getText() {
 		StringBuilder sb = new StringBuilder();
-		// @formatter:off   isključen formatter radi ljepše preglednosti
-		sb.	append("{$ FOR ").
-			append(variable.toString()).
-			append(" ").
-			append(startExpression.toString()).
-			append(" ").
-			append(endExpression.toString()).
-			append(" ");
-		
+		// @formatter:off isključen formatter radi ljepše preglednosti
+		sb.append("{$ FOR ").append(variable.toString()).append(" ").append(startExpression.toString()).append(" ").append(endExpression.toString()).append(" ");
+
 		if (stepExpression != null) {
-			sb.	append(stepExpression.toString()).
-				append(" ");
+			sb.append(stepExpression.toString()).append(" ");
 		}
-		sb.	append("$}").
-			append(getChildrenToString(this)).
-			append("{$END$}");
+		sb.append("$}").append(getChildrenToString(this)).append("{$END$}");
 		// @formatter:on
 
 		return sb.toString();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * hr.fer.zemris.java.custom.scripting.nodes.Node#accept(hr.fer.zemris.java.
+	 * custom.scripting.nodes.INodeVisitor)
+	 */
 	@Override
 	public void accept(INodeVisitor visitor) {
 		visitor.visitForLoopNode(this);
 	}
 
-	
+	/**
+	 * Gets the variable.
+	 *
+	 * @return the variable
+	 */
 	public ElementVariable getVariable() {
 		return variable;
 	}
 
-	
+	/**
+	 * Gets the start expression.
+	 *
+	 * @return the start expression
+	 */
 	public Element getStartExpression() {
 		return startExpression;
 	}
 
-	
+	/**
+	 * Gets the end expression.
+	 *
+	 * @return the end expression
+	 */
 	public Element getEndExpression() {
 		return endExpression;
 	}
 
-	
+	/**
+	 * Gets the step expression.
+	 *
+	 * @return the step expression
+	 */
 	public Element getStepExpression() {
 		return stepExpression;
 	}

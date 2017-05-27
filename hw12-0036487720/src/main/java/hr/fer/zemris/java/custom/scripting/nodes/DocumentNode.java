@@ -10,11 +10,23 @@ package hr.fer.zemris.java.custom.scripting.nodes;
  */
 public class DocumentNode extends Node {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see hr.fer.zemris.java.custom.scripting.nodes.Node#getText()
+	 */
 	@Override
 	public String getText() {
 		return getChildrenToString(this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * hr.fer.zemris.java.custom.scripting.nodes.Node#accept(hr.fer.zemris.java.
+	 * custom.scripting.nodes.INodeVisitor)
+	 */
 	@Override
 	public void accept(INodeVisitor visitor) {
 		visitor.visitDocumentNode(this);

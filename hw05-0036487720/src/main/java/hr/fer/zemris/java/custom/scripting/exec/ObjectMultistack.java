@@ -81,7 +81,8 @@ public class ObjectMultistack {
 	 *             if passed key or value is null
 	 */
 	public void push(String name, ValueWrapper valueWrapper) {
-		if (name == null || valueWrapper == null) {
+		if (name == null
+				|| valueWrapper == null) {
 			throw new IllegalArgumentException("You can't push null key or value.");
 		}
 

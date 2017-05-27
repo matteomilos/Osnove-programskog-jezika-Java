@@ -30,6 +30,11 @@ public class EchoNode extends Node {
 		this.elements = elements;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see hr.fer.zemris.java.custom.scripting.nodes.Node#getText()
+	 */
 	@Override
 	public String getText() {
 		StringBuilder sb = new StringBuilder();
@@ -39,9 +44,7 @@ public class EchoNode extends Node {
 		for (int i = 0; i < elements.length; i++) {
 			if (elements[i] instanceof ElementString) {
 
-				sb.	append("\"").
-					append(elements[i]).
-					append("\" ");
+				sb.append("\"").append(elements[i]).append("\" ");
 
 			} else {
 
@@ -49,8 +52,7 @@ public class EchoNode extends Node {
 					sb.append("@");
 				}
 
-				sb.	append(elements[i]).
-					append(" ");
+				sb.append(elements[i]).append(" ");
 			}
 		}
 
@@ -58,12 +60,23 @@ public class EchoNode extends Node {
 		// @formatter:on
 		return sb.toString();
 	}
-	
-	
+
+	/**
+	 * Gets the elements.
+	 *
+	 * @return the elements
+	 */
 	public Element[] getElements() {
 		return elements;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * hr.fer.zemris.java.custom.scripting.nodes.Node#accept(hr.fer.zemris.java.
+	 * custom.scripting.nodes.INodeVisitor)
+	 */
 	@Override
 	public void accept(INodeVisitor visitor) {
 		visitor.visitEchoNode(this);

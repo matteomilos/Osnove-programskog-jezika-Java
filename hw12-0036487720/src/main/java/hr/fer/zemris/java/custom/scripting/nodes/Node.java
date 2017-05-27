@@ -38,8 +38,8 @@ public abstract class Node {
 	}
 
 	/**
-	 * Method that returns current number of children of this node
-	 * 
+	 * Method that returns current number of children of this node.
+	 *
 	 * @return number of children
 	 */
 	public int numberOfChildren() {
@@ -48,8 +48,8 @@ public abstract class Node {
 
 	/**
 	 * Method that returns reference to child node in collection of children
-	 * that is based on given index
-	 * 
+	 * that is based on given index.
+	 *
 	 * @param index
 	 *            child position in collection
 	 * @return reference to child node
@@ -62,6 +62,11 @@ public abstract class Node {
 											// collectiona
 	}
 
+	/**
+	 * Gets the text.
+	 *
+	 * @return the text
+	 */
 	public abstract String getText();
 
 	/**
@@ -82,8 +87,19 @@ public abstract class Node {
 		return sb.toString();
 	}
 
+	/**
+	 * Accepts the given visitor.
+	 *
+	 * @param visitor
+	 *            the visitor
+	 */
 	public abstract void accept(INodeVisitor visitor);
 
+	/**
+	 * Gets the children of the node.
+	 *
+	 * @return the children
+	 */
 	public ArrayIndexedCollection getChildren() {
 		return children;
 	}

@@ -6,6 +6,13 @@ import java.util.Map.Entry;
 import hr.fer.zemris.java.webserver.IWebWorker;
 import hr.fer.zemris.java.webserver.RequestContext;
 
+/**
+ * Class used for printing html table containing context parameters map to the
+ * context output stream.
+ * 
+ * @author Matteo Miloš
+ *
+ */
 public class EchoParams implements IWebWorker {
 
 	@Override

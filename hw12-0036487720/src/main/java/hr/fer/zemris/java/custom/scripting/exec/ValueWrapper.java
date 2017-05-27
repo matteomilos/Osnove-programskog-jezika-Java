@@ -51,9 +51,8 @@ public class ValueWrapper {
 	 */
 	public void add(Object incValue) {
 		performOperation(
-				determineValue(value),
-				determineValue(incValue),
-				(v1, v2) -> v1.doubleValue() + v2.doubleValue()
+				determineValue(value), determineValue(incValue), (v1, v2) -> v1.doubleValue()
+						+ v2.doubleValue()
 		);
 	}
 
@@ -70,9 +69,8 @@ public class ValueWrapper {
 	 */
 	public void subtract(Object decValue) {
 		performOperation(
-				determineValue(value),
-				determineValue(decValue),
-				(v1, v2) -> v1.doubleValue() - v2.doubleValue()
+				determineValue(value), determineValue(decValue), (v1, v2) -> v1.doubleValue()
+						- v2.doubleValue()
 		);
 	}
 
@@ -89,9 +87,8 @@ public class ValueWrapper {
 	 */
 	public void multiply(Object mulValue) {
 		performOperation(
-				determineValue(value),
-				determineValue(mulValue),
-				(v1, v2) -> v1.doubleValue() * v2.doubleValue()
+				determineValue(value), determineValue(mulValue), (v1, v2) -> v1.doubleValue()
+						* v2.doubleValue()
 		);
 	}
 
@@ -112,9 +109,8 @@ public class ValueWrapper {
 		}
 
 		performOperation(
-				determineValue(value),
-				determineValue(divValue),
-				(v1, v2) -> v1.doubleValue() / v2.doubleValue()
+				determineValue(value), determineValue(divValue), (v1, v2) -> v1.doubleValue()
+						/ v2.doubleValue()
 		);
 	}
 
@@ -156,7 +152,8 @@ public class ValueWrapper {
 	private void performOperation(Number first, Number second, BiFunction<Number, Number, Number> operation) {
 		Number result = operation.apply(first, second);
 
-		if (first instanceof Double || second instanceof Double) {
+		if (first instanceof Double
+				|| second instanceof Double) {
 			this.value = new Double(result.doubleValue());
 
 		} else {
@@ -180,7 +177,9 @@ public class ValueWrapper {
 
 		String string = value.toString();
 		try {
-			if (string.contains(".") || string.contains("e") || string.contains("E")) {
+			if (string.contains(".")
+					|| string.contains("e")
+					|| string.contains("E")) {
 				value = Double.parseDouble(string);
 
 			} else {
