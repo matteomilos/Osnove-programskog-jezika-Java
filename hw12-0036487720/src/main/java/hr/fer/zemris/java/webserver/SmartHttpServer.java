@@ -141,9 +141,12 @@ public class SmartHttpServer {
 		}
 		this.address = prop.getProperty(SERVER_ADDRESS);
 		this.port = Integer.valueOf(prop.getProperty(SERVER_PORT));
-		this.workerThreads = Integer.valueOf(prop.getProperty(SERVER_WORKER_THREADS));
-		this.documentRoot = Paths.get(prop.getProperty(SERVER_DOCUMENT_ROOT));
-		this.sessionTimeout = Integer.valueOf(prop.getProperty(SESSION_TIMEOUT));
+		this.workerThreads =
+				Integer.valueOf(prop.getProperty(SERVER_WORKER_THREADS));
+		this.documentRoot =
+				Paths.get(System.getProperty(USER_DIR) + prop.getProperty(SERVER_DOCUMENT_ROOT));
+		this.sessionTimeout =
+				Integer.valueOf(prop.getProperty(SESSION_TIMEOUT));
 
 		parseMimeTypes(prop.getProperty(SERVER_MIME_CONFIG));
 		parseWorkers(prop.getProperty(SERVER_WORKERS));
@@ -159,7 +162,7 @@ public class SmartHttpServer {
 		Properties prop = new Properties();
 
 		try {
-			prop.load(new FileInputStream(workersConfigFilePath));
+			prop.load(new FileInputStream(System.getProperty(USER_DIR) + workersConfigFilePath));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -167,7 +170,8 @@ public class SmartHttpServer {
 		for (Entry<Object, Object> entry : prop.entrySet()) {
 
 			IWebWorker iww = findIWWFromEntry(entry);
-			Path path = Paths.get(System.getProperty(USER_DIR) + "/webroot/" + entry.getKey().toString());
+			Path path =
+					Paths.get(System.getProperty(USER_DIR) + "/webroot/" + entry.getKey().toString());
 
 			workersMap.put(path.toString(), iww);
 		}
@@ -186,7 +190,8 @@ public class SmartHttpServer {
 		Object iwwObject = null;
 
 		try {
-			referenceToClass = this.getClass().getClassLoader().loadClass(entry.getValue().toString());
+			referenceToClass =
+					this.getClass().getClassLoader().loadClass(entry.getValue().toString());
 			iwwObject = referenceToClass.newInstance();
 
 		} catch (ClassNotFoundException | InstantiationException
@@ -207,7 +212,7 @@ public class SmartHttpServer {
 		Properties prop = new Properties();
 
 		try {
-			prop.load(new FileInputStream(mimeConfigFilePath));
+			prop.load(new FileInputStream(System.getProperty(USER_DIR) + mimeConfigFilePath));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -334,7 +339,8 @@ public class SmartHttpServer {
 	private class ClientWorker implements Runnable, IDispatcher {
 
 		/** The Constant ALL_CHARACTERS. */
-		private static final String ALL_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		private static final String ALL_CHARACTERS =
+				"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 		/** The Constant SID_LENGTH. */
 		private static final int SID_LENGTH = 20;
@@ -364,7 +370,8 @@ public class SmartHttpServer {
 		private Map<String, String> permPrams = new HashMap<String, String>();
 
 		/** The output cookies for the browser. */
-		private List<RCCookie> outputCookies = new ArrayList<RequestContext.RCCookie>();
+		private List<RCCookie> outputCookies =
+				new ArrayList<RequestContext.RCCookie>();
 
 		/** The Constant SID. */
 		private static final String SID = "sid";
@@ -462,12 +469,14 @@ public class SmartHttpServer {
 				String[] cookies = line.split(";");
 
 				/*-set sidCandidate and add other cookies to the outputCookies list*/
-				sidCandidate = fillCookiesAndFindSidCandidate(sidCandidate, cookies, domain);
+				sidCandidate =
+						fillCookiesAndFindSidCandidate(sidCandidate, cookies, domain);
 			}
 
 			/*-if candidate is empty then generate new entry, otherwise try to find candidate in sessions*/
-			SessionMapEntry entry = sidCandidate.equals("")	? generateNewEntry(generateSID(), domain)
-															: checkCandidate(sidCandidate, domain);
+			SessionMapEntry entry =
+					sidCandidate.equals("")	? generateNewEntry(generateSID(), domain)
+											: checkCandidate(sidCandidate, domain);
 
 			permPrams = sessions.get(entry.sid).map;
 		}
@@ -515,7 +524,8 @@ public class SmartHttpServer {
 
 				String[] splitedCookie = cookie.split("=");
 				String cookieName = splitedCookie[0].trim();
-				String cookieValue = splitedCookie[1].substring(1, splitedCookie[1].length() - 1).trim();
+				String cookieValue =
+						splitedCookie[1].substring(1, splitedCookie[1].length() - 1).trim();
 
 				if (cookieName.equals(SID)) {
 					sidCandidate = cookieValue;
@@ -549,7 +559,8 @@ public class SmartHttpServer {
 				entry = generateNewEntry(sidCandidate, domain);
 
 			} else {
-				entry.validUntil = (System.currentTimeMillis() / 1000) + sessionTimeout;
+				entry.validUntil =
+						(System.currentTimeMillis() / 1000) + sessionTimeout;
 			}
 
 			return entry;
@@ -569,7 +580,8 @@ public class SmartHttpServer {
 			SessionMapEntry entry = new SessionMapEntry();
 
 			entry.sid = sid;
-			entry.validUntil = System.currentTimeMillis() / 1000 + sessionTimeout;
+			entry.validUntil =
+					System.currentTimeMillis() / 1000 + sessionTimeout;
 			entry.map = new ConcurrentHashMap<>();
 			entry.map.put(SID, entry.sid);
 
@@ -643,12 +655,14 @@ public class SmartHttpServer {
 			}
 
 			String extension = findExtension(requestedPath);
-			String mimeType = mimeTypes.getOrDefault(extension, "application/octet-stream");
+			String mimeType =
+					mimeTypes.getOrDefault(extension, "application/octet-stream");
 
 			if (extension.equals("smscr")) {
 				initializeContext();
 
-				SmartScriptParser parser = new SmartScriptParser(new String(Files.readAllBytes(requestedPath)));
+				SmartScriptParser parser =
+						new SmartScriptParser(new String(Files.readAllBytes(requestedPath)));
 				new SmartScriptEngine(parser.getDocumentNode(), context).execute();
 
 			} else {
@@ -671,9 +685,11 @@ public class SmartHttpServer {
 			Class<?> referenceToClass;
 			Object newObject = null;
 			try {
-				String classPath = this.getClass().getPackage().getName() + ".workers." + urlPath.substring("/ext/".length());
+				String classPath =
+						this.getClass().getPackage().getName() + ".workers." + urlPath.substring("/ext/".length());
 
-				referenceToClass = this.getClass().getClassLoader().loadClass(classPath);
+				referenceToClass =
+						this.getClass().getClassLoader().loadClass(classPath);
 				newObject = referenceToClass.newInstance();
 			} catch (ClassNotFoundException | InstantiationException
 					| IllegalAccessException e) {
@@ -691,7 +707,8 @@ public class SmartHttpServer {
 		 */
 		private void initializeContext() {
 			if (context == null) {
-				context = new RequestContext(ostream, params, permPrams, outputCookies, tempParams, this);
+				context =
+						new RequestContext(ostream, params, permPrams, outputCookies, tempParams, this);
 			}
 		}
 
@@ -735,7 +752,8 @@ public class SmartHttpServer {
 			byte[] request = readRequest(istream);
 			List<String> headers = new ArrayList<String>();
 			String currentLine = null;
-			String requestHeader = new String(request, StandardCharsets.US_ASCII);
+			String requestHeader =
+					new String(request, StandardCharsets.US_ASCII);
 			for (String s : requestHeader.split("\n")) {
 				if (s.isEmpty())
 					break;

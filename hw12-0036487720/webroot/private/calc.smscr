@@ -8,7 +8,7 @@
 		
 			<tr>
 				<td>a</td>
-				<td>{$="a " 1 @tparamGet $}</td>
+				<td>{$="a" 1 @tparamGet $}</td>
 			</tr>
 			
 			<tr>
