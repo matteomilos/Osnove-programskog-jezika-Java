@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="radioWidth">150dp</dimen>
+    <dimen name="inputWidth">250dp</dimen>
+    <dimen name="inputHeight">48dp</dimen>
+    <dimen name="inputFontSize">18sp</dimen>
+    <dimen name="calculateWidth">250dp</dimen>
+    <dimen name="calculateHeight">48dp</dimen>
+    <dimen name="leftMarginCalculate">16dp</dimen>
+    <dimen name="rightMarginCalculate">16dp</dimen>
+    <dimen name="topMarginCalculate">29dp</dimen>
+    <dimen name="resultFontSize">20sp</dimen>
+    <dimen name="topMarginChooser">10dp</dimen>
+    <dimen name="fieldMargin">10dp</dimen>
+</resources>

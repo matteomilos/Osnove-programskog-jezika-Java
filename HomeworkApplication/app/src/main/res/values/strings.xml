@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">HomeworkApplication</string>
+    <string name="math">Math</string>
+    <string name="statistics">Statistics</string>
+    <string name="chooseOperation">Choose arithmetic operation:</string>
+    <string name="ADDITION">ADDITION</string>
+    <string name="SUBTRACTION">SUBTRACTION</string>
+    <string name="MULTIPLICATION">MULTIPLICATION</string>
+    <string name="DIVISION">DIVISION</string>
+    <string name="firstNumberInput">Enter first number&#8230;</string>
+    <string name="secondNumberInput">Enter second number&#8230;</string>
+    <string name="calculate">CALCULATE</string>
+    <string name="okButton">OK</string>
+    <string name="sendReport">Send report</string>
+    <string name="loadButton">Load</string>
+    <string name="relativePathInput">Enter relative path&#8230;</string>
+    <string name="firstName">FIRST NAME:</string>
+    <string name="lastName">LAST NAME:</string>
+    <string name="phoneNO">PHONE NO:</string>
+    <string name="email">EMAIL:</string>
+    <string name="spouse">SPOUSE:</string>
+    <string name="age">AGE:</string>
+</resources>

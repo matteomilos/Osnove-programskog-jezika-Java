@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="hr.fer.android.hw0036487720.homeworkapplication.CalculusActivity">
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/radioGroup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/topMarginChooser"
+            android:text="@string/chooseOperation"/>
+
+        <RadioButton
+            android:id="@+id/add"
+            android:layout_width="@dimen/radioWidth"
+            android:layout_height="match_parent"
+            android:text="@string/ADDITION"/>
+
+        <RadioButton
+            android:id="@+id/sub"
+            android:layout_width="@dimen/radioWidth"
+            android:layout_height="wrap_content"
+            android:text="@string/SUBTRACTION"/>
+
+        <RadioButton
+            android:id="@+id/multiply"
+            android:layout_width="@dimen/radioWidth"
+            android:layout_height="wrap_content"
+            android:text="@string/MULTIPLICATION"/>
+
+        <RadioButton
+            android:id="@+id/divide"
+            android:layout_width="@dimen/radioWidth"
+            android:layout_height="wrap_content"
+            android:text="@string/DIVISION"/>
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/firstInput"
+        android:layout_width="@dimen/inputWidth"
+        android:layout_height="@dimen/inputHeight"
+        android:layout_above="@+id/secondInput"
+        android:layout_alignStart="@+id/secondInput"
+        android:hint="@string/firstNumberInput"
+        android:inputType="numberDecimal"
+        android:textSize="@dimen/inputFontSize"/>
+
+    <EditText
+        android:id="@+id/secondInput"
+        android:layout_width="@dimen/inputWidth"
+        android:layout_height="@dimen/inputHeight"
+        android:layout_alignStart="@+id/calculate"
+        android:layout_centerVertical="true"
+        android:hint="@string/secondNumberInput"
+        android:inputType="numberDecimal"
+        android:textSize="@dimen/inputFontSize"/>
+
+    <Button
+        android:id="@+id/calculate"
+        android:layout_width="@dimen/calculateWidth"
+        android:layout_height="@dimen/calculateHeight"
+        android:layout_below="@+id/secondInput"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/rightMarginCalculate"
+        android:layout_marginStart="@dimen/leftMarginCalculate"
+        android:layout_marginTop="@dimen/topMarginCalculate"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/calculate"
+        android:textStyle="bold"/>
+
+
+</RelativeLayout>

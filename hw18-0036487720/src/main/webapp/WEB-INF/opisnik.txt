@@ -1,0 +1,75 @@
+antolic.jpg
+Domagoj Antolic, vezni igrac, GNK Dinamo Zagreb
+vezni, kapetan, hrvat, iskusan
+benkovic.jpg
+Filip Benkovic, obrambeni igrac, GNK Dinamo Zagreb
+obrambeni, stoper, talent, hrvat
+coric.jpg
+Ante Coric, vezni igrac, GNK Dinamo Zagreb
+vezni, talent, problematican, hrvat
+fernandes.jpg
+Junior Fernandes, krilni napadac, GNK Dinamo Zagreb
+krilo, napadac, cileanac, problematican
+fiolic.jpg
+Ivan Fiolic, vezni igrac, GNK Dinamo Zagreb
+vezni, mlad, hrvat
+gojak.jpg
+Amer Gojak, vezni igrac, GNK Dinamo Zagreb
+vezni, talent, bosnjak
+guilherme.jpg
+Marcos Guilherme, krilni napadac, GNK Dinamo Zagreb
+krilo, napadac, brazilac, talent
+henriquez.jpg
+Angelo Henriquez, napadac, GNK Dinamo Zagreb
+napadac, spica, cileanac
+hodzic.jpg
+Armin Hodzic, napadac, GNK Dinamo Zagreb
+napadac, spica, bosnjak
+knezevic.jpg
+Bojan Knezevic, vezni igrac, GNK Dinamo Zagreb
+vezni, mlad, talent, kockar, hrvat
+leskovic.jpg
+Marko Leskovic, obrambeni igrac, GNK Dinamo Zagreb
+obrambeni, stoper, hrvat
+livakovic.jpg
+Dominik Livakovic, golman, GNK Dinamo Zagreb
+golman, talent, hrvat, mlad
+matel.jpg
+Alexandru Matel, obrambeni igrac, GNK Dinamo Zagreb
+bocni, obrambeni, rumunj, iskusan
+moro.jpg
+Nikola Moro, vezni igrac, GNK Dinamo Zagreb
+vezni, talent, mlad, hrvat
+olmo.jpg
+Dani Olmo, krilni napadac, GNK Dinamo Zagreb
+krilo, napadac, talent, spanjolac
+pavicic.jpg
+Domagoj Pavicic, vezni igrac, GNK Dinamo Zagreb
+vezni, talent, hrvat
+peric.jpg
+Dino Peric, obrambeni igrac, GNK Dinamo Zagreb
+stoper, obrambeni, mlad, hrvat
+pivaric.jpg
+Josip Pivaric, obrambeni igrac, GNK Dinamo Zagreb
+bocni, obrambeni, dokapetan, hrvat, iskusan
+sammir.jpg
+Jorge Sammir, vezni igrac, GNK Dinamo Zagreb
+vezni, pijanac, problematican, brazilac, hrvat
+schildenfeld.jpg
+Gordon Schildenfeld, obrambeni igrac, GNK Dinamo Zagreb
+stoper, obrambeni, star, iskusan, hrvat
+sigali.jpg
+Leonardo Sigali, obrambeni igrac, GNK Dinamo Zagreb
+stoper, obrambeni, iskusan, argentinac
+sosa.jpg
+Borna Sosa, obrambeni igrac, GNK Dinamo Zagreb
+bocni, obrambeni, mlad, talent, hrvat
+soudani.jpg
+Hillal Soudani, krilni napadac, GNK Dinamo Zagreb
+krilo, napadac, spica, alzirac, iskusan
+stojanovic.jpg
+Petar Stojanovic, obrambeni igrac, GNK Dinamo Zagreb
+bocni, obrambeni, slovenac
+zagorac.jpg
+Danijel Zagorac, golman, GNK Dinamo Zagreb
+golman, iskusan, hrvat
